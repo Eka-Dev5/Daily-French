@@ -1,1 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Daily French — Vocabulary</title>
+<style>
+:root {
+  --primary: #667eea; --secondary: #764ba2;
+  --bg-light: #f8fafc; --text-dark: #2d3748;
+  --text-muted: #718096; --border-light: #e2e8f0;
+  --shadow: 0 10px 30px rgba(0,0,0,.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(135deg,var(--primary),var(--secondary));min-height:100vh;padding:20px;font-family:"Segoe UI",system-ui,sans-serif}
+
+/* CARD */
+.card{max-width:1000px;margin:0 auto;background:white;border-radius:24px;padding:30px 24px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+
+/* TITLE */
+h1{font-size:2em;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px;text-align:center}
+.tagline{text-align:center;color:var(--text-muted);margin-bottom:22px;font-size:.9em}
+
+/* NAV */
+.nav-links{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.btn{display:inline-block;background:#f0f4ff;color:var(--primary);padding:8px 18px;border-radius:40px;font-weight:700;text-decoration:none;transition:all .2s;font-size:.88em;border:none;cursor:pointer;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white}
+.btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(102,126,234,.3)}
+
+/* SEARCH */
+.search-area{display:flex;align-items:center;gap:10px;margin-bottom:18px;background:#f8fafc;border-radius:16px;padding:12px 16px;border:2px solid var(--border-light)}
+.flags{display:flex;gap:6px;flex-shrink:0}
+.flag{font-size:1.6em;cursor:pointer;opacity:.45;border-radius:50%;padding:3px;transition:all .2s}
+.flag.active{opacity:1;box-shadow:0 0 0 2px var(--primary);background:rgba(102,126,234,.12)}
+.search-input{flex:1;padding:8px 14px;border:2px solid var(--border-light);border-radius:30px;font-size:.92em;background:white;outline:none;min-width:0}
+.search-input:focus{border-color:var(--primary)}
+.search-btn{padding:9px 18px;border:none;border-radius:30px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;font-weight:700;font-size:.85em;cursor:pointer;white-space:nowrap;flex-shrink:0}
+
+/* FILTRES THÈMES */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0;justify-content:center}
+.filter-btn{padding:10px 18px;border:2px solid #e2e8f0;background:white;border-radius:20px;cursor:pointer;font-weight:600;font-size:.9em;transition:all .25s}
+.filter-btn:hover{border-color:#667eea;background:#f0f4ff}
+.filter-btn.active{background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-color:transparent;box-shadow:0 4px 15px rgba(102,126,234,.3)}
+.filter-btn .count{font-size:.75em;opacity:.8;margin-left:4px}
+
+.theme-section{margin-bottom:25px}
+.theme-title{font-size:1.3em;font-weight:700;color:#2d3748;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e2e8f0;display:flex;align-items:center;gap:8px}
+.theme-count{font-size:.7em;background:#667eea;color:white;padding:2px 8px;border-radius:10px;font-weight:600}
+.words-list{display:grid;gap:12px}
+
+/* FILTER TRIGGERS */
+.filter-triggers{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
+.filter-trigger{background:#f0f4ff;color:var(--primary);padding:9px 22px;border-radius:40px;font-weight:700;font-size:.88em;cursor:pointer;border:2px solid transparent;transition:all .2s}
+.filter-trigger.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;box-shadow:0 4px 12px rgba(102,126,234,.3)}
+
+/* FILTER PANELS */
+.filters-panel{background:#f8fafc;border-radius:16px;padding:14px 16px;margin-bottom:16px;border:1px solid var(--border-light);display:none}
+.filters-panel.visible{display:block}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{background:white;border:2px solid var(--border-light);border-radius:30px;padding:6px 14px;font-size:.82em;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text-dark)}
+.chip:hover{border-color:var(--primary);color:var(--primary)}
+.chip.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;border-color:transparent}
+
+/* COUNTER */
+.result-count{text-align:right;font-size:.75em;color:var(--text-muted);margin-bottom:10px}
+
+/* WORD CARDS */
+.lexique-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.word-card{background:var(--bg-light);border-left:4px solid var(--primary);border-radius:14px;padding:15px;transition:all .2s}
+.word-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(102,126,234,.15);border-left-color:var(--secondary)}
+.main-word{font-size:1.25em;font-weight:800;color:var(--text-dark);margin-bottom:3px}
+.phonetic{font-style:italic;color:var(--secondary);font-size:.78em;margin-left:6px}
+.translation{font-size:.9em;color:#4a5568;margin:4px 0 8px}
+.definition{font-size:.78em;color:var(--text-muted);line-height:1.5;border-top:1px solid var(--border-light);padding-top:7px;margin-top:5px}
+.badge-container{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
+.badge-level{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;border-radius:20px;padding:2px 9px;font-size:.65em;font-weight:700}
+.badge-cat{background:#e9d8fd;color:#553c9a;border-radius:20px;padding:2px 9px;font-size:.65em;font-weight:600}
+.no-result{text-align:center;padding:40px;color:var(--text-muted);background:#f9fafb;border-radius:20px;font-size:.95em}
+.ex-toggle{background:none;border:1px solid #e2e8f0;border-radius:8px;padding:1px 6px;font-size:.78em;cursor:pointer;margin-left:6px;vertical-align:middle;transition:all .2s}
+.ex-toggle:hover{background:#f0f4ff;border-color:var(--primary)}
+.ex-en{display:none;font-style:italic;color:#48bb78;font-size:.78em;margin-top:4px}
+.word-ex{font-size:.78em;color:var(--text-muted);margin-top:6px}
+.word-lit{font-size:.7em;color:#a0aec0;margin-top:3px;font-style:italic}
+
+/* BOUTONS SCROLL */
+.scroll-btn{position:fixed;right:20px;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:1.4em;display:flex;align-items:center;justify-content:center;z-index:999;box-shadow:0 4px 15px rgba(0,0,0,.2);transition:all .3s;opacity:0;transform:scale(.8);pointer-events:none}
+.scroll-btn.show{opacity:1;transform:scale(1);pointer-events:auto}
+.scroll-btn:hover{transform:scale(1.1)}
+.scroll-btn.up{background:linear-gradient(135deg,#667eea,#764ba2);color:white;top:50%;margin-top:-52px}
+.scroll-btn.down{background:linear-gradient(135deg,#764ba2,#667eea);color:white;top:50%;margin-top:4px}
+
+/* INDICATEURS SCROLL */
+.scroll-indicator{position:fixed;left:50%;transform:translateX(-50%);z-index:1000;padding:8px 20px;border-radius:20px;font-size:.8em;font-weight:600;opacity:0;transition:opacity .4s;pointer-events:none;backdrop-filter:blur(10px)}
+.scroll-indicator.show{opacity:1}
+.scroll-indicator.top{top:10px;background:rgba(102,126,234,.9);color:white}
+.scroll-indicator.bottom{bottom:10px;background:rgba(118,75,162,.9);color:white}
+
+@media(max-width:640px){
+body{padding:12px}
+.card{padding:20px 14px}
+h1{font-size:1.6em}
+.search-area{flex-wrap:wrap}
+.flags{width:100%;justify-content:center}
+.lexique-grid{grid-template-columns:1fr}
+.scroll-btn{right:10px;width:42px;height:42px;font-size:1.2em}
+.scroll-btn.up{margin-top:-46px}
+}
+</style>
+<script src="js/config.js"></script>
+<script src="js/vocabulary-data.js"></script>
+</head>
+<body>
+
+<!-- ═══ INDICATEURS SCROLL ═══ -->
+<div class="scroll-indicator top" id="indicatorTop">⬆️ Top of page</div>
+<div class="scroll-indicator bottom" id="indicatorBottom">⬇️ Bottom of page</div>
+<button class="scroll-btn up" id="btnScrollUp" onclick="scrollToTop()">⬆️</button>
+<button class="scroll-btn down" id="btnScrollDown" onclick="scrollToBottom()">⬇️</button>
+
+<div class="card">
+<h1>📖 Vocabulary — Daily French 🥖</h1>
+<div class="tagline">Search a word • Filter by level or theme • 🇫🇷⇆🇬🇧</div>
+
+<div class="nav-links">
+<a href="quiz.html" class="btn">🏠 Home</a>
+<a href="quiz.html?section=niveaux" class="btn btn-primary">🎮 Quiz</a>
+<a href="dashboard.html" class="btn">📊 My Space</a>
+<a href="quiz.html?section=lecons" class="btn" style="background:#fff5d6;color:#744210">📚 Lessons</a>
+</div>
+
+<div class="search-area">
+<div class="flags" id="flagsContainer">
+<div class="flag active" data-sense="enfr" title="English → Français">🇬🇧</div>
+<div class="flag" data-sense="fren" title="Français → English">🇫🇷</div>
+</div>
+<input type="text" id="searchInput" class="search-input" placeholder="🔍 Enter a word...">
+<button id="searchBtn" class="search-btn">🔎 Search</button>
+</div>
+
+</div>
+
+<!-- ═══ FILTRES THÈMES ═══ -->
+<div class="filters" id="filtersContainer">
+  <button class="filter-btn active" onclick="filterTheme('all', this)">🌍 All <span class="count" id="countAll">0</span></button>
+</div>
+
+<!-- ═══ CONTENU VOCABULAIRE ═══ -->
+<div id="vocabContent"></div>
+
+
+<div class="filter-triggers">
+<button id="showLevelsBtn" class="filter-trigger active">📊 Levels</button>
+<button id="showThemesBtn" class="filter-trigger">🏷️ Themes</button>
+</div>
+
+<div id="levelsPanel" class="filters-panel" style="display:block">
+<div class="chips" id="levelChips"></div>
+</div>
+<div id="themesPanel" class="filters-panel">
+<div class="chips" id="themeChips"></div>
+</div>
+
+<div class="result-count" id="resultCount"></div>
+<div id="lexiqueGrid" class="lexique-grid"></div>
+</div>
+
+<script>
+(function(){
+let allWords=[];
+let currentSense="enfr";
+let selectedLevel=null;
+let selectedTheme=null;
+let searchActive=false;
+let currentSearchTerm="";
+let savedLevel=null;
+let savedTheme=null;
+
+// ═══ FILTRES THÈMES (nouveau système) ═══
+let activeTheme = 'all';
+
+const flags=document.querySelectorAll(".flag");
+const searchInput=document.getElementById("searchInput");
+const searchBtn=document.getElementById("searchBtn");
+const showLevelsBtn=document.getElementById("showLevelsBtn");
+const showThemesBtn=document.getElementById("showThemesBtn");
+const levelsPanel=document.getElementById("levelsPanel");
+const themesPanel=document.getElementById("themesPanel");
+const levelChipsDiv=document.getElementById("levelChips");
+const themeChipsDiv=document.getElementById("themeChips");
+const resultCountSpan=document.getElementById("resultCount");
+const gridDiv=document.getElementById("lexiqueGrid");
+
+const themeIcons={
+"greeting":"👋","introduction":"🙋","politeness":"🎩","expression":"💬",
+"quantity":"⚖️","commerce":"🏬","food":"🍎","nature":"🌿",
+"tool":"🔧","verb":"⚡","social":"👥","place":"🏠",
+"sensation":"🌡️","feeling":"❤️","object":"📦","weather":"🌤️",
+"time":"⏰","season":"🍂","state":"🔄","misc":"📌","admin":"🏛️",
+"car":"🚗","post":"📮","telecom":"📱","health":"🏥","family":"👨‍👩‍👧",
+"travel":"✈️","direction":"🧭","hobby":"🎨","body":"🫀","daily":"📅"
+};
+
+function loadData(){
+if(typeof VOCABULARY_BDD!=="undefined"&&Array.isArray(VOCABULARY_BDD)&&VOCABULARY_BDD.length){
+allWords=[...VOCABULARY_BDD];
+return true;
+}
+gridDiv.innerHTML='<div class="no-result">❌ vocabulary-data.js not loaded. Make sure the file is in the js/ folder.</div>';
+return false;
+}
+
+function normalize(str){
+return str.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+}
+
+function getFilteredWords(){
+let f=[...allWords];
+if(selectedLevel&&selectedLevel!=="all")f=f.filter(w=>w.level.toString()===selectedLevel);
+if(selectedTheme&&selectedTheme!=="all")f=f.filter(w=>w.cat===selectedTheme);
+if(searchActive&&currentSearchTerm.trim()){
+const t=normalize(currentSearchTerm);
+f=f.filter(w=>normalize(w.fr).includes(t)||normalize(w.en).includes(t)||normalize(w.phon||"").includes(t));
+}
+return f;
+}
+
+function esc(s){return s?s.replace(/[&<>]/g,m=>m==="&"?"&amp;":m==="<"?"&lt;":"&gt;"):"";}
+
+function renderWords(words){
+if(!words.length){
+gridDiv.innerHTML='<div class="no-result">✨ No words found for these criteria.</div>';
+resultCountSpan.textContent="0 words shown";
+return;
+}
+resultCountSpan.textContent=words.length+" word"+(words.length>1?"s":"")+" shown";
+const rev=currentSense==="enfr";
+gridDiv.innerHTML=words.map(function(w){
+const icon=themeIcons[w.cat]||"🏷️";
+const catLabel=w.cat?w.cat.charAt(0).toUpperCase()+w.cat.slice(1):"General";
+const hasExEn=w.ex_en&&w.ex_en.trim();
+const hasLit=w.lit&&w.lit.trim();
+const exBtn=hasExEn?'<button class="ex-toggle" onclick="toggleEx(this)" title="English example">🇬🇧</button>':"";
+const exEnSpan=hasExEn?'<span class="ex-en">'+esc(w.ex_en)+'</span>':"";
+const litDiv=hasLit?'<div class="word-lit">💡 '+esc(w.lit)+'</div>':"";
+const badges='<div class="badge-container"><span class="badge-level">Lvl.'+w.level+'</span><span class="badge-cat">'+icon+" "+catLabel+'</span></div>';
+const defText=(rev&&w.def_en)?w.def_en:(w.def||"");
+const defHtml='<div class="definition">'+esc(defText)+'</div>';
+const exHtml='<div class="word-ex">'+esc(w.ex||"")+exBtn+exEnSpan+'</div>'+litDiv;
+if(rev){
+return '<div class="word-card"><div class="main-word">'+esc(w.fr)+' <span class="phonetic">'+esc(w.phon||"")+'</span></div><div class="translation" style="font-weight:600">'+esc(w.en)+'</div>'+defHtml+exHtml+badges+'</div>';
+}
+return '<div class="word-card"><div class="main-word">'+esc(w.en)+'</div><div class="translation">'+esc(w.fr)+' <span class="phonetic">'+esc(w.phon||"")+'</span></div>'+defHtml+exHtml+badges+'</div>';
+}).join("");
+}
+
+window.toggleEx=function(btn){
+var span=btn.nextElementSibling;
+if(!span)return;
+var visible=span.style.display==="block";
+span.style.display=visible?"none":"block";
+btn.textContent=visible?"🇬🇧":"🇫🇷";
+};
+
+function updateUI(){
+document.querySelectorAll("#levelChips .chip").forEach(c=>{
+c.classList.toggle("active",c.dataset.level===(selectedLevel||"")||(c.dataset.level==="all"&&selectedLevel==="all"));
+});
+document.querySelectorAll("#themeChips .chip").forEach(c=>{
+c.classList.toggle("active",c.dataset.theme===(selectedTheme||"")||(c.dataset.theme==="all"&&selectedTheme==="all"));
+});
+flags.forEach(f=>f.classList.toggle("active",f.dataset.sense===currentSense));
+renderWords(getFilteredWords());
+}
+
+function buildLevelChips(){
+const maxLevel=SUBJECT_CONFIG.maxLevel||20;
+const allChip=document.createElement("div");
+allChip.className="chip active";allChip.dataset.level="all";allChip.textContent="📚 All";
+allChip.addEventListener("click",()=>{
+if(searchActive)return;
+selectedLevel=selectedLevel==="all"?null:"all";
+updateUI();
+});
+levelChipsDiv.appendChild(allChip);
+for(let i=1;i<=maxLevel;i++){
+const c=document.createElement("div");
+c.className="chip";c.dataset.level=i.toString();
+c.textContent="Level "+i;
+c.addEventListener("click",()=>{
+if(searchActive)return;
+selectedLevel=selectedLevel===i.toString()?null:i.toString();
+updateUI();
+});
+levelChipsDiv.appendChild(c);
+}
+}
+
+function buildThemeChips(){
+const themes=[...new Set(allWords.map(w=>w.cat).filter(Boolean))].sort();
+const allC=document.createElement("div");
+allC.className="chip";allC.dataset.theme="all";allC.textContent="🏷️ All";
+allC.addEventListener("click",()=>{if(searchActive)return;selectedTheme=selectedTheme==="all"?null:"all";updateUI();});
+themeChipsDiv.appendChild(allC);
+themes.forEach(t=>{
+const c=document.createElement("div");
+c.className="chip";c.dataset.theme=t;
+c.textContent=(themeIcons[t]||"🏷️")+" "+t.charAt(0).toUpperCase()+t.slice(1);
+c.addEventListener("click",()=>{if(searchActive)return;selectedTheme=selectedTheme===t?null:t;updateUI();});
+themeChipsDiv.appendChild(c);
+});
+}
+
+function showLevelsPanel(){
+if(levelsPanel.style.display==="block"){
+levelsPanel.style.display="none";showLevelsBtn.classList.remove("active");return;
+}
+levelsPanel.style.display="block";themesPanel.style.display="none";
+showLevelsBtn.classList.add("active");showThemesBtn.classList.remove("active");
+}
+function showThemesPanel(){
+if(themesPanel.style.display==="block"){
+themesPanel.style.display="none";showThemesBtn.classList.remove("active");return;
+}
+themesPanel.style.display="block";levelsPanel.style.display="none";
+showThemesBtn.classList.add("active");showLevelsBtn.classList.remove("active");
+}
+
+function performSearch(){
+const term=searchInput.value.trim();
+if(!term){resetSearch();return;}
+savedLevel=selectedLevel;savedTheme=selectedTheme;
+searchActive=true;currentSearchTerm=term;selectedLevel=null;selectedTheme=null;
+searchBtn.textContent="✕ Clear";
+levelsPanel.style.display="none";themesPanel.style.display="none";
+showLevelsBtn.classList.remove("active");showThemesBtn.classList.remove("active");
+updateUI();
+}
+
+function resetSearch(){
+if(!searchActive)return;
+searchActive=false;currentSearchTerm="";searchInput.value="";
+searchBtn.textContent="🔎 Search";
+selectedLevel=savedLevel;selectedTheme=savedTheme;
+if(savedTheme){showThemesPanel();}else{showLevelsPanel();}
+updateUI();
+}
+
+// ═══ NOUVEAU SYSTÈME DE FILTRES PAR THÈME ═══
+
+function getCategories(){
+  const cats = {};
+  VOCABULARY_BDD.forEach(w => { cats[w.cat] = (cats[w.cat]||0) + 1; });
+  return cats;
+}
+
+function getCatIcon(cat){
+  const icons = { greeting:"👋", politeness:"🙏", basic:"🔤", animals:"🐱", verbs:"⚡", home:"🏠", transport:"🚗", work:"💼", family:"👨‍👩‍👧‍👦", food:"🍽️", colors:"🎨", numbers:"🔢", time:"⏰", weather:"🌤️", body:"🫀", clothes:"👕", city:"🏙️", nature:"🌿" };
+  return icons[cat] || "📌";
+}
+
+function getCatLabel(cat){
+  const labels = { greeting:"Greetings", politeness:"Politeness", basic:"Basics", animals:"Animals", verbs:"Verbs", home:"Home", transport:"Transport", work:"Work", family:"Family", food:"Food", colors:"Colors", numbers:"Numbers", time:"Time", weather:"Weather", body:"Body", clothes:"Clothes", city:"City", nature:"Nature" };
+  return labels[cat] || cat.charAt(0).toUpperCase() + cat.slice(1);
+}
+
+function initFilters(){
+  const cats = getCategories();
+  const container = document.getElementById("filtersContainer");
+  if(!container) return;
+  const countAll = document.getElementById("countAll");
+  if(countAll) countAll.textContent = VOCABULARY_BDD.length;
+  Object.keys(cats).sort().forEach(cat => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn";
+    btn.onclick = function(){ filterTheme(cat, this); };
+    btn.innerHTML = getCatIcon(cat) + " " + getCatLabel(cat) + ' <span class="count">' + cats[cat] + '</span>';
+    container.appendChild(btn);
+  });
+}
+
+function filterTheme(theme, btn){
+  if(activeTheme === theme && theme !== 'all'){
+    theme = 'all';
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    const firstBtn = document.querySelector('.filter-btn');
+    if(firstBtn) firstBtn.classList.add('active');
+  } else {
+    activeTheme = theme;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  activeTheme = theme;
+  renderVocab();
+  if(window.scrollY < 200){
+    const card = document.querySelector('.card');
+    if(card) card.scrollIntoView({behavior:'smooth'});
+  }
+}
+
+function renderVocab(){
+  const container = document.getElementById("vocabContent");
+  if(!container) return;
+  if(activeTheme === 'all'){
+    const cats = getCategories();
+    let html = '';
+    Object.keys(cats).sort().forEach(cat => {
+      html += renderThemeSection(cat, VOCABULARY_BDD.filter(w => w.cat === cat));
+    });
+    container.innerHTML = html;
+  } else {
+    container.innerHTML = renderThemeSection(activeTheme, VOCABULARY_BDD.filter(w => w.cat === activeTheme), true);
+  }
+}
+
+function renderThemeSection(cat, words){
+  if(words.length === 0) return '';
+  let html = '<div class="theme-section">';
+  html += '<div class="theme-title">' + getCatIcon(cat) + ' ' + getCatLabel(cat);
+  html += '<span class="theme-count">' + words.length + '</span></div>';
+  html += '<div class="words-list">';
+  words.forEach(w => {
+    html += '<div class="word-card"><div class="word-header">';
+    html += '<div><div class="main-word">' + esc(w.fr) + ' <span class="phonetic">' + esc(w.phon||'') + '</span></div></div>';
+    html += '<div style="display:flex;gap:6px"><span class="badge-level">Lvl.' + w.level + '</span><span class="badge-cat">' + getCatLabel(w.cat) + '</span></div></div>';
+    html += '<div class="translation" style="font-weight:600">🇬🇧 ' + esc(w.en) + '</div>';
+    if(w.def) html += '<div class="definition">📖 ' + esc(w.def) + '</div>';
+    if(w.ex) html += '<div class="word-ex">💬 ' + esc(w.ex) + (w.ex_en?'<div class="ex-en">'+esc(w.ex_en)+'</div>':'') + '</div>';
+    html += '</div>';
+  });
+  html += '</div></div>';
+  return html;
+}
+
+// ═══ SCROLL INDICATORS & BUTTONS ═══
+let scrollTimeout;
+function updateScrollIndicators(){
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrollPercent = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+  
+  const btnUp = document.getElementById("btnScrollUp");
+  const btnDown = document.getElementById("btnScrollDown");
+  const topInd = document.getElementById("indicatorTop");
+  const botInd = document.getElementById("indicatorBottom");
+  
+  btnUp.classList.toggle("show", scrollTop > 300);
+  btnDown.classList.toggle("show", scrollPercent < 0.9);
+  
+  clearTimeout(scrollTimeout);
+  if(scrollTop < 100){ topInd.classList.add("show"); scrollTimeout=setTimeout(()=>topInd.classList.remove("show"),1500); }
+  else if(scrollPercent > 0.85){ botInd.classList.add("show"); scrollTimeout=setTimeout(()=>botInd.classList.remove("show"),1500); }
+}
+function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+function scrollToBottom(){ window.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'}); }
+window.addEventListener('scroll', updateScrollIndicators);
+
+// ═══ INIT ═══
+function init(){
+if(!loadData())return;
+buildLevelChips();buildThemeChips();
+showLevelsPanel();updateUI();
+showLevelsBtn.addEventListener("click",showLevelsPanel);
+showThemesBtn.addEventListener("click",showThemesPanel);
+searchBtn.addEventListener("click",()=>searchActive?resetSearch():performSearch());
+searchInput.addEventListener("keypress",e=>{if(e.key==="Enter")searchActive?resetSearch():performSearch();});
+flags.forEach(f=>f.addEventListener("click",()=>{currentSense=f.dataset.sense;updateUI();}));
+const lvlParam=new URLSearchParams(window.location.search).get("level");
+if(lvlParam){selectedLevel=lvlParam;showLevelsPanel();updateUI();}
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  init();
+  initFilters();
+  renderVocab();
+});
+
+})();
+</script>
+</body>
+</html>
 
