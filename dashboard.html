@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Space — Daily French 🥖</title>
+<style>
+:root{--primary:#667eea;--secondary:#764ba2;--success:#48bb78;--error:#f56565;--warning:#ed8936;--text:#2d3748;--shadow:0 10px 30px rgba(0,0,0,.15)}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",system-ui,sans-serif}
+body{background:linear-gradient(135deg,var(--primary),var(--secondary));min-height:100vh;padding:15px}
+.container{background:white;width:100%;max-width:900px;margin:0 auto;border-radius:20px;padding:25px;box-shadow:var(--shadow)}
+
+/* HEADER */
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:14px;border-bottom:2px solid #e2e8f0;flex-wrap:wrap;gap:10px}
+.player-info{display:flex;align-items:center;gap:10px}
+.player-avatar{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;display:flex;align-items:center;justify-content:center;font-size:1.4em;font-weight:bold}
+.player-name{font-weight:bold;font-size:1.2em;color:var(--text)}
+.player-stats-sub{font-size:.85em;color:#718096}
+.btn{padding:9px 18px;border:none;border-radius:10px;cursor:pointer;font-weight:bold;font-size:.9em;transition:all .2s;text-decoration:none;display:inline-block;text-align:center}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.btn-secondary{background:#f0f4ff;color:var(--primary)}
+
+/* NAV UNIFIÉE */
+.unified-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid #e2e8f0}
+.nav-btn{padding:7px 14px;border:none;background:#f0f4ff;color:var(--primary);border-radius:20px;cursor:pointer;font-weight:700;font-size:.82em;text-decoration:none;transition:all .2s;white-space:nowrap}
+.nav-btn:hover,.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white}
+.nav-btn.nav-game{background:#fff5d6;color:#744210}
+.nav-btn.nav-game:hover{background:linear-gradient(135deg,#f59e0b,#ef4444);color:white}
+
+/* PLAYER SWITCHER */
+.player-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px;background:#f8fafc;border-radius:12px;padding:12px 14px}
+.player-bar select{padding:8px 12px;border:2px solid #e2e8f0;border-radius:10px;cursor:pointer;font-size:.9em;flex:1;min-width:120px}
+.player-bar select:focus{outline:none;border-color:var(--primary)}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:16px 0}
+.stat-card{background:linear-gradient(145deg,#f0f4ff,#e8ecff);padding:16px;border-radius:14px;text-align:center}
+.stat-num{font-size:2em;font-weight:bold;color:var(--primary)}
+.stat-label{font-size:.78em;color:#718096;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+/* TABS */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:2px solid #e2e8f0;padding-bottom:10px;margin-bottom:16px}
+.tab-btn{padding:8px 14px;border:none;background:none;cursor:pointer;font-weight:bold;color:#718096;border-radius:8px;transition:all .2s;font-size:.85em}
+.tab-btn.active{background:var(--primary);color:white}
+.tab-btn:hover:not(.active){background:#f0f4ff;color:var(--primary)}
+
+/* PROGRESS */
+.progress-item{display:flex;align-items:center;gap:12px;padding:11px;background:#f8fafc;border-radius:10px;border:2px solid #e2e8f0;margin-bottom:8px}
+.progress-item.completed{border-color:var(--success);background:#f0fff4}
+.progress-item.current{border-color:var(--primary);background:#f0f4ff}
+.progress-num{width:34px;height:34px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:.85em;color:#718096;flex-shrink:0}
+.progress-item.completed .progress-num{background:var(--success);color:white}
+.progress-item.current .progress-num{background:var(--primary);color:white}
+.progress-info{flex:1}
+.progress-title{font-weight:bold;color:var(--text);font-size:.95em}
+.progress-sub{font-size:.78em;color:#718096;margin-top:2px}
+
+/* BADGES */
+.badges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:10px}
+.badge-card{background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:12px;text-align:center;transition:all .2s}
+.badge-card.earned{border-color:var(--success);background:#f0fff4}
+.badge-icon{font-size:1.8em;margin-bottom:4px}
+.badge-name{font-size:.75em;font-weight:bold;color:var(--text)}
+.badge-desc{font-size:.68em;color:#718096;margin-top:2px}
+
+/* HISTORY */
+.history-item{padding:11px;background:#f8fafc;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.history-passed{color:var(--success);font-weight:bold}
+.history-failed{color:var(--error);font-weight:bold}
+
+/* FICHES */
+.fiche-card{background:#fff5f5;border-left:4px solid var(--error);padding:12px 14px;border-radius:0 10px 10px 0;margin-bottom:8px}
+.fiche-q{font-weight:bold;color:var(--text);margin-bottom:4px;font-size:.9em}
+.fiche-a{color:var(--error);font-size:.85em}
+
+/* CAMELEON */
+.cameleon-box{background:linear-gradient(145deg,#f0f4ff,#e8ecff);border-radius:14px;padding:24px;text-align:center}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:30px;color:#718096}
+.empty-state-emoji{font-size:2.5em;margin-bottom:10px}
+
+/* TOAST */
+.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%) translateY(20px);background:#2d3748;color:white;padding:12px 22px;border-radius:30px;font-weight:bold;opacity:0;transition:all .3s;z-index:999;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:600px){
+.stats-grid{grid-template-columns:repeat(2,1fr)}
+.badges-grid{grid-template-columns:repeat(3,1fr)}
+.header{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="player-info">
+    <div class="player-avatar" id="dashAvatar">?</div>
+    <div>
+      <div class="player-name" id="dashName">No player</div>
+      <div class="player-stats-sub" id="dashStats">Select or create a player</div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV UNIFIÉE -->
+<nav class="unified-nav">
+  <a href="quiz.html" class="nav-btn">🏠 Home</a>
+  <a href="quiz.html?section=lecons" class="nav-btn">📚 Lessons</a>
+  <a href="quiz.html?section=levels" class="nav-btn">🎮 Levels</a>
+  <a href="vocabulary.html" class="nav-btn">📖 Vocab</a>
+  <a href="dashboard.html" class="nav-btn active">📊 My Space</a>
+  <a href="games/listen.html" class="nav-btn nav-game">🎧 Listen</a>
+  <a href="games/phrase-builder.html" class="nav-btn nav-game">🧩 Phrases</a>
+</nav>
+
+<!-- PLAYER SWITCHER -->
+<div class="player-bar">
+  <select id="playerSelect" onchange="loadPlayer(this.value)">
+    <option value="">-- Select player --</option>
+  </select>
+  <button class="btn btn-primary" onclick="showCreateModal()">+ New player</button>
+  <button class="btn" onclick="doExport()" style="background:#f0fff4;color:#276749">⬇️ Export</button>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid">
+  <div class="stat-card"><div class="stat-num" id="dashLevel">1</div><div class="stat-label">Level</div></div>
+  <div class="stat-card"><div class="stat-num" id="dashScore">0</div><div class="stat-label">Points</div></div>
+  <div class="stat-card"><div class="stat-num" id="dashCompleted">0</div><div class="stat-label">Done</div></div>
+  <div class="stat-card"><div class="stat-num" id="dashAccuracy">0%</div><div class="stat-label">Accuracy</div></div>
+  <div class="stat-card"><div class="stat-num" id="dashStreak">0</div><div class="stat-label">Streak 🔥</div></div>
+  <div class="stat-card"><div class="stat-num" id="dashSessions">0</div><div class="stat-label">Sessions</div></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('progress')" id="tab-progress">📈 Progress</button>
+  <button class="tab-btn" onclick="showTab('badges')" id="tab-badges">🏅 Badges</button>
+  <button class="tab-btn" onclick="showTab('history')" id="tab-history">📜 History</button>
+  <button class="tab-btn" onclick="showTab('fiches')" id="tab-fiches">📝 Errors</button>
+  <button class="tab-btn" onclick="showTab('cameleon')" id="tab-cameleon">🦎 Cameleon</button>
+</div>
+
+<div id="tab-content-progress" class="tab-content">
+  <div id="progressList"></div>
+</div>
+<div id="tab-content-badges" class="tab-content" style="display:none">
+  <div class="badges-grid" id="badgesGrid"></div>
+</div>
+<div id="tab-content-history" class="tab-content" style="display:none">
+  <div id="historyList"></div>
+</div>
+<div id="tab-content-fiches" class="tab-content" style="display:none">
+  <div id="fichesList"></div>
+</div>
+<div id="tab-content-cameleon" class="tab-content" style="display:none">
+  <div class="cameleon-box">
+    <div style="font-size:4em;margin-bottom:10px" id="cameleonEmoji">🦎</div>
+    <div style="font-weight:bold;color:var(--text);margin-bottom:6px;font-size:1.1em" id="cameleonTitle">Beginner Cameleon</div>
+    <div style="font-size:.9em;color:#718096" id="cameleonDesc">Keep practising!</div>
+  </div>
+</div>
+
+<!-- CTA BUTTONS -->
+<div style="display:flex;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid #e2e8f0;flex-wrap:wrap">
+  <a href="quiz.html?section=levels" class="btn btn-primary" style="flex:1;text-align:center">🎮 Go play</a>
+  <a href="quiz.html?section=lecons" class="btn btn-secondary" style="flex:1;text-align:center">📚 See lessons</a>
+</div>
+
+</div><!-- /.container -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL NEW PLAYER -->
+<div id="createModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:15px">
+  <div style="background:white;padding:25px;border-radius:20px;max-width:320px;width:100%;text-align:center">
+    <div style="font-size:2.5em;margin-bottom:10px">👤</div>
+    <h3 style="margin-bottom:15px;color:#2d3748">New player</h3>
+    <input type="text" id="createName" placeholder="Your first name" autocapitalize="words"
+      style="width:100%;padding:14px;border:2px solid #e2e8f0;border-radius:12px;font-size:1.1em;margin-bottom:18px;outline:none"
+      onkeyup="if(event.key==='Enter')createPlayer()">
+    <div style="display:flex;gap:10px">
+      <button onclick="createPlayer()" style="flex:1;padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-weight:bold;cursor:pointer">✓ Create</button>
+      <button onclick="closeCreateModal()" style="flex:1;padding:12px;background:#f8fafc;color:#718096;border:none;border-radius:10px;font-weight:bold;cursor:pointer">✕ Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const KEY = "dailyFrench_players";
+const LEVEL_NAMES = {
+  1:"Greetings 🙋",2:"At the market 🛒",3:"In the garden 🌿",4:"Neighbours 🏘️",
+  5:"Tastes & desires ❤️",6:"At the shops 🏬",7:"Friends & going out 👫",
+  8:"Weather 🌤️",9:"Essential verbs ⚡",10:"Politeness 🎩",11:"Daily life 🇫🇷",
+  12:"My Routine 🌅",13:"My Emotions ❤️",14:"My Needs 🍽️",15:"My House 🏡",
+  16:"My Family 👨‍👩‍👧",17:"My Plans 📅",18:"My Health 💊",19:"My Cooking 🍳",20:"Living French 🗣️"
+};
+const BADGES_DEF = [
+  {id:1,icon:"🙋",name:"First Step",desc:"Complete level 1",check:p=>p.completed&&p.completed.includes(1)},
+  {id:2,icon:"🛒",name:"Shopper",desc:"Complete level 2",check:p=>p.completed&&p.completed.includes(2)},
+  {id:3,icon:"🌿",name:"Gardener",desc:"Complete level 3",check:p=>p.completed&&p.completed.includes(3)},
+  {id:4,icon:"🏘️",name:"Neighbour",desc:"Complete level 4",check:p=>p.completed&&p.completed.includes(4)},
+  {id:5,icon:"❤️",name:"Foodie",desc:"Complete level 5",check:p=>p.completed&&p.completed.includes(5)},
+  {id:6,icon:"🏬",name:"Customer",desc:"Complete level 6",check:p=>p.completed&&p.completed.includes(6)},
+  {id:7,icon:"👫",name:"Social",desc:"Complete level 7",check:p=>p.completed&&p.completed.includes(7)},
+  {id:8,icon:"🌤️",name:"Météo",desc:"Complete level 8",check:p=>p.completed&&p.completed.includes(8)},
+  {id:9,icon:"⚡",name:"Verb Master",desc:"Complete level 9",check:p=>p.completed&&p.completed.includes(9)},
+  {id:10,icon:"🎩",name:"Polite",desc:"Complete level 10",check:p=>p.completed&&p.completed.includes(10)},
+  {id:11,icon:"🇫🇷",name:"Local",desc:"Complete level 11",check:p=>p.completed&&p.completed.includes(11)},
+  {id:12,icon:"🌅",name:"Early Bird",desc:"Complete level 12",check:p=>p.completed&&p.completed.includes(12)},
+  {id:13,icon:"❤️",name:"Emotional",desc:"Complete level 13",check:p=>p.completed&&p.completed.includes(13)},
+  {id:14,icon:"🍽️",name:"Well-fed",desc:"Complete level 14",check:p=>p.completed&&p.completed.includes(14)},
+  {id:15,icon:"🏡",name:"Homebody",desc:"Complete level 15",check:p=>p.completed&&p.completed.includes(15)},
+  {id:16,icon:"👨‍👩‍👧",name:"Family Ties",desc:"Complete level 16",check:p=>p.completed&&p.completed.includes(16)},
+  {id:17,icon:"📅",name:"Planner",desc:"Complete level 17",check:p=>p.completed&&p.completed.includes(17)},
+  {id:18,icon:"💊",name:"Healthy",desc:"Complete level 18",check:p=>p.completed&&p.completed.includes(18)},
+  {id:19,icon:"🍳",name:"Chef",desc:"Complete level 19",check:p=>p.completed&&p.completed.includes(19)},
+  {id:20,icon:"🗣️",name:"True French",desc:"Complete level 20",check:p=>p.completed&&p.completed.includes(20)},
+  {id:21,icon:"🔥",name:"On Fire",desc:"Streak of 5+",check:p=>p.streak>=5},
+  {id:22,icon:"🔥🔥",name:"Unstoppable",desc:"Streak of 10+",check:p=>p.streak>=10},
+  {id:23,icon:"🎯",name:"Perfectionist",desc:"100% on a level",check:p=>p.sessionHistory&&p.sessionHistory.some(s=>s.pct===100)},
+  {id:24,icon:"📚",name:"Bookworm",desc:"5 levels done",check:p=>p.completed&&p.completed.length>=5},
+  {id:25,icon:"⭐",name:"Rising Star",desc:"10 levels done",check:p=>p.completed&&p.completed.length>=10},
+  {id:26,icon:"🌟",name:"Star",desc:"15 levels done",check:p=>p.completed&&p.completed.length>=15},
+  {id:27,icon:"👑",name:"Legend",desc:"18 levels done",check:p=>p.completed&&p.completed.length>=18},
+  {id:28,icon:"🏆",name:"Champion",desc:"All 20 levels!",check:p=>p.completed&&p.completed.length>=20},
+  {id:29,icon:"💎",name:"Diamond",desc:"500+ points",check:p=>p.score>=500},
+  {id:30,icon:"🌈",name:"Polyglot",desc:"1000+ points",check:p=>p.score>=1000}
+];
+const CAMELEON = [
+  {min:0, emoji:"🦎",title:"Beginner Cameleon",desc:"Keep practising to change colour!"},
+  {min:3, emoji:"🐸",title:"Green Cameleon",desc:"You're getting stronger!"},
+  {min:6, emoji:"🦜",title:"Colourful Cameleon",desc:"Halfway there!"},
+  {min:10,emoji:"🦚",title:"Proud Cameleon",desc:"Almost a master!"},
+  {min:15,emoji:"🐉",title:"Dragon Cameleon",desc:"You are legendary!"}
+];
+
+function getPlayers(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return {}; } }
+function savePlayers(p){ localStorage.setItem(KEY,JSON.stringify(p)); }
+function showToast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),3000); }
+
+function showTab(id){
+  document.querySelectorAll(".tab-content").forEach(c=>c.style.display="none");
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("tab-content-"+id).style.display="block";
+  document.getElementById("tab-"+id).classList.add("active");
+}
+
+function showCreateModal(){ document.getElementById("createModal").style.display="flex"; document.getElementById("createName").value=""; setTimeout(()=>document.getElementById("createName").focus(),100); }
+function closeCreateModal(){ document.getElementById("createModal").style.display="none"; }
+
+function createPlayer(){
+  const n=document.getElementById("createName").value.trim();
+  if(!n){ return; }
+  const players=getPlayers();
+  if(players[n]){ showToast("Player already exists!"); return; }
+  players[n]={name:n,currentLevel:1,score:0,completed:[],totalQuestions:0,totalCorrect:0,streak:0,lastPlayed:null,errorHistory:[],sessionHistory:[],activeSession:null};
+  savePlayers(players);
+  closeCreateModal();
+  renderDashboard(n);
+  showToast("Welcome "+n+"! 🎉");
+}
+
+function loadPlayer(name){ if(name) renderDashboard(name); }
+
+function doExport(){
+  const players=getPlayers();
+  if(!Object.keys(players).length){ showToast("No data to export."); return; }
+  const blob=new Blob([JSON.stringify(players,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url;
+  a.download="DailyFrench-save-"+new Date().toISOString().slice(0,10)+".json";
+  a.click(); URL.revokeObjectURL(url);
+  showToast("Exported!");
+}
+
+function renderDashboard(playerName){
+  const players=getPlayers();
+  // Populate selector
+  const sel=document.getElementById("playerSelect");
+  sel.innerHTML="<option value=''>-- Select player --</option>";
+  Object.keys(players).forEach(n=>{
+    const o=document.createElement("option");
+    o.value=n; o.textContent=n+" (Lvl."+players[n].currentLevel+")";
+    if(n===playerName) o.selected=true;
+    sel.appendChild(o);
+  });
+
+  if(!playerName||!players[playerName]){
+    document.getElementById("dashName").textContent="No player selected";
+    document.getElementById("dashStats").textContent="Select or create a player above";
+    return;
+  }
+  const p=players[playerName];
+
+  // Header
+  document.getElementById("dashAvatar").textContent=p.name.charAt(0).toUpperCase();
+  document.getElementById("dashName").textContent=p.name;
+  document.getElementById("dashStats").textContent="Level "+(p.currentLevel||1)+" • "+(p.score||0)+" pts";
+
+  // Stats
+  document.getElementById("dashLevel").textContent=p.currentLevel||1;
+  document.getElementById("dashScore").textContent=p.score||0;
+  document.getElementById("dashCompleted").textContent=(p.completed||[]).length;
+  const rate=p.totalQuestions>0?Math.round((p.totalCorrect/p.totalQuestions)*100):0;
+  document.getElementById("dashAccuracy").textContent=rate+"%";
+  document.getElementById("dashStreak").textContent=p.streak||0;
+  document.getElementById("dashSessions").textContent=(p.sessionHistory||[]).length;
+
+  renderProgress(p);
+  renderBadges(p);
+  renderHistory(p);
+  renderFiches(p);
+  renderCameleon(p);
+}
+
+function renderProgress(p){
+  const list=document.getElementById("progressList");
+  let h="";
+  for(let i=1;i<=20;i++){
+    const isDone=(p.completed||[]).includes(i);
+    const isCur=i===(p.currentLevel||1);
+    let cls="progress-item"; if(isDone) cls+=" completed"; else if(isCur) cls+=" current";
+    h+=`<div class="${cls}">
+      <div class="progress-num">${isDone?"✓":i}</div>
+      <div class="progress-info">
+        <div class="progress-title">Lvl ${i}: ${LEVEL_NAMES[i]||"Level "+i}</div>
+        <div class="progress-sub">${isDone?"✅ Completed":isCur?"🎯 Current":"🔒 Locked"}</div>
+      </div>
+      ${isDone?`<a href="quiz.html?level=${i}" style="font-size:.8em;color:var(--primary);text-decoration:none;font-weight:bold">↩ Replay</a>`:""}
+    </div>`;
+  }
+  list.innerHTML=h;
+}
+
+function renderBadges(p){
+  const grid=document.getElementById("badgesGrid");
+  let earned=0, h="";
+  BADGES_DEF.forEach(b=>{
+    const ok=b.check(p);
+    if(ok) earned++;
+    h+=`<div class="badge-card ${ok?'earned':''}">
+      <div class="badge-icon">${ok?b.icon:"🔒"}</div>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-desc">${b.desc}</div>
+    </div>`;
+  });
+  grid.innerHTML=h;
+  document.getElementById("tab-badges").textContent="🏅 Badges ("+earned+"/"+BADGES_DEF.length+")";
+}
+
+function renderHistory(p){
+  const list=document.getElementById("historyList");
+  const hist=(p.sessionHistory||[]).slice().reverse();
+  if(!hist.length){ list.innerHTML='<div class="empty-state"><div class="empty-state-emoji">📜</div>No sessions yet.</div>'; return; }
+  list.innerHTML=hist.map(s=>{
+    const d=new Date(s.date);
+    return `<div class="history-item">
+      <div><div style="font-weight:bold;font-size:.9em">Level ${s.level}: ${LEVEL_NAMES[s.level]||""}</div>
+      <div style="font-size:.78em;color:#718096">${d.toLocaleDateString()} at ${d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})} • ${s.mode||"mixed"}</div></div>
+      <div class="${s.passed?"history-passed":"history-failed"}">${s.correct}/${s.total} (${s.pct}%)</div>
+    </div>`;
+  }).join("");
+}
+
+function renderFiches(p){
+  const list=document.getElementById("fichesList");
+  const errs=(p.errorHistory||[]).slice().reverse();
+  if(!errs.length){ list.innerHTML='<div class="empty-state"><div class="empty-state-emoji">🎉</div>No errors! Perfect!</div>'; return; }
+  list.innerHTML=errs.map(e=>`<div class="fiche-card">
+    <div class="fiche-q">❓ ${e.question}</div>
+    <div class="fiche-a">✅ ${e.correctAnswer}</div>
+    ${e.explanation?`<div style="font-size:.8em;color:#718096;margin-top:4px">💡 ${e.explanation}</div>`:""}
+    <div style="font-size:.72em;color:#a0aec0;margin-top:4px">Level ${e.level} • ${new Date(e.date).toLocaleDateString()}</div>
+  </div>`).join("");
+}
+
+function renderCameleon(p){
+  const done=(p.completed||[]).length;
+  const stage=CAMELEON.slice().reverse().find(s=>done>=s.min)||CAMELEON[0];
+  document.getElementById("cameleonEmoji").textContent=stage.emoji;
+  document.getElementById("cameleonTitle").textContent=stage.title;
+  document.getElementById("cameleonDesc").textContent=stage.desc+" ("+done+"/20 levels)";
+}
+
+// INIT
+document.addEventListener("DOMContentLoaded",function(){
+  const params=new URLSearchParams(window.location.search);
+  const playerName=params.get("player");
+  const players=getPlayers();
+  const names=Object.keys(players);
+  const target=playerName||(names.length>0?names[0]:null);
+  if(target) renderDashboard(target);
+  else{
+    // Juste remplir le select
+    const sel=document.getElementById("playerSelect");
+    sel.innerHTML="<option value=''>-- Select player --</option>";
+    names.forEach(n=>{
+      const o=document.createElement("option"); o.value=n; o.textContent=n; sel.appendChild(o);
+    });
+  }
+});
+</script>
+</body>
+</html>
