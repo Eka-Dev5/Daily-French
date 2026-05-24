@@ -1,1 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Daily French 🥖 — Listen & Repeat 🎧</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    
+    :root {
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --accent: #06b6d4;
+      --success: #10b981;
+      --success-glow: rgba(16,185,129,0.4);
+      --danger: #ef4444;
+      --danger-glow: rgba(239,68,68,0.4);
+      --warning: #f59e0b;
+      --bg: #fafafa;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1);
+      --radius-sm: 8px;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 9999px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 50%, #fff0f5 100%);
+      min-height: 100vh;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── ANIMATED BACKGROUND ── */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.5;
+      animation: float 20s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bg-orb-1 {
+      width: 400px; height: 400px;
+      background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+      top: -100px; left: -100px;
+      animation-delay: 0s;
+    }
+    .bg-orb-2 {
+      width: 300px; height: 300px;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      bottom: -50px; right: -50px;
+      animation-delay: -10s;
+    }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .header h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 4px;
+    }
+    .header p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* ── STREAK & STATS BAR ── */
+    .stats-bar {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .stat-pill {
+      background: var(--card-bg);
+      border-radius: var(--radius-full);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+    }
+    .stat-pill .icon { font-size: 1.1em; }
+    .stat-pill.streak { color: var(--warning); }
+    .stat-pill.accuracy { color: var(--success); }
+    .stat-pill.badges { color: var(--secondary); }
+
+    /* ── BADGE NOTIFICATION ── */
+    .badge-popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 16px 24px;
+      box-shadow: var(--shadow-xl);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 2px solid var(--warning);
+    }
+    .badge-popup.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .badge-popup .badge-icon {
+      font-size: 2rem;
+    }
+    .badge-popup .badge-text {
+      font-weight: 700;
+      color: var(--text);
+    }
+    .badge-popup .badge-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* ── MAIN CARD ── */
+    .main-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-xl);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-xl);
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── CATEGORY TAG ── */
+    .category-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── VOICE CIRCLE ── */
+    .voice-circle-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .voice-circle {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      box-shadow: 0 0 40px rgba(99,102,241,0.3);
+    }
+    .voice-circle:hover {
+      transform: scale(1.05);
+    }
+    .voice-circle.pulsing {
+      animation: voicePulse 0.6s ease-in-out infinite;
+    }
+    .voice-circle .circle-inner {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      box-shadow: var(--shadow-lg);
+    }
+    .voice-circle .status-ring {
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: var(--accent);
+      border-right-color: var(--accent);
+      animation: spin 2s linear infinite;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .voice-circle.listening .status-ring {
+      opacity: 1;
+    }
+    @keyframes voicePulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(99,102,241,0.3); }
+      50% { transform: scale(1.08); box-shadow: 0 0 60px rgba(99,102,241,0.5); }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── PHRASE WORDS (KARAOKE) ── */
+    .phrase-container {
+      text-align: center;
+      margin-bottom: 20px;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .phrase-words {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .word-pill {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      color: var(--text-muted);
+      position: relative;
+    }
+    .word-pill:hover {
+      border-color: var(--primary-light);
+      transform: translateY(-2px);
+    }
+    .word-pill.correct {
+      background: var(--success);
+      color: white;
+      border-color: var(--success);
+      box-shadow: 0 0 20px var(--success-glow);
+      transform: scale(1.1);
+    }
+    .word-pill.incorrect {
+      background: var(--danger);
+      color: white;
+      border-color: var(--danger);
+      box-shadow: 0 0 20px var(--danger-glow);
+      animation: shake 0.5s ease;
+    }
+    .word-pill.pending {
+      background: var(--bg);
+      color: var(--text-light);
+      border-color: var(--border);
+    }
+    .word-pill.current {
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(99,102,241,0.3);
+      animation: pulse-border 1.5s ease-in-out infinite;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 0 15px rgba(99,102,241,0.3); }
+      50% { box-shadow: 0 0 25px rgba(99,102,241,0.6); }
+    }
+
+    /* ── PHONETIC ── */
+    .phonetic-text {
+      font-style: italic;
+      color: var(--text-light);
+      font-size: 0.875rem;
+      margin-top: 4px;
+    }
+
+    /* ── TRANSLATION ── */
+    .translation-text {
+      color: var(--text-muted);
+      font-size: 0.8125rem;
+      margin-top: 8px;
+      padding: 8px 16px;
+      background: var(--bg);
+      border-radius: var(--radius);
+    }
+
+    /* ── WAVE VISUALIZER ── */
+    .wave-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      height: 50px;
+      margin: 16px 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .wave-container.active {
+      opacity: 1;
+    }
+    .wave-bar {
+      width: 4px;
+      background: linear-gradient(to top, var(--primary), var(--accent));
+      border-radius: 2px;
+      transition: height 0.1s ease;
+      min-height: 4px;
+    }
+
+    /* ── ACTION BUTTONS ── */
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: var(--radius-full);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-action::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.2);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .btn-action:hover::before {
+      opacity: 1;
+    }
+    .btn-action:hover {
+      transform: translateY(-3px) scale(1.02);
+    }
+    .btn-action:active {
+      transform: translateY(-1px) scale(0.98);
+    }
+    .btn-listen {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: 0 4px 15px rgba(99,102,241,0.4);
+    }
+    .btn-record {
+      background: linear-gradient(135deg, var(--danger), #dc2626);
+      color: white;
+      box-shadow: 0 4px 15px rgba(239,68,68,0.4);
+    }
+    .btn-record.recording {
+      animation: recordPulse 1s ease-in-out infinite;
+    }
+    .btn-next {
+      background: linear-gradient(135deg, var(--success), #059669);
+      color: white;
+      box-shadow: 0 4px 15px rgba(16,185,129,0.4);
+    }
+    @keyframes recordPulse {
+      0%, 100% { box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
+      50% { box-shadow: 0 4px 30px rgba(239,68,68,0.7); }
+    }
+
+    /* ── RESULT PANEL ── */
+    .result-panel {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      text-align: center;
+      display: none;
+      animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .result-panel.show {
+      display: block;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .result-panel.success {
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      border: 2px solid var(--success);
+    }
+    .result-panel.partial {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border: 2px solid var(--warning);
+    }
+    .result-panel.fail {
+      background: linear-gradient(135deg, #fee2e2, #fecaca);
+      border: 2px solid var(--danger);
+    }
+    .result-score {
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+    .result-score.success { color: var(--success); }
+    .result-score.partial { color: var(--warning); }
+    .result-score.fail { color: var(--danger); }
+    .result-label {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .result-tip {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .result-tip strong {
+      color: var(--text);
+    }
+
+    /* ── PROGRESS RING ── */
+    .progress-ring-container {
+      display: flex;
+      justify-content: center;
+      margin: 12px 0;
+    }
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+    .progress-ring-bg {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 8;
+    }
+    .progress-ring-fill {
+      fill: none;
+      stroke: var(--success);
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* ── LEVEL SELECTOR ── */
+    .level-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px;
+      margin-bottom: 16px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .level-bar::-webkit-scrollbar {
+      display: none;
+    }
+    .level-dot {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-muted);
+    }
+    .level-dot:hover {
+      border-color: var(--primary-light);
+      transform: scale(1.1);
+    }
+    .level-dot.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(99,102,241,0.4);
+    }
+    .level-dot.pronunciation {
+      width: auto;
+      padding: 0 14px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      color: #92400e;
+      border-color: var(--warning);
+    }
+    .level-dot.pronunciation.active {
+      background: linear-gradient(135deg, var(--warning), #d97706);
+      color: white;
+      border-color: var(--warning);
+    }
+
+    /* ── NAV ── */
+    .nav-bar {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-muted);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary-light);
+      transform: translateY(-1px);
+    }
+    .nav-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+    }
+
+    /* ── CONFETTI ── */
+    .confetti-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+      overflow: hidden;
+    }
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confettiFall 3s ease-out forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ── TOOLTIP ── */
+    .word-tooltip {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: white;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .word-pill:hover .word-tooltip {
+      opacity: 1;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-light);
+      font-size: 0.75rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 480px) {
+      .container { padding: 16px 12px; }
+      .header h1 { font-size: 1.5rem; }
+      .voice-circle { width: 150px; height: 150px; }
+      .voice-circle .circle-inner { width: 110px; height: 110px; font-size: 2.5rem; }
+      .word-pill { font-size: 0.9375rem; padding: 6px 12px; }
+      .btn-action { padding: 12px 20px; font-size: 0.875rem; }
+      .result-score { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- BACKGROUND ORBS -->
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+
+<!-- CONFETTI CONTAINER -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<!-- BADGE POPUP -->
+<div class="badge-popup" id="badgePopup">
+  <div class="badge-icon" id="badgeIcon">🏆</div>
+  <div>
+    <div class="badge-text" id="badgeText">New Badge!</div>
+    <div class="badge-sub" id="badgeSub">Keep going!</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>🎧 Listen & Repeat</h1>
+    <p>Shadowing practice — Perfect your French accent</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-pill streak">
+      <span class="icon">🔥</span>
+      <span id="streakCount">0</span> streak
+    </div>
+    <div class="stat-pill accuracy">
+      <span class="icon">🎯</span>
+      <span id="accuracyValue">0%</span> accuracy
+    </div>
+    <div class="stat-pill badges">
+      <span class="icon">🏆</span>
+      <span id="badgeCount">0</span>/6 badges
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav-bar">
+    <a href="index.html" class="nav-btn">🏠 Home</a>
+    <a href="quiz.html" class="nav-btn">🎮 Quiz</a>
+    <a href="listen.html" class="nav-btn active">🎧 Listen</a>
+    <a href="dashboard.html" class="nav-btn">📊 Space</a>
+    <a href="vocabulary.html" class="nav-btn">📖 Words</a>
+  </div>
+
+  <!-- LEVEL SELECTOR -->
+  <div class="level-bar" id="levelBar">
+    <div class="level-dot active" data-level="all">All</div>
+    <div class="level-dot" data-level="1">1</div>
+    <div class="level-dot" data-level="2">2</div>
+    <div class="level-dot" data-level="3">3</div>
+    <div class="level-dot" data-level="4">4</div>
+    <div class="level-dot" data-level="5">5</div>
+    <div class="level-dot" data-level="6">6</div>
+    <div class="level-dot" data-level="7">7</div>
+    <div class="level-dot" data-level="8">8</div>
+    <div class="level-dot" data-level="9">9</div>
+    <div class="level-dot" data-level="10">10</div>
+    <div class="level-dot" data-level="11">11</div>
+    <div class="level-dot" data-level="12">12</div>
+    <div class="level-dot" data-level="13">13</div>
+    <div class="level-dot" data-level="14">14</div>
+    <div class="level-dot" data-level="15">15</div>
+    <div class="level-dot" data-level="16">16</div>
+    <div class="level-dot" data-level="17">17</div>
+    <div class="level-dot" data-level="18">18</div>
+    <div class="level-dot" data-level="19">19</div>
+    <div class="level-dot" data-level="20">20</div>
+    <div class="level-dot pronunciation" data-level="pronunciation">🎯 Pronunciation</div>
+  </div>
+
+  <!-- MAIN CARD -->
+  <div class="main-card">
+
+    <!-- CATEGORY -->
+    <div class="category-tag" id="categoryTag">
+      🎯 Pronunciation — R French
+    </div>
+
+    <!-- VOICE CIRCLE -->
+    <div class="voice-circle-container">
+      <div class="voice-circle" id="voiceCircle" onclick="app.toggleListen()">
+        <div class="status-ring"></div>
+        <div class="circle-inner" id="circleInner">🔊</div>
+      </div>
+    </div>
+
+    <!-- PHRASE WORDS -->
+    <div class="phrase-container">
+      <div class="phrase-words" id="phraseWords">
+        <!-- Words injected here -->
+      </div>
+      <div class="phonetic-text" id="phoneticText"></div>
+      <div class="translation-text" id="translationText"></div>
+    </div>
+
+    <!-- WAVE VISUALIZER -->
+    <div class="wave-container" id="waveContainer">
+      <div class="wave-bar" style="height: 20%"></div>
+      <div class="wave-bar" style="height: 40%"></div>
+      <div class="wave-bar" style="height: 60%"></div>
+      <div class="wave-bar" style="height: 80%"></div>
+      <div class="wave-bar" style="height: 100%"></div>
+      <div class="wave-bar" style="height: 80%"></div>
+      <div class="wave-bar" style="height: 60%"></div>
+      <div class="wave-bar" style="height: 40%"></div>
+      <div class="wave-bar" style="height: 20%"></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+      <button class="btn-action btn-listen" id="btnListen" onclick="app.listen()">
+        🔊 Listen
+      </button>
+      <button class="btn-action btn-record" id="btnRecord" onclick="app.record()">
+        🎤 Record
+      </button>
+      <button class="btn-action btn-next" id="btnNext" onclick="app.nextPhrase()">
+        🔄 Next
+      </button>
+    </div>
+
+    <!-- RESULT -->
+    <div class="result-panel" id="resultPanel">
+      <div class="result-score" id="resultScore">85%</div>
+      <div class="result-label" id="resultLabel">🎉 Excellent!</div>
+      <div class="progress-ring-container">
+        <svg class="progress-ring" width="80" height="80">
+          <circle class="progress-ring-bg" cx="40" cy="40" r="36"></circle>
+          <circle class="progress-ring-fill" cx="40" cy="40" r="36"
+            stroke-dasharray="226.2" stroke-dashoffset="226.2" id="progressRing"></circle>
+        </svg>
+      </div>
+      <div class="result-tip" id="resultTip"></div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    Daily French 🥖 — Listen & Repeat<br>
+    Web Speech API • Chrome/Edge/Safari recommended
+  </div>
+
+</div>
+
+<!-- SCRIPTS -->
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// LISTEN & REPEAT APP — VERSION 2 ULTRA-MODERNE
+// ═══════════════════════════════════════════════════════════════════
+
+const ListenApp = {
+  // ── STATE ──
+  currentPhrase: null,
+  currentLevel: 'all',
+  phrases: [],
+  stats: {
+    total: 0,
+    good: 0,
+    partial: 0,
+    streak: 0,
+    bestStreak: 0
+  },
+  badges: [],
+  isListening: false,
+  isSpeaking: false,
+  wordStatus: [], // 'pending' | 'correct' | 'incorrect' | 'current'
+
+  // ── PRONUNCIATION PHRASES ──
+  pronunciationPhrases: [
+    { fr: "La rue est rouge.", phon: "*lah ROO ay ROOZH*", en: "The street is red.", cat: "🎯 R French", tip: "The French R is guttural — from the back of your throat, like a soft gargle. NOT like English R." },
+    { fr: "Je ris rarement.", phon: "*zhuh REE rar-ruh-MAN*", en: "I rarely laugh.", cat: "🎯 R French", tip: "Practice rolling the R. Start with 'grr' like a cat, then soften it." },
+    { fr: "Le riz est cuit.", phon: "*luh REE ay KWEE*", en: "The rice is cooked.", cat: "🎯 R French", tip: "Keep your tongue DOWN. The R comes from the uvula, not the tongue tip." },
+    { fr: "Les amis arrivent.", phon: "*lay za-MEE za-REEV*", en: "The friends are arriving.", cat: "🎯 Liaisons", tip: "Liaison: 'Les' + 'amis' = 'lay-za-MEE'. The S becomes a Z sound. Link the words!" },
+    { fr: "Deux heures exactement.", phon: "*duh-ZUR eg-zak-tuh-MAN*", en: "Two hours exactly.", cat: "🎯 Liaisons", tip: "Liaison: 'Deux' + 'heures' = 'duh-ZUR'. The X becomes a Z sound." },
+    { fr: "Petit enfant.", phon: "*puh-TEE ton-FAN*", en: "Small child.", cat: "🎯 Liaisons", tip: "Liaison: 'Petit' + 'enfant' = 'puh-TEE-ton-FAN'. The T becomes a T sound." },
+    { fr: "Nous avons un ami.", phon: "*noo za-VON uh na-MEE*", en: "We have a friend.", cat: "🎯 Liaisons", tip: "Double liaison! 'Nous avons' + 'un ami'. Practice slowly first." },
+    { fr: "Vous êtes ici.", phon: "*voo ZET ee-SEE*", en: "You are here.", cat: "🎯 Liaisons", tip: "Liaison: 'Vous' + 'êtes' = 'voo-ZET'. The S becomes a Z sound." },
+    { fr: "Le pain est bon.", phon: "*luh PAN ay BON*", en: "The bread is good.", cat: "🎯 Nasal Vowels", tip: "'Pain' = nasal A (like 'pan' through nose). 'Bon' = nasal O. Don't pronounce the N!" },
+    { fr: "La main dans le jardin.", phon: "*lah MAN don luh zhar-DAN*", en: "The hand in the garden.", cat: "🎯 Nasal Vowels", tip: "'Main' = nasal A. Let air flow through your nose. Don't touch your tongue to the roof!" },
+    { fr: "Un bon vin blanc.", phon: "*uh BON VAN BLAHN*", en: "A good white wine.", cat: "🎯 Nasal Vowels", tip: "Three nasals: bon (O), vin (A), blanc (A). Practice each separately, then chain them." },
+    { fr: "Tu es sur la lune.", phon: "*tew ay sewr lah LOON*", en: "You are on the moon.", cat: "🎯 French U", tip: "French U: round lips tightly (like saying 'oo') but say 'ee'. Lips round, tongue high!" },
+    { fr: "La rue est nue.", phon: "*lah ROO ay NOO*", en: "The street is naked/empty.", cat: "🎯 French U", tip: "'Rue' and 'nue' both have French U. NOT English 'oo' — lips must be ROUND and TIGHT." },
+    { fr: "Il est arrivé.", phon: "*eel ay ta-ree-VAY*", en: "He has arrived.", cat: "🎯 Enchaînements", tip: "Enchaînement: 'Il est' = 'eel-tay'. Link the L to the E. No pause between words!" },
+    { fr: "Vous avez un chien.", phon: "*voo za-VAY uh SHEE-AN*", en: "You have a dog.", cat: "🎯 Enchaînements", tip: "Enchaînement + liaison together. 'Vous avez' = 'voo-za-VAY'. Link AND liaise!" },
+    { fr: "Elle a une idée.", phon: "*el ah oon ee-DAY*", en: "She has an idea.", cat: "🎯 Enchaînements", tip: "Enchaînement: 'une idée' = 'oo-nee-DAY'. The E flows into the I." },
+    { fr: "Je vais au marché.", phon: "*zhuh vay oh mar-SHAY*", en: "I am going to the market.", cat: "🎯 Enchaînements", tip: "Enchaînement: 'vais au' = 'vay-ZOH'. The S links to the O with a Z sound." },
+    { fr: "C'est un garçon.", phon: "*say tuh gar-SON*", en: "It's a boy.", cat: "🎯 Liaisons", tip: "Liaison: 'C'est' + 'un' = 'say-tuh'. The T becomes a T sound before the vowel." },
+    { fr: "Très intéressant.", phon: "*tray zan-tay-ruh-SAN*", en: "Very interesting.", cat: "🎯 Liaisons", tip: "Liaison: 'Très' + 'intéressant' = 'tray-zan...'. The S becomes a Z sound." },
+    { fr: "Comment allez-vous ?", phon: "*ko-MON tal-lay-VOO ?*", en: "How are you?", cat: "🎯 Liaisons", tip: "Liaison: 'Comment' + 'allez' = 'ko-MON-tal-lay'. The T links to the A." }
+  ],
+
+  // ── BADGE DEFINITIONS ──
+  badgeDefs: [
+    { id: 'first_steps', name: '🐣 Premiers Pas', condition: (s) => s.total >= 10, desc: '10 phrases practiced' },
+    { id: 'accent_progress', name: '📈 Accent en Progrès', condition: (s) => s.total >= 50 && (s.good/s.total) >= 0.6, desc: '50 phrases, 60% accuracy' },
+    { id: 'apte_service', name: '🎖️ Apte au Service', condition: (s) => s.total >= 100 && (s.good/s.total) >= 0.75, desc: '100 phrases, 75% accuracy' },
+    { id: 'francais_adoption', name: '🥇 Français d\'Adoption', condition: (s) => s.total >= 200 && (s.good/s.total) >= 0.85, desc: '200 phrases, 85% accuracy' },
+    { id: 'maitre_liaisons', name: '🔗 Maître des Liaisons', condition: (s) => s.total >= 50, desc: 'Mastered 50 liaisons' },
+    { id: 'roi_r', name: '👑 Roi du R', condition: (s) => s.total >= 30, desc: 'Mastered 30 French R sounds' }
+  ],
+
+  // ═════════════════════════════════════════════════════════════════
+  // INIT
+  // ═════════════════════════════════════════════════════════════════
+  init() {
+    this.loadPhrases();
+    this.setupLevelSelector();
+    this.loadStats();
+    this.nextPhrase();
+    this.updateUI();
+
+    // Check speech support
+    if (!window.speechSynthesis) {
+      this.showToast('❌ Speech synthesis not supported. Try Chrome, Edge, or Safari.', 'error');
+    }
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      this.showToast('⚠️ Speech recognition not available. Listen mode works, but recording won\'t.', 'warning');
+    }
+  },
+
+  // ═════════════════════════════════════════════════════════════════
+  // LOAD PHRASES
+  // ═════════════════════════════════════════════════════════════════
+  loadPhrases() {
+    this.phrases = [];
+
+    // Extract from QUESTIONS_DB
+    if (typeof QUESTIONS_DB !== 'undefined') {
+      Object.keys(QUESTIONS_DB).forEach(level => {
+        const levelData = QUESTIONS_DB[level];
+        const title = levelData.title || `Level ${level}`;
+
+        if (levelData.qcm) {
+          levelData.qcm.forEach(q => {
+            if (q.q && q.q.length < 150) {
+              this.phrases.push({
+                fr: this.cleanText(q.q),
+                en: q.explanation || '',
+                phon: '',
+                level: parseInt(level),
+                cat: title,
+                source: 'qcm'
+              });
+            }
+          });
+        }
+        if (levelData.libre) {
+          levelData.libre.forEach(q => {
+            if (q.q && q.q.length < 150) {
+              this.phrases.push({
+                fr: this.cleanText(q.q),
+                en: q.explanation || q.answer || '',
+                phon: '',
+                level: parseInt(level),
+                cat: title,
+                source: 'libre'
+              });
+            }
+          });
+        }
+      });
+    }
+
+    // Add pronunciation phrases
+    this.pronunciationPhrases.forEach(p => {
+      this.phrases.push({
+        fr: p.fr,
+        en: p.en,
+        phon: p.phon,
+        level: 'pronunciation',
+        cat: p.cat,
+        tip: p.tip,
+        source: 'pronunciation'
+      });
+    });
+
+    console.log(`[ListenApp] Loaded ${this.phrases.length} phrases`);
+  },
+
+  cleanText(text) {
+    return text
+      .replace(/<<[^>]*>/g, '')
+      .replace(/&quot;/g, '"')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .trim();
+  },
+
+  // ═════════════════════════════════════════════════════════════════
+  // LEVEL SELECTOR
+  // ═════════════════════════════════════════════════════════════════
+  setupLevelSelector() {
+    const dots = document.querySelectorAll('.level-dot');
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        dots.forEach(d => d.classList.remove('active'));
+        dot.classList.add('active');
+        this.currentLevel = dot.dataset.level;
+        this.nextPhrase();
+      });
+    });
+  },
+
+  getFilteredPhrases() {
+    if (this.currentLevel === 'all') return this.phrases;
+    return this.phrases.filter(p => p.level.toString() === this.currentLevel);
+  },
+
+  // ═════════════════════════════════════════════════════════════════
+  // NEXT PHRASE
+  // ═════════════════════════════════════════════════════════════════
+  nextPhrase() {
+    const filtered = this.getFilteredPhrases();
+    if (filtered.length === 0) {
+      this.renderWords(['No phrases available']);
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * filtered.length);
+    this.currentPhrase = filtered[randomIndex];
+
+    // Update category
+    const catText = typeof this.currentPhrase.level === 'number'
+      ? `Level ${this.currentPhrase.level} — ${this.currentPhrase.cat}`
+      : this.currentPhrase.cat;
+    document.getElementById('categoryTag').textContent = catText;
+
+    // Render words as pills
+    const words = this.currentPhrase.fr.split(/\s+/).filter(w => w.length > 0);
+    this.wordStatus = words.map(() => 'pending');
+    this.renderWords(words);
+
+    // Update phonetic and translation
+    document.getElementById('phoneticText').textContent = this.currentPhrase.phon || '';
+    document.getElementById('translationText').textContent = this.currentPhrase.en || '';
+
+    // Hide result
+    document.getElementById('resultPanel').classList.remove('show');
+
+    // Reset buttons
+    document.getElementById('btnRecord').disabled = false;
+    document.getElementById('btnListen').disabled = false;
+    document.getElementById('voiceCircle').classList.remove('listening');
+    document.getElementById('circleInner').textContent = '🔊';
+
+    // Stop any animation
+    this.stopWaveAnimation();
+  },
+
+  renderWords(words) {
+    const container = document.getElementById('phraseWords');
+    container.innerHTML = '';
+
+    words.forEach((word, i) => {
+      const pill = document.createElement('span');
+      pill.className = 'word-pill pending';
+      pill.textContent = word;
+      pill.dataset.index = i;
+
+      // Tooltip with vocabulary link
+      const tooltip = document.createElement('div');
+      tooltip.className = 'word-tooltip';
+      tooltip.innerHTML = `📖 <a href="vocabulary.html?search=${encodeURIComponent(word.replace(/[.,;:!?]/g, ''))}" style="color:#818cf8;text-decoration:underline;">See in lexique</a>`;
+      pill.appendChild(tooltip);
+
+      // Click to listen to single word
+      pill.addEventListener('click', () => {
+        this.speakWord(word);
+        // Highlight temporarily
+        pill.style.borderColor = 'var(--primary)';
+        setTimeout(() => {
+          if (this.wordStatus[i] === 'pending') pill.style.borderColor = '';
+        }, 500);
+      });
+
+      container.appendChild(pill);
+    });
+  },
+
+  // ═════════════════════════════════════════════════════════════════
+  // LISTEN (TTS)
+  // ═════════════════════════════════════════════════════════════════
+  listen() {
+    if (!this.currentPhrase) return;
+    this.speakText(this.currentPhrase.fr);
+  },
+
+  toggleListen() {
+    if (this.isSpeaking) {
+      window.speechSynthesis.cancel();
+      this.isSpeaking = false;
+      document.getElementById('voiceCircle').classList.remove('pulsing');
+      document.getElementById('circleInner').textContent = '🔊';
+    } else {
+      this.listen();
+    }
+  },
+
+  speakText(text) {
+    const btn = document.getElementById('btnListen');
+    const circle = document.getElementById('voiceCircle');
+    const inner = document.getElementById('circleInner');
+
+    btn.disabled = true;
+    circle.classList.add('pulsing');
+    inner.textContent = '🔊';
+    this.isSpeaking = true;
+
+    // Animate words during speech (karaoke effect)
+    const words = text.split(/\s+/);
+    let currentWordIndex = 0;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'fr-FR';
+    utterance.rate = 0.85;
+    utterance.pitch = 1;
+
+    // Estimate timing for word highlighting
+    const wordDuration = (text.length / 5) * 150; // rough estimate per word
+
+    utterance.onstart = () => {
+      this.highlightCurrentWord(0);
+    };
+
+    utterance.onend = () => {
+      this.isSpeaking = false;
+      btn.disabled = false;
+      circle.classList.remove('pulsing');
+      inner.textContent = '🔊';
+      this.clearWordHighlights();
+    };
+
+    utterance.onerror = () => {
+      this.isSpeaking = false;
+      btn.disabled = false;
+      circle.classList.remove('pulsing');
+      inner.textContent = '🔊';
+      this.clearWordHighlights();
+    };
+
+    // Highlight words progressively
+    const highlightInterval = setInterval(() => {
+      if (!this.isSpeaking) {
+        clearInterval(highlightInterval);
+        return;
+      }
+      currentWordIndex++;
+      if (currentWordIndex < words.length) {
+        this.highlightCurrentWord(currentWordIndex);
+      }
+    }, wordDuration);
+
+    window.speechSynthesis.speak(utterance);
+  },
+
+  speakWord(word) {
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.lang = 'fr-FR';
+    utterance.rate = 0.8;
+    window.speechSynthesis.speak(utterance);
+  },
+
+  highlightCurrentWord(index) {
+    const pills = document.querySelectorAll('.word-pill');
+    pills.forEach((p, i) => {
+      p.classList.remove('current');
+      if (i === index && this.wordStatus[i] === 'pending') {
+        p.classList.add('current');
+      }
+    });
+  },
+
+  clearWordHighlights() {
+    document.querySelectorAll('.word-pill').forEach(p => {
+      p.classList.remove('current');
+    });
+  },
+
+  // ═════════════════════════════════════════════════════════════════
+  // RECORD (STT)
+  // ═════════════════════════════════════════════════════════════════
+  async record() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      this.showResult('Speech recognition not supported', 0, 'Try Chrome, Edge, or Safari');
+      return;
+    }
+
+    if (!this.currentPhrase) return;
+
+    const btn = document.getElementById('btnRecord');
+    const circle = document.getElementById('voiceCircle');
+    const inner = document.getElementById('circleInner');
+
+    btn.classList.add('recording');
+    btn.disabled = true;
+    circle.classList.add('listening');
+    inner.textContent = '🎤';
+    this.isListening = true;
+
+    // Start wave animation
+    this.startWaveAnimation();
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'fr-FR';
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 3;
+
+      let finalTranscript = '';
+      let interimTranscript = '';
+
+      const transcript = await new Promise((resolve, reject) => {
+        recognition.onresult = (event) => {
+          let interim = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript;
+            } else {
+              interim += event.results[i][0].transcript;
+            }
+          }
+          interimTranscript = interim;
+
+          // Real-time word matching during speech
+          this.matchWordsInRealTime(interimTranscript || finalTranscript);
+        };
+
+        recognition.onerror = (event) => {
+          reject(event.error);
+        };
+
+        recognition.onend = () => {
+          resolve(finalTranscript || interimTranscript);
+        };
+
+        recognition.start();
+      });
+
+      this.evaluatePronunciation(transcript);
+
+    } catch (error) {
+      let msg = 'Could not hear you. Please try again.';
+      if (error === 'no-speech') msg = 'No speech detected. Speak louder or closer to the mic.';
+      if (error === 'not-allowed') msg = 'Microphone access denied. Check browser settings.';
+      if (error === 'network') msg = 'Network error. Check your connection.';
+
+      this.showResult(msg, 0, 'Tip: Use a quiet environment');
+    } finally {
+      btn.classList.remove('recording');
+      btn.disabled = false;
+      circle.classList.remove('listening');
+      inner.textContent = '🔊';
+      this.isListening = false;
+      this.stopWaveAnimation();
+    }
+  },
+
+  // ═════════════════════════════════════════════════════════════════
+  // REAL-TIME WORD MATCHING
+  // ═════════════════════════════════════════════════════════════════
+  matchWordsInRealTime(transcript) {
+    const spokenWords = this.normalize(transcript).split(/\s+/);
+    const targetWords = this.currentPhrase.fr.split(/\s+/).map(w => this.normalize(w));
+
+    const pills = document.querySelectorAll('.word-pill');
+
+    targetWords.forEach((targetWord, i) => {
+      if (this.wordStatus[i] !== 'pending') return;
+
+      // Check if any spoken word matches this target
+      const match = spokenWords.some(spoken => {
+        const similarity = this.calculateSimilarity(targetWord, spoken);
+        return similarity > 0.7; // Threshold for real-time match
+      });
+
+      if (match) {
+        this.wordStatus[i] = 'correct';
+        pills[i].classList.remove('pending', 'current');
+        pills[i].classList.add('correct');
+      }
+    });
+  },
+
+  // ═════════════════════════════════════════════════════════════════
+  // EVALUATE PRONUNCIATION
+  // ═════════════════════════════════════════════════════════════════
+  evaluatePronunciation(spoken) {
+    const target = this.normalize(this.currentPhrase.fr);
+    const spokenNorm = this.normalize(spoken);
+
+    // Word-by-word analysis
+    const targetWords = this.currentPhrase.fr.split(/\s+/).map(w => this.normalize(w));
+    const spokenWords = spokenNorm.split(/\s+/);
+
+    let correctWords = 0;
+    const pills = document.querySelectorAll('.word-pill');
+
+    targetWords.forEach((targetWord, i) => {
+      // Find best matching spoken word
+      let bestMatch = 0;
+      let bestIndex = -1;
+
+      spokenWords.forEach((spokenWord, j) => {
+        const sim = this.calculateSimilarity(targetWord, spokenWord);
+        if (sim > bestMatch) {
+          bestMatch = sim;
+          bestIndex = j;
+        }
+      });
+
+      if (bestMatch > 0.6) {
+        correctWords++;
+        this.wordStatus[i] = 'correct';
+        pills[i].classList.remove('pending', 'incorrect', 'current');
+        pills[i].classList.add('correct');
+      } else {
+        this.wordStatus[i] = 'incorrect';
+        pills[i].classList.remove('pending', 'correct', 'current');
+        pills[i].classList.add('incorrect');
+        // Reset to pending after animation for retry
+        setTimeout(() => {
+          if (this.wordStatus[i] === 'incorrect') {
+            this.wordStatus[i] = 'pending';
+            pills[i].classList.remove('incorrect');
+            pills[i].classList.add('pending');
+          }
+        }, 2000);
+      }
+    });
+
+    // Calculate overall similarity
+    const similarity = this.calculateSimilarity(target, spokenNorm);
+    const percentage = Math.round(similarity * 100);
+
+    this.stats.total++;
+
+    // Update streak
+    if (percentage >= 70) {
+      this.stats.streak++;
+      if (this.stats.streak > this.stats.bestStreak) {
+        this.stats.bestStreak = this.stats.streak;
+      }
+    } else {
+      this.stats.streak = 0;
+    }
+
+    // Categorize result
+    if (percentage >= 85) {
+      this.stats.good++;
+    } else if (percentage >= 60) {
+      this.stats.partial++;
+    }
+
+    // Show result
+    let resultClass, resultLabel, tip;
+    if (percentage >= 85) {
+      resultClass = 'success';
+      resultLabel = '🎉 Excellent!';
+      tip = this.currentPhrase.tip || 'Amazing pronunciation! You sound like a native!';
+      this.launchConfetti();
+    } else if (percentage >= 60) {
+      resultClass = 'partial';
+      resultLabel = '👍 Good Try!';
+      tip = this.currentPhrase.tip || 'Keep practicing! Focus on the sounds you missed.';
+    } else {
+      resultClass = 'fail';
+      resultLabel = '💪 Keep Going!';
+      tip = this.currentPhrase.tip || 'Listen again and try to imitate the rhythm. French is musical!';
+    }
+
+    // Update result panel
+    const panel = document.getElementById('resultPanel');
+    panel.className = 'result-panel show ' + resultClass;
+    
+    const scoreEl = document.getElementById('resultScore');
+    scoreEl.textContent = percentage + '%';
+    scoreEl.className = 'result-score ' + resultClass;
+    
+    document.getElementById('resultLabel').textContent = resultLabel;
+    document.getElementById('resultTip').innerHTML = '<strong>💡 Tip:</strong> ' + tip;
+
+    // Animate progress ring
+    const circumference = 2 * Math.PI * 36; // r=36
+    const offset = circumference - (percentage / 100) * circumference;
+    document.getElementById('progressRing').style.strokeDashoffset = offset;
+
+    // Update stats display
+    this.updateUI();
+
+    // Check badges
+    this.checkBadges();
+
+    // Disable record button until next phrase
+    document.getElementById('btnRecord').disabled = true;
+  },
+
+  // ═════════════════════════════════════════════════════════════════
+  // NORMALIZATION & SIMILARITY
+  // ═════════════════════════════════════════════════════════════════
+  normalize(text) {
+    if (!text) return '';
+    return text
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents
+      .replace(/[.,;:!?«»""''\-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  },
+
+  calculateSimilarity(a, b) {
+    if (!a || !b) return 0;
+    if (a === b) return 1.0;
+    
+    // Levenshtein distance for fuzzy matching
+    const lenA = a.length;
+    const lenB = b.length;
+    const matrix = [];
+
+    for (let i = 0; i <= lenB; i++) matrix[i] = [i];
+    for (let j = 0; j <= lenA; j++) matrix[0][j] = j;
+
+    for (let i = 1; i <= lenB; i++) {
+      for (let j = 1; j <= lenA; j++) {
+        const cost = a[j - 1] === b[i - 1] ? 0 : 1;
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j - 1] + cost
+        );
+      }
+    }
+
+    const distance = matrix[lenB][lenA];
+    const maxLen = Math.max(lenA, lenB);
+    return maxLen === 0 ? 1.0 : 1 - (distance / maxLen);
+  },
+
+  // ═════════════════════════════════════════════════════════════════
+  // WAVE ANIMATION
+  // ═════════════════════════════════════════════════════════════════
+  startWaveAnimation() {
+    const container = document.getElementById('waveContainer');
+    container.classList.add('active');
+    const bars = container.querySelectorAll('.wave-bar');
+    
+    this.waveInterval = setInterval(() => {
+      bars.forEach((bar, i) => {
+        const height = 20 + Math.random() * 80;
+        bar.style.height = height + '%';
+      });
+    }, 100);
+  },
+
+  stopWaveAnimation() {
+    const container = document.getElementById('waveContainer');
+    container.classList.remove('active');
+    if (this.waveInterval) {
+      clearInterval(this.waveInterval);
+      this.waveInterval = null;
+    }
+    const bars = container.querySelectorAll('.wave-bar');
+    bars.forEach(bar => bar.style.height = '20%');
+  },
+
+  // ═════════════════════════════════════════════════════════════════
+  // CONFETTI
+  // ═════════════════════════════════════════════════════════════════
+  launchConfetti() {
+    const container = document.getElementById('confettiContainer');
+    const colors = ['#6366f1', '#ec4899', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
+    
+    for (let i = 0; i < 50; i++) {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + '%';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDelay = Math.random() * 2 + 's';
+      confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+      confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+      container.appendChild(confetti);
+      
+      setTimeout(() => confetti.remove(), 4000);
+    }
+  },
+
+  // ═════════════════════════════════════════════════════════════════
+  // BADGES
+  // ═════════════════════════════════════════════════════════════════
+  checkBadges() {
+    const newBadges = this.badgeDefs.filter(badge => {
+      if (this.badges.includes(badge.id)) return false;
+      return badge.condition(this.stats);
+    });
+
+    newBadges.forEach(badge => {
+      this.badges.push(badge.id);
+      this.showBadgeNotification(badge);
+    });
+
+    if (newBadges.length > 0) {
+      this.saveStats();
+    }
+  },
+
+  showBadgeNotification(badge) {
+    const popup = document.getElementById('badgePopup');
+    document.getElementById('badgeIcon').textContent = badge.name.split(' ')[0];
+    document.getElementById('badgeText').textContent = 'New Badge: ' + badge.name.replace(/^.\s/, '');
+    document.getElementById('badgeSub').textContent = badge.desc;
+    
+    popup.classList.add('show');
+    setTimeout(() => popup.classList.remove('show'), 4000);
+  },
+
+  // ═════════════════════════════════════════════════════════════════
+  // STATS & STORAGE
+  // ═════════════════════════════════════════════════════════════════
+  loadStats() {
+    try {
+      const saved = localStorage.getItem('dailyFrench_listenStats');
+      if (saved) {
+        const data = JSON.parse(saved);
+        this.stats = { ...this.stats, ...data.stats };
+        this.badges = data.badges || [];
+      }
+    } catch (e) {
+      console.log('[ListenApp] No saved stats');
+    }
+  },
+
+  saveStats() {
+    try {
+      localStorage.setItem('dailyFrench_listenStats', JSON.stringify({
+        stats: this.stats,
+        badges: this.badges
+      }));
+    } catch (e) {
+      console.warn('[ListenApp] Could not save stats');
+    }
+  },
+
+  updateUI() {
+    document.getElementById('streakCount').textContent = this.stats.streak;
+    
+    const accuracy = this.stats.total > 0 
+      ? Math.round((this.stats.good / this.stats.total) * 100) 
+      : 0;
+    document.getElementById('accuracyValue').textContent = accuracy + '%';
+    
+    document.getElementById('badgeCount').textContent = this.badges.length;
+  },
+
+  // ═════════════════════════════════════════════════════════════════
+  // TOAST NOTIFICATIONS
+  // ═════════════════════════════════════════════════════════════════
+  showToast(message, type = 'info') {
+    // Simple console fallback - can be enhanced with UI toast
+    console.log(`[ListenApp] ${type}: ${message}`);
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  ListenApp.init();
+});
+</script>
+
+</body>
+</html>
 
