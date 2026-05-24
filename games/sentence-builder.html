@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Daily French — Phrase Builder 🧩</title>
+<style>
+:root{--primary:#667eea;--secondary:#764ba2;--success:#48bb78;--error:#f56565;--warning:#ed8936;--gold:#ffd700;--bg:#f7fafc;--text:#2d3748;--muted:#718096}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",system-ui,sans-serif}
+body{background:linear-gradient(135deg,var(--primary),var(--secondary));min-height:100vh;padding:15px}
+
+.container{max-width:900px;margin:0 auto;background:white;border-radius:20px;padding:25px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+
+/* HEADER */
+h1{text-align:center;font-size:2em;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.tagline{text-align:center;color:var(--muted);margin-bottom:20px;font-size:.9em}
+
+/* NAV */
+.nav{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.nav-btn{display:inline-block;padding:8px 18px;border-radius:40px;text-decoration:none;font-weight:700;font-size:.85em;transition:all .2s;border:none;cursor:pointer}
+.nav-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(102,126,234,.3)}
+.nav-home{background:#f0f4ff;color:var(--primary)}
+.nav-quiz{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white}
+.nav-dash{background:#fff5d6;color:#744210}
+.nav-vocab{background:#f5e8ff;color:#553c9a}
+
+/* LEVEL SELECTOR */
+.level-select{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;padding:15px;background:#f8fafc;border-radius:14px}
+.lvl-btn{padding:10px 16px;border:2px solid #e2e8f0;background:white;border-radius:12px;cursor:pointer;font-weight:700;font-size:.85em;transition:all .2s}
+.lvl-btn:hover{border-color:var(--primary);color:var(--primary)}
+.lvl-btn.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;border-color:transparent;box-shadow:0 4px 12px rgba(102,126,234,.3)}
+.lvl-btn.locked{opacity:.4;cursor:not-allowed}
+
+/* MISSION */
+.mission-box{background:linear-gradient(145deg,#f0f4ff,#e8ecff);border-radius:14px;padding:18px;margin-bottom:20px;text-align:center}
+.mission-emoji{font-size:2.5em;margin-bottom:8px}
+.mission-text{font-size:1.15em;font-weight:700;color:var(--text);margin-bottom:6px}
+.mission-hint{color:var(--muted);font-size:.9em;font-style:italic}
+
+/* BLOCKS POOL */
+.pool-label{font-weight:700;color:var(--text);margin-bottom:10px;font-size:.95em;display:flex;align-items:center;gap:6px}
+.pool-label::before{content:"🧱";font-size:1.2em}
+.blocks-pool{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:25px;min-height:60px;padding:15px;background:#f8fafc;border-radius:14px;border:2px dashed #e2e8f0}
+
+/* DRAGGABLE BLOCKS */
+.block{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;background:white;border:2px solid var(--primary);border-radius:10px;font-weight:700;color:var(--text);cursor:grab;transition:all .2s;user-select:none;touch-action:none}
+.block:active{cursor:grabbing;transform:scale(1.05);box-shadow:0 4px 12px rgba(102,126,234,.25)}
+.block.dragging{opacity:.6;transform:rotate(3deg)}
+.block.sujet{border-color:var(--primary);background:linear-gradient(145deg,#f0f4ff,#e8ecff)}
+.block.verbe{border-color:var(--success);background:linear-gradient(145deg,#f0fff4,#e6fffa)}
+.block.comp{border-color:var(--warning);background:linear-gradient(145deg,#fffaf0,#fefcbf)}
+.block.neg{border-color:var(--error);background:linear-gradient(145deg,#fff5f5,#fed7d7)}
+.block.aux{border-color:var(--secondary);background:linear-gradient(145deg,#faf5ff,#e9d8fd)}
+.block.pp{border-color:#9f7aea;background:linear-gradient(145deg,#f3e8ff,#e9d8fd)}
+.block.conj{border-color:#38b2ac;background:linear-gradient(145deg,#e6fffa,#b2f5ea)}
+
+/* DROP ZONE */
+.drop-zone{display:flex;flex-wrap:wrap;gap:10px;min-height:70px;padding:20px;background:white;border:3px dashed #cbd5e0;border-radius:14px;align-items:center;justify-content:center;margin-bottom:20px;transition:all .3s}
+.drop-zone.drag-over{background:#f0f4ff;border-color:var(--primary);transform:scale(1.01)}
+.drop-zone .placeholder{color:#a0aec0;font-style:italic;font-size:.95em}
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:80px;min-height:50px;padding:10px 16px;background:#f8fafc;border:2px dashed #cbd5e0;border-radius:10px;transition:all .2s}
+.slot.filled{border-style:solid;border-color:var(--primary);background:white}
+.slot.correct{border-color:var(--success);background:#f0fff4;animation:pulse .5s}
+.slot.wrong{border-color:var(--error);background:#fff5f5;animation:shake .5s}
+
+/* CONTROLS */
+.controls{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:15px}
+.ctrl-btn{padding:12px 24px;border:none;border-radius:12px;font-weight:700;font-size:.95em;cursor:pointer;transition:all .2s}
+.ctrl-check{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white}
+.ctrl-check:hover{opacity:.9;transform:translateY(-1px)}
+.ctrl-clear{background:#f8fafc;color:var(--muted)}
+.ctrl-clear:hover{background:#e2e8f0}
+.ctrl-hint{background:#fff5d6;color:#744210}
+.ctrl-hint:hover{background:#fefcbf}
+.ctrl-speak{background:#f0fff4;color:#276749}
+.ctrl-speak:hover{background:#c6f6d5}
+
+/* FEEDBACK */
+.feedback{display:none;border-radius:12px;padding:16px 20px;margin-bottom:15px;text-align:center;animation:fadeIn .3s}
+.feedback.show{display:block}
+.feedback.success{background:#c6f6d5;border-left:4px solid var(--success);color:#276749}
+.feedback.error{background:#fed7d7;border-left:4px solid var(--error);color:#c53030}
+.feedback.hint{background:#fffaf0;border-left:4px solid var(--warning);color:#744210}
+
+/* PROGRESS */
+.progress-wrap{margin-bottom:20px}
+.progress-bar{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));transition:width .4s;border-radius:4px}
+
+/* STREAK */
+.streak{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:15px;font-weight:700;color:var(--warning)}
+.streak-count{font-size:1.3em}
+
+/* SCORE BOARD */
+.score-board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.score-item{background:#f8fafc;border-radius:12px;padding:12px;text-align:center}
+.score-num{font-size:1.6em;font-weight:800;color:var(--primary)}
+.score-label{font-size:.75em;color:var(--muted);text-transform:uppercase}
+
+/* MNEMONIC POPUP */
+.mnemo-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);background:white;padding:30px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);z-index:1000;display:none;opacity:0;transition:all .3s;max-width:400px;width:90%;text-align:center}
+.mnemo-popup.show{display:block;opacity:1;transform:translate(-50%,-50%) scale(1)}
+.mnemo-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:999;display:none}
+.mnemo-overlay.show{display:block}
+.mnemo-emoji{font-size:4em;margin-bottom:15px}
+.mnemo-title{font-size:1.3em;font-weight:800;color:var(--primary);margin-bottom:10px}
+.mnemo-text{color:var(--text);line-height:1.6;margin-bottom:20px}
+.mnemo-close{background:var(--primary);color:white;border:none;padding:12px 30px;border-radius:30px;font-weight:700;cursor:pointer}
+
+/* COLLECTION */
+.collection{display:none;margin-top:20px;padding:20px;background:#f8fafc;border-radius:14px}
+.collection.show{display:block}
+.collection-title{font-weight:700;color:var(--text);margin-bottom:12px;font-size:1.1em}
+.collection-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.collection-item{background:white;border-left:3px solid var(--success);padding:12px;border-radius:8px;font-size:.9em}
+.collection-item .fr{font-weight:700;color:var(--text)}
+.collection-item .en{color:var(--muted);font-size:.85em}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+@media(max-width:600px){
+.container{padding:15px}
+.block{padding:8px 12px;font-size:.85em}
+.drop-zone{padding:15px}
+.ctrl-btn{padding:10px 18px;font-size:.85em}
+}
+</style>
+<script src="js/config.js"></script>
+<script src="js/phrase-data.js"></script>
+<script src="js/vocabulary-data.js"></script>
+</head>
+<body>
+<div class="container">
+<h1>🧩 Phrase Builder</h1>
+<div class="tagline">Drag blocks • Build sentences • Learn grammar by doing</div>
+
+<div class="nav">
+<a href="quiz.html" class="nav-btn nav-home">🏠 Home</a>
+<a href="quiz.html?section=niveaux" class="nav-btn nav-quiz">🎮 Quiz</a>
+<a href="dashboard.html" class="nav-btn nav-dash">📊 My Space</a>
+<a href="vocabulary.html" class="nav-btn nav-vocab">📖 Vocabulary</a>
+</div>
+
+<div class="score-board">
+<div class="score-item"><div class="score-num" id="scoreTotal">0</div><div class="score-label">Points</div></div>
+<div class="score-item"><div class="score-num" id="scoreStreak">0</div><div class="score-label">Streak 🔥</div></div>
+<div class="score-item"><div class="score-num" id="scoreCompleted">0</div><div class="score-label">Phrases</div></div>
+</div>
+
+<div class="streak" id="streakDisplay"></div>
+
+<div class="level-select" id="levelSelect"></div>
+
+<div class="progress-wrap">
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+</div>
+
+<div class="mission-box" id="missionBox">
+<div class="mission-emoji" id="missionEmoji">🎯</div>
+<div class="mission-text" id="missionText">Loading...</div>
+<div class="mission-hint" id="missionHint"></div>
+</div>
+
+<div class="pool-label">Word Blocks</div>
+<div class="blocks-pool" id="blocksPool"></div>
+
+<div class="drop-zone" id="dropZone">
+<span class="placeholder">👇 Drag blocks here to build your phrase</span>
+</div>
+
+<div class="controls">
+<button class="ctrl-btn ctrl-check" onclick="checkPhrase()">✓ Check</button>
+<button class="ctrl-btn ctrl-clear" onclick="clearPhrase()">✕ Clear</button>
+<button class="ctrl-btn ctrl-hint" onclick="showHint()">💡 Hint</button>
+<button class="ctrl-btn ctrl-speak" onclick="speakPhrase()">🔊 Listen</button>
+</div>
+
+<div class="feedback" id="feedback"></div>
+
+<div class="collection" id="collection">
+<div class="collection-title">📚 My Phrases</div>
+<div class="collection-grid" id="collectionGrid"></div>
+</div>
+</div>
+
+<!-- MNEMONIC POPUP -->
+<div class="mnemo-overlay" id="mnemoOverlay" onclick="closeMnemo()"></div>
+<div class="mnemo-popup" id="mnemoPopup">
+<div class="mnemo-emoji" id="mnemoEmoji">🧠</div>
+<div class="mnemo-title" id="mnemoTitle">Memory Trick</div>
+<div class="mnemo-text" id="mnemoText"></div>
+<button class="mnemo-close" onclick="closeMnemo()">Got it! ✓</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════════════════════════
+let gameState = {
+  currentLevel: 1,
+  currentMission: 0,
+  score: 0,
+  streak: 0,
+  completedPhrases: [],
+  draggedBlock: null,
+  currentPhrase: [],
+  playerName: null
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// PLAYER DATA
+// ═══════════════════════════════════════════════════════════════════
+function getPlayers(){try{return JSON.parse(localStorage.getItem("dailyFrench_players"))||{};}catch(e){return {};}}
+function getPlayerData(){
+  const players = getPlayers();
+  const urlPlayer = new URLSearchParams(window.location.search).get('player');
+  const name = urlPlayer || (Object.keys(players)[0]);
+  if(!name) return null;
+  gameState.playerName = name;
+  return players[name] || null;
+}
+
+function savePhraseProgress(phrase, isCorrect){
+  if(!gameState.playerName) return;
+  const players = getPlayers();
+  const p = players[gameState.playerName];
+  if(!p) return;
+  if(!p.phraseProgress) p.phraseProgress = {completed: [], score: 0, streak: 0};
+  if(isCorrect && !p.phraseProgress.completed.includes(phrase)){
+    p.phraseProgress.completed.push(phrase);
+    p.phraseProgress.score = (p.phraseProgress.score || 0) + 10;
+    p.phraseProgress.streak = (p.phraseProgress.streak || 0) + 1;
+  } else if(!isCorrect) {
+    p.phraseProgress.streak = 0;
+  }
+  savePlayers(players);
+  updateScoreBoard();
+}
+
+function updateScoreBoard(){
+  const p = getPlayerData();
+  const prog = p && p.phraseProgress ? p.phraseProgress : {completed: [], score: 0, streak: 0};
+  document.getElementById("scoreTotal").textContent = prog.score || 0;
+  document.getElementById("scoreStreak").textContent = prog.streak || 0;
+  document.getElementById("scoreCompleted").textContent = prog.completed.length || 0;
+  const streakDiv = document.getElementById("streakDisplay");
+  if(prog.streak >= 3){
+    streakDiv.innerHTML = "🔥 Streak x" + prog.streak + "! Keep going!";
+  } else {
+    streakDiv.innerHTML = "";
+  }
+}
+
+function savePlayers(p){localStorage.setItem("dailyFrench_players",JSON.stringify(p));}
+
+// ═══════════════════════════════════════════════════════════════════
+// LEVEL SELECTION
+// ═══════════════════════════════════════════════════════════════════
+function renderLevels(){
+  const container = document.getElementById("levelSelect");
+  const maxLevel = (typeof SUBJECT_CONFIG !== 'undefined' && SUBJECT_CONFIG.maxLevel) ? SUBJECT_CONFIG.maxLevel : 10;
+  const p = getPlayerData();
+  const completed = p && p.phraseProgress && p.phraseProgress.completed ? p.phraseProgress.completed : [];
+  const currentLvl = p && p.phraseProgress ? Math.min(maxLevel, Math.floor(completed.length / 3) + 1) : 1;
+  
+  let h = "";
+  for(let i = 1; i <= maxLevel; i++){
+    const isLocked = i > currentLvl;
+    const isActive = i === gameState.currentLevel;
+    const cls = "lvl-btn" + (isActive ? " active" : "") + (isLocked ? " locked" : "");
+    const onclick = isLocked ? "" : `onclick="loadLevel(${i})"`;
+    h += `<button class="${cls}" ${onclick}>${isLocked ? "🔒" : i}</button>`;
+  }
+  container.innerHTML = h;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LOAD LEVEL & MISSION
+// ═══════════════════════════════════════════════════════════════════
+function loadLevel(lvl){
+  gameState.currentLevel = lvl;
+  gameState.currentMission = 0;
+  gameState.currentPhrase = [];
+  renderLevels();
+  loadMission();
+  clearPhrase();
+}
+
+function loadMission(){
+  const data = (typeof PHRASE_BLOCKS !== 'undefined') ? PHRASE_BLOCKS[gameState.currentLevel] : null;
+  if(!data || !data.missions || !data.missions[gameState.currentMission]){
+    // Fallback si pas de données
+    document.getElementById("missionText").textContent = "Level " + gameState.currentLevel;
+    document.getElementById("missionHint").textContent = "Build any correct phrase";
+    renderBlocksFallback();
+    return;
+  }
+  
+  const mission = data.missions[gameState.currentMission];
+  document.getElementById("missionEmoji").textContent = mission.emoji || "🎯";
+  document.getElementById("missionText").textContent = mission.target || "Build a phrase";
+  document.getElementById("missionHint").textContent = mission.hint || "";
+  
+  // Progress bar
+  const progress = (gameState.currentMission / data.missions.length) * 100;
+  document.getElementById("progressFill").style.width = progress + "%";
+  
+  renderBlocks(data);
+  showMnemoIfNeeded(gameState.currentLevel);
+}
+
+function renderBlocks(data){
+  const pool = document.getElementById("blocksPool");
+  pool.innerHTML = "";
+  
+  // Sujets
+  if(data.sujets){
+    data.sujets.forEach(s => {
+      const b = createBlock(s, "sujet");
+      pool.appendChild(b);
+    });
+  }
+  // Verbes
+  if(data.verbes){
+    data.verbes.forEach(v => {
+      const b = createBlock(v, "verbe");
+      pool.appendChild(b);
+    });
+  }
+  // Compléments
+  if(data.complements){
+    data.complements.forEach(c => {
+      const b = createBlock(c, "comp");
+      pool.appendChild(b);
+    });
+  }
+  // Spéciaux (négation, auxiliaire, etc.)
+  if(data.specials){
+    data.specials.forEach(sp => {
+      const b = createBlock(sp.text, sp.type || "comp");
+      pool.appendChild(b);
+    });
+  }
+}
+
+function renderBlocksFallback(){
+  const pool = document.getElementById("blocksPool");
+  pool.innerHTML = "";
+  const words = ["Je", "Tu", "Il", "suis", "es", "est", "ai", "as", "a", "fatigué", "content", "faim", "de Paris"];
+  words.forEach(w => {
+    const type = ["Je","Tu","Il","Elle","Nous","Vous"].includes(w) ? "sujet" : 
+                 ["suis","es","est","ai","as","a"].includes(w) ? "verbe" : "comp";
+    pool.appendChild(createBlock(w, type));
+  });
+}
+
+function createBlock(text, type){
+  const div = document.createElement("div");
+  div.className = "block " + type;
+  div.textContent = text;
+  div.dataset.text = text;
+  div.dataset.type = type;
+  div.draggable = true;
+  
+  // Desktop drag
+  div.addEventListener("dragstart", handleDragStart);
+  div.addEventListener("dragend", handleDragEnd);
+  
+  // Mobile touch
+  div.addEventListener("touchstart", handleTouchStart, {passive: false});
+  div.addEventListener("touchmove", handleTouchMove, {passive: false});
+  div.addEventListener("touchend", handleTouchEnd);
+  
+  // Click to add (fallback)
+  div.addEventListener("click", () => addBlockToPhrase(text, type));
+  
+  return div;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DRAG & DROP (Desktop)
+// ═══════════════════════════════════════════════════════════════════
+function handleDragStart(e){
+  gameState.draggedBlock = {text: e.target.dataset.text, type: e.target.dataset.type};
+  e.target.classList.add("dragging");
+  e.dataTransfer.effectAllowed = "copy";
+}
+
+function handleDragEnd(e){
+  e.target.classList.remove("dragging");
+  gameState.draggedBlock = null;
+}
+
+// Drop zone
+const dropZone = document.getElementById("dropZone");
+dropZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropZone.classList.add("drag-over");
+});
+dropZone.addEventListener("dragleave", () => {
+  dropZone.classList.remove("drag-over");
+});
+dropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropZone.classList.remove("drag-over");
+  if(gameState.draggedBlock){
+    addBlockToPhrase(gameState.draggedBlock.text, gameState.draggedBlock.type);
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// TOUCH (Mobile)
+// ═══════════════════════════════════════════════════════════════════
+let touchBlock = null;
+let touchClone = null;
+
+function handleTouchStart(e){
+  e.preventDefault();
+  const block = e.target.closest(".block");
+  if(!block) return;
+  touchBlock = {text: block.dataset.text, type: block.dataset.type, el: block};
+  block.classList.add("dragging");
+}
+
+function handleTouchMove(e){
+  e.preventDefault();
+  if(!touchBlock) return;
+  const touch = e.touches[0];
+  const el = touchBlock.el;
+  el.style.position = "fixed";
+  el.style.left = (touch.clientX - 40) + "px";
+  el.style.top = (touch.clientY - 20) + "px";
+  el.style.zIndex = "1000";
+}
+
+function handleTouchEnd(e){
+  if(!touchBlock) return;
+  const touch = e.changedTouches[0];
+  const dropRect = dropZone.getBoundingClientRect();
+  
+  if(touch.clientX >= dropRect.left && touch.clientX <= dropRect.right &&
+     touch.clientY >= dropRect.top && touch.clientY <= dropRect.bottom){
+    addBlockToPhrase(touchBlock.text, touchBlock.type);
+  }
+  
+  touchBlock.el.style.position = "";
+  touchBlock.el.style.left = "";
+  touchBlock.el.style.top = "";
+  touchBlock.el.style.zIndex = "";
+  touchBlock.el.classList.remove("dragging");
+  touchBlock = null;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PHRASE BUILDING
+// ═══════════════════════════════════════════════════════════════════
+function addBlockToPhrase(text, type){
+  gameState.currentPhrase.push({text, type});
+  renderPhrase();
+}
+
+function renderPhrase(){
+  const zone = document.getElementById("dropZone");
+  if(gameState.currentPhrase.length === 0){
+    zone.innerHTML = '<span class="placeholder">👇 Drag blocks here to build your phrase</span>';
+    return;
+  }
+  
+  zone.innerHTML = "";
+  gameState.currentPhrase.forEach((block, idx) => {
+    const slot = document.createElement("div");
+    slot.className = "slot filled";
+    slot.innerHTML = `<span class="block ${block.type}">${block.text}</span>`;
+    slot.onclick = () => removeBlock(idx);
+    zone.appendChild(slot);
+  });
+}
+
+function removeBlock(idx){
+  gameState.currentPhrase.splice(idx, 1);
+  renderPhrase();
+}
+
+function clearPhrase(){
+  gameState.currentPhrase = [];
+  renderPhrase();
+  hideFeedback();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// VALIDATION
+// ═══════════════════════════════════════════════════════════════════
+function checkPhrase(){
+  const data = (typeof PHRASE_BLOCKS !== 'undefined') ? PHRASE_BLOCKS[gameState.currentLevel] : null;
+  const mission = data && data.missions ? data.missions[gameState.currentMission] : null;
+  
+  const built = gameState.currentPhrase.map(b => b.text).join(" ");
+  const target = mission ? mission.target : "";
+  
+  // Normaliser pour comparaison
+  const normBuilt = built.toLowerCase().replace(/[.,;:!?']/g, "").trim();
+  const normTarget = target.toLowerCase().replace(/[.,;:!?']/g, "").trim();
+  
+  // Check alternatives
+  let isCorrect = normBuilt === normTarget;
+  if(!isCorrect && mission && mission.alternatives){
+    isCorrect = mission.alternatives.some(alt => {
+      return normBuilt === alt.toLowerCase().replace(/[.,;:!?']/g, "").trim();
+    });
+  }
+  
+  // Vérification grammaticale basique (sujet + verbe)
+  const hasSujet = gameState.currentPhrase.some(b => b.type === "sujet");
+  const hasVerbe = gameState.currentPhrase.some(b => b.type === "verbe");
+  
+  if(isCorrect){
+    showFeedback("success", "✅ Correct! " + target);
+    savePhraseProgress(target, true);
+    addToCollection(target, mission ? mission.en : "");
+    
+    // Passer à la mission suivante
+    setTimeout(() => {
+      gameState.currentMission++;
+      const levelData = (typeof PHRASE_BLOCKS !== 'undefined') ? PHRASE_BLOCKS[gameState.currentLevel] : null;
+      if(levelData && levelData.missions && gameState.currentMission < levelData.missions.length){
+        loadMission();
+        clearPhrase();
+      } else {
+        showFeedback("success", "🎉 Level " + gameState.currentLevel + " completed!");
+        setTimeout(() => {
+          if(gameState.currentLevel < ((typeof SUBJECT_CONFIG !== 'undefined' && SUBJECT_CONFIG.maxLevel) ? SUBJECT_CONFIG.maxLevel : 10)){
+            loadLevel(gameState.currentLevel + 1);
+          }
+        }, 2000);
+      }
+    }, 1500);
+  } else {
+    showFeedback("error", "❌ Not quite. Try: " + (mission ? mission.hint : "Sujet + Verbe + Complément"));
+    savePhraseProgress(target, false);
+    
+    // Animation shake sur les slots
+    document.querySelectorAll(".slot").forEach(s => s.classList.add("wrong"));
+    setTimeout(() => {
+      document.querySelectorAll(".slot").forEach(s => s.classList.remove("wrong"));
+    }, 500);
+  }
+}
+
+function showFeedback(type, msg){
+  const fb = document.getElementById("feedback");
+  fb.className = "feedback show " + type;
+  fb.textContent = msg;
+}
+
+function hideFeedback(){
+  document.getElementById("feedback").className = "feedback";
+}
+
+function showHint(){
+  const data = (typeof PHRASE_BLOCKS !== 'undefined') ? PHRASE_BLOCKS[gameState.currentLevel] : null;
+  const mission = data && data.missions ? data.missions[gameState.currentMission] : null;
+  if(mission && mission.hint){
+    showFeedback("hint", "💡 " + mission.hint);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// TTS
+// ═══════════════════════════════════════════════════════════════════
+function speakPhrase(){
+  const phrase = gameState.currentPhrase.map(b => b.text).join(" ");
+  if(!phrase) return;
+  
+  const utter = new SpeechSynthesisUtterance(phrase);
+  utter.lang = 'fr-FR';
+  utter.rate = 0.9;
+  utter.pitch = 1;
+  speechSynthesis.speak(utter);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MNEMONICS
+// ═══════════════════════════════════════════════════════════════════
+function showMnemoIfNeeded(level){
+  const mnemos = {
+    1: {emoji: "🧍‍♂️", title: "Être = État", text: "🧍‍♂️ ÊTRE = comment tu ES (fatigué, content, de Paris)<br>👜 AVOIR = ce que tu POSSEDES ou RESSENS (faim, soif, 60 ans)<br><br>Mnémonique: 🧍‍♂️ = miroir (état) | 👜 = sac (possession)"},
+    2: {emoji: "🦶", title: "Aller vs Faire", text: "🦶 ALLER = direction, mouvement (je vais à Paris)<br>👐 FAIRE = action concrète (je fais du sport)<br><br>Mnémonique: 🦶 = pieds qui marchent | 👐 = mains qui agissent"},
+    3: {emoji: "🎭", title: "Les circonstanciels", text: "🎭 QUI = compagnon (avec Marie)<br>🏠 OÙ = destination (au marché)<br>⏰ QUAND = temps (demain)<br><br>Ordre: Sujet → Verbe → QUI → OÙ → QUAND"},
+    4: {emoji: "🎤", title: "La question", text: "🎤 Voix qui MONTE à la fin = question<br>❓ OU Est-ce que au début<br><br>Mnémonique: 🎢 Question = montagne russe (monte à la fin)"},
+    5: {emoji: "🚫", title: "La négation", text: "🚫 NE = barrière GAUCHE<br>🚫 PAS = barrière DROITE<br>Le verbe est PRISONNIER entre les deux<br><br>Je ne vais PAS → ne [vais] pas"},
+    6: {emoji: "🅰️", title: "Passé composé", text: "🅰️ AVOIR = actions (mangé, fini, pris)<br>🅴 ÊTRE = mouvement (allé, venu, parti)<br><br>Mnémonique: 🅰️ A = Action | 🅴 E = Entrée/Sortie"},
+  };
+  
+  if(mnemos[level] && !localStorage.getItem("mnemo_seen_" + level)){
+    const m = mnemos[level];
+    document.getElementById("mnemoEmoji").textContent = m.emoji;
+    document.getElementById("mnemoTitle").textContent = m.title;
+    document.getElementById("mnemoText").innerHTML = m.text;
+    document.getElementById("mnemoOverlay").classList.add("show");
+    document.getElementById("mnemoPopup").classList.add("show");
+    localStorage.setItem("mnemo_seen_" + level, "true");
+  }
+}
+
+function closeMnemo(){
+  document.getElementById("mnemoOverlay").classList.remove("show");
+  document.getElementById("mnemoPopup").classList.remove("show");
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// COLLECTION
+// ═══════════════════════════════════════════════════════════════════
+function addToCollection(fr, en){
+  if(!fr) return;
+  const coll = document.getElementById("collection");
+  const grid = document.getElementById("collectionGrid");
+  
+  const item = document.createElement("div");
+  item.className = "collection-item";
+  item.innerHTML = `<div class="fr">${fr}</div><div class="en">${en || ""}</div>`;
+  grid.appendChild(item);
+  
+  coll.classList.add("show");
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+document.addEventListener("DOMContentLoaded", () => {
+  const p = getPlayerData();
+  updateScoreBoard();
+  renderLevels();
+  loadLevel(1);
+});
+</script>
+</body>
+</html>
+
