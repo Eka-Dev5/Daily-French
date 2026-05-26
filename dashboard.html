@@ -18,36 +18,30 @@
 
 <div class="page">
 
-<!-- TOP BAR : player + thème -->
+<!-- TOP BAR : select + New player -->
 <div class="top-bar">
   <select id="selPlayer" onchange="loadPlayer(this.value)">
     <option value="">— Choose a player —</option>
   </select>
-  <button class="btn-top btn-top-primary" onclick="openModal()">＋ New</button>
   
-  <div class="theme-picker">
-    <button class="theme-btn" onclick="toggleTheme()" title="Theme">🎨</button>
-    <div class="theme-dropdown" id="themeDrop">
-      <div class="theme-opt" onclick="applyTheme('ardoise')">
-        <div class="th-dot th-ardoise"></div><span>Ardoise</span>
-      </div>
-      <div class="theme-opt" onclick="applyTheme('mauve')">
-        <div class="th-dot th-mauve"></div><span>Mauve</span>
-      </div>
-      <div class="theme-opt" onclick="applyTheme('terra')">
-        <div class="th-dot th-terra"></div><span>Terra</span>
-      </div>
-    </div>
+  <div class="btn-row">
+    <button class="btn-top btn-top-primary" onclick="openModal()">＋ New player</button>
   </div>
 </div>
 
+
+
+
 <!-- IMPORT/EXPORT -->
+<!-- SAVE BAR : Export/Import seuls -->
 <div class="card save-bar">
   <p>💾 Save or transfer your progress</p>
-  <button class="btn-top btn-top-ghost" onclick="doExport()">⬇ Export</button>
-  <label class="btn-top btn-top-ghost" style="cursor:pointer">
-    ⬆ Import<input type="file" accept=".json" style="display:none" onchange="doImport(event)">
-  </label>
+  <div class="btn-row">
+    <button class="btn-top btn-top-ghost" onclick="doExport()">⬇ Export</button>
+    <label class="btn-top btn-top-ghost" style="cursor:pointer">
+      ⬆ Import<input type="file" accept=".json" style="display:none" onchange="doImport(event)">
+    </label>
+  </div>
 </div>
 
 <!-- HERO -->
