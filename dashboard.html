@@ -2,971 +2,185 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>My Space — Daily French 🥖</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-/* ══════════════════════════════════════════════════════
-   DAILY FRENCH — DASHBOARD 2026
-   Aurora glassmorphism + Bento grid + Journey map
-   ══════════════════════════════════════════════════════ */
-:root {
-  --p:#818cf8; --p2:#6366f1; --cyan:#22d3ee; --green:#4ade80;
-  --amber:#fbbf24; --rose:#f472b6; --text:#f1f5f9; --muted:#94a3b8;
-  --glass:rgba(255,255,255,.07); --glass2:rgba(255,255,255,.12);
-  --border:rgba(255,255,255,.12); --glow:0 0 20px rgba(129,140,248,.4);
-}
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',system-ui,sans-serif}
-html{scroll-behavior:smooth}
-
-/* ── AURORA BG ── */
-body {
-  min-height:100vh;padding:16px;color:var(--text);
-  background:#0a0f1e;overflow-x:hidden;
-}
-body::before {
-  content:'';position:fixed;inset:0;z-index:0;
-  background:
-    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(99,102,241,.35) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 90% 100%, rgba(34,211,238,.25) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(244,114,182,.15) 0%, transparent 70%),
-    #0a0f1e;
-  animation:aurora 12s ease-in-out infinite alternate;
-}
-@keyframes aurora {
-  0%  {background-position:0% 50%}
-  100%{background-position:100% 50%}
-}
-
-/* ── CONTAINER ── */
-.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto}
-
-/* ── GLASS CARD BASE ── */
-.glass {
-  background:var(--glass);
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border:1px solid var(--border);
-  border-radius:20px;
-}
-.glass2{background:var(--glass2)}
-
-/* ── NAV ── */
-.nav{
-  display:flex;gap:6px;flex-wrap:wrap;
-  margin-bottom:16px;padding:10px 14px;
-}
-.nav a{
-  display:inline-block;padding:6px 12px;border-radius:20px;
-  background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);
-  font-weight:600;text-decoration:none;font-size:.78em;
-  border:1px solid rgba(255,255,255,.1);transition:all .2s;white-space:nowrap;
-}
-.nav a:hover,.nav a.active{
-  background:var(--p);color:white;border-color:var(--p);
-  box-shadow:0 0 12px rgba(129,140,248,.4);
-}
-.nav a.game{background:rgba(251,191,36,.1);color:var(--amber);border-color:rgba(251,191,36,.2)}
-.nav a.game:hover{background:var(--amber);color:#0a0f1e}
-
-/* ── HERO CARD ── */
-.hero {
-  padding:22px 24px;margin-bottom:14px;
-  display:flex;align-items:center;gap:18px;flex-wrap:wrap;
-}
-.avatar-wrap{position:relative;flex-shrink:0}
-.avatar {
-  width:64px;height:64px;border-radius:50%;
-  background:linear-gradient(135deg,var(--p),var(--cyan));
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.6em;font-weight:900;color:white;
-  box-shadow:0 0 0 3px rgba(129,140,248,.3),var(--glow);
-  animation:avatar-pulse 3s ease-in-out infinite;
-}
-@keyframes avatar-pulse{0%,100%{box-shadow:0 0 0 3px rgba(129,140,248,.3),0 0 20px rgba(129,140,248,.4)}50%{box-shadow:0 0 0 5px rgba(129,140,248,.5),0 0 30px rgba(129,140,248,.6)}}
-.level-badge{
-  position:absolute;bottom:-4px;right:-4px;
-  background:var(--amber);color:#0a0f1e;
-  border-radius:20px;padding:2px 7px;
-  font-size:.65em;font-weight:800;border:2px solid #0a0f1e;
-}
-.hero-info{flex:1;min-width:160px}
-.hero-name{font-size:1.35em;font-weight:800;color:white;margin-bottom:3px}
-.hero-sub{font-size:.82em;color:var(--muted);margin-bottom:10px}
-.xp-wrap{}
-.xp-labels{display:flex;justify-content:space-between;font-size:.72em;color:var(--muted);margin-bottom:5px}
-.xp-bar{height:8px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden}
-.xp-fill{
-  height:100%;border-radius:99px;
-  background:linear-gradient(90deg,var(--p),var(--cyan));
-  transition:width .8s cubic-bezier(.4,0,.2,1);
-  box-shadow:0 0 10px rgba(129,140,248,.6);
-}
-.hero-stats{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap}
-.hero-stat{text-align:center}
-.hero-stat-num{font-size:1.3em;font-weight:800;color:white}
-.hero-stat-label{font-size:.68em;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-.streak-num{color:var(--amber) !important}
-
-/* ── PLAYER SWITCHER ── */
-.player-bar{
-  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
-  padding:10px 14px;margin-bottom:14px;
-}
-.player-bar select{
-  flex:1;min-width:120px;padding:8px 12px;
-  background:rgba(255,255,255,.08);border:1px solid var(--border);
-  border-radius:12px;color:var(--text);font-size:.85em;font-family:inherit;
-  cursor:pointer;
-}
-.player-bar select option{background:#1e293b;color:white}
-.player-bar select:focus{outline:none;border-color:var(--p)}
-.btn{
-  padding:8px 16px;border:none;border-radius:20px;cursor:pointer;
-  font-weight:700;font-size:.8em;font-family:inherit;transition:all .2s;
-  text-decoration:none;display:inline-block;text-align:center;white-space:nowrap;
-}
-.btn:hover{transform:translateY(-1px)}
-.btn-primary{background:linear-gradient(135deg,var(--p),var(--p2));color:white;box-shadow:0 0 12px rgba(99,102,241,.4)}
-.btn-glass{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--border)}
-.btn-green{background:rgba(74,222,128,.15);color:var(--green);border:1px solid rgba(74,222,128,.2)}
-
-/* ── BENTO GRID ── */
-.bento{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;margin-bottom:14px;
-}
-.bento-card{
-  padding:16px;border-radius:16px;text-align:center;
-  background:var(--glass);border:1px solid var(--border);
-  backdrop-filter:blur(20px);transition:all .2s;cursor:default;
-}
-.bento-card:hover{background:var(--glass2);transform:translateY(-2px)}
-.bento-num{font-size:1.7em;font-weight:900;margin-bottom:3px}
-.bento-label{font-size:.68em;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-.b-indigo .bento-num{color:var(--p)}
-.b-cyan .bento-num{color:var(--cyan)}
-.b-green .bento-num{color:var(--green)}
-.b-amber .bento-num{color:var(--amber)}
-.b-rose .bento-num{color:var(--rose)}
-.b-white .bento-num{color:white}
-
-/* ── SECTION TITLE ── */
-.section-head{
-  font-size:.72em;font-weight:700;color:var(--muted);
-  text-transform:uppercase;letter-spacing:1px;
-  margin-bottom:10px;padding:0 4px;
-}
-
-/* ══ JOURNEY MAP ══ */
-.journey-wrap{padding:20px 16px;margin-bottom:14px}
-.journey-title{font-size:1em;font-weight:700;color:white;margin-bottom:16px}
-.journey-map{display:flex;flex-direction:column;gap:0}
-
-/* Row of 5 nodes */
-.journey-row{display:flex;align-items:center;justify-content:space-between;position:relative}
-.journey-row.reverse{flex-direction:row-reverse}
-
-/* Connector between rows */
-.journey-connector{
-  height:32px;display:flex;align-items:center;
-  padding:0 8px;
-}
-.journey-connector-line{
-  width:3px;height:100%;background:rgba(255,255,255,.12);
-  border-radius:2px;margin:0 auto;
-}
-.journey-connector-line.done{
-  background:linear-gradient(180deg,var(--green),var(--cyan));
-  box-shadow:0 0 8px rgba(74,222,128,.4);
-}
-.journey-connector-line.right{margin-left:auto;margin-right:16px}
-.journey-connector-line.left{margin-left:16px;margin-right:auto}
-
-/* Horizontal line between nodes */
-.node-line{flex:1;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin:0 -2px;position:relative;z-index:0}
-.node-line.done{background:linear-gradient(90deg,var(--green),var(--green));box-shadow:0 0 6px rgba(74,222,128,.4)}
-.node-line.current{background:linear-gradient(90deg,var(--green),var(--p));box-shadow:0 0 6px rgba(129,140,248,.3)}
-.node-line.reverse-done{background:linear-gradient(270deg,var(--green),var(--green))}
-
-/* Node itself */
-.node{
-  position:relative;z-index:1;flex-shrink:0;
-  width:46px;height:46px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-weight:800;font-size:.82em;
-  transition:all .25s;cursor:pointer;
-  border:2px solid rgba(255,255,255,.15);
-  background:rgba(255,255,255,.06);
-  color:var(--muted);
-}
-.node:hover:not(.locked){transform:scale(1.15);z-index:10}
-.node.done{
-  background:linear-gradient(135deg,#16a34a,#4ade80);
-  border-color:rgba(74,222,128,.5);color:white;
-  box-shadow:0 0 14px rgba(74,222,128,.5);
-}
-.node.current{
-  background:linear-gradient(135deg,var(--p2),var(--p));
-  border-color:rgba(129,140,248,.6);color:white;
-  box-shadow:0 0 18px rgba(129,140,248,.6);
-  animation:node-pulse 2s ease-in-out infinite;
-}
-@keyframes node-pulse{
-  0%,100%{box-shadow:0 0 14px rgba(129,140,248,.5)}
-  50%{box-shadow:0 0 28px rgba(129,140,248,.8),0 0 0 6px rgba(129,140,248,.15)}
-}
-.node.locked{opacity:.35;cursor:not-allowed}
-.node-check{font-size:1em}
-
-/* Node tooltip */
-.node-tip{
-  position:absolute;bottom:calc(100% + 8px);left:50%;
-  transform:translateX(-50%);
-  background:#1e293b;color:white;
-  padding:7px 11px;border-radius:10px;
-  font-size:.7em;white-space:nowrap;font-weight:600;
-  opacity:0;pointer-events:none;transition:opacity .2s;
-  z-index:100;border:1px solid var(--border);
-  box-shadow:0 8px 20px rgba(0,0,0,.4);
-}
-.node-tip::after{
-  content:'';position:absolute;top:100%;left:50%;
-  transform:translateX(-50%);
-  border:5px solid transparent;border-top-color:#1e293b;
-}
-.node:hover .node-tip{opacity:1}
-
-/* ── TABS ── */
-.tabs{display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap}
-.tab-btn{
-  padding:7px 14px;border:1px solid var(--border);
-  background:rgba(255,255,255,.05);color:var(--muted);
-  border-radius:20px;cursor:pointer;font-weight:600;
-  font-size:.78em;font-family:inherit;transition:all .2s;
-}
-.tab-btn.active{background:var(--p);color:white;border-color:var(--p);box-shadow:0 0 10px rgba(129,140,248,.3)}
-.tab-btn:hover:not(.active){background:rgba(255,255,255,.1);color:white}
-
-/* ── BADGE GRID ── */
-.badges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
-.badge-cube{
-  padding:14px 8px;border-radius:14px;text-align:center;
-  background:rgba(255,255,255,.05);border:1px solid var(--border);
-  transition:all .22s;cursor:pointer;text-decoration:none;
-  color:inherit;display:block;
-}
-.badge-cube.earned{
-  background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);
-}
-.badge-cube.earned:hover{
-  transform:translateY(-3px) scale(1.03);
-  box-shadow:0 8px 20px rgba(74,222,128,.2);
-}
-.badge-cube:not(.earned):not(.locked-badge){opacity:.4;cursor:default}
-.badge-icon{font-size:1.7em;margin-bottom:5px}
-.badge-name{font-size:.68em;font-weight:700;color:rgba(255,255,255,.85)}
-.badge-desc{font-size:.61em;color:var(--muted);margin-top:2px}
-.badge-hint{font-size:.6em;color:var(--cyan);margin-top:4px;display:none}
-.badge-cube.earned .badge-hint{display:block}
-
-/* ── HISTORY ── */
-.history-item{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:11px 14px;background:rgba(255,255,255,.04);
-  border-radius:12px;margin-bottom:7px;border:1px solid var(--border);
-}
-.hist-title{font-size:.85em;font-weight:600;color:white}
-.hist-sub{font-size:.73em;color:var(--muted);margin-top:2px}
-.hist-score.pass{color:var(--green);font-weight:700}
-.hist-score.fail{color:var(--rose);font-weight:700}
-
-/* ── FICHES ── */
-.fiche-card{
-  background:rgba(244,114,182,.07);border-left:3px solid var(--rose);
-  padding:12px 14px;border-radius:0 12px 12px 0;margin-bottom:8px;
-}
-.fiche-q{font-size:.85em;font-weight:700;color:white;margin-bottom:4px}
-.fiche-a{font-size:.8em;color:var(--rose)}
-
-/* ── CAMELEON ── */
-.cameleon-box{padding:28px;text-align:center}
-.cameleon-emoji{font-size:4em;margin-bottom:12px;display:block;animation:bounce 2s infinite}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.cameleon-title{font-size:1.2em;font-weight:800;color:white;margin-bottom:6px}
-.cameleon-desc{color:var(--muted);font-size:.9em;margin-bottom:16px}
-.stage-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.stage-pill{
-  padding:5px 12px;border-radius:20px;font-size:.75em;font-weight:700;
-  background:rgba(255,255,255,.07);color:var(--muted);border:1px solid var(--border);
-}
-.stage-pill.done{background:linear-gradient(135deg,var(--p),var(--cyan));color:white;border-color:transparent}
-
-/* ── BOTTOM CTA ── */
-.bottom-cta{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-.cta-btn{
-  flex:1;padding:14px;border-radius:16px;text-align:center;
-  font-weight:700;font-size:.88em;text-decoration:none;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  transition:all .2s;border:none;cursor:pointer;font-family:inherit;
-}
-.cta-btn:hover{transform:translateY(-2px)}
-.cta-play{background:linear-gradient(135deg,var(--p),var(--p2));color:white;box-shadow:0 4px 20px rgba(99,102,241,.4)}
-.cta-lessons{background:rgba(251,191,36,.15);color:var(--amber);border:1px solid rgba(251,191,36,.2)}
-.cta-vocab{background:rgba(34,211,238,.1);color:var(--cyan);border:1px solid rgba(34,211,238,.2)}
-
-/* ── SAVE BAR ── */
-.save-bar{
-  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
-  padding:12px 14px;margin-top:12px;
-}
-.save-bar p{font-size:.78em;color:var(--muted);flex:1;min-width:120px}
-
-/* ── GÉNIE FLOATING BUTTON ── */
-.genius-fab{
-  position:fixed;bottom:24px;right:24px;z-index:1000;
-  width:56px;height:56px;border-radius:50%;
-  background:linear-gradient(135deg,var(--amber),#f97316);
-  color:white;border:none;cursor:pointer;
-  font-size:1.6em;
-  box-shadow:0 4px 20px rgba(251,191,36,.5);
-  transition:all .3s;
-  display:flex;align-items:center;justify-content:center;
-  animation:fab-glow 3s ease-in-out infinite;
-}
-.genius-fab:hover{transform:scale(1.1) rotate(-10deg);box-shadow:0 8px 30px rgba(251,191,36,.7)}
-@keyframes fab-glow{
-  0%,100%{box-shadow:0 4px 20px rgba(251,191,36,.5)}
-  50%{box-shadow:0 4px 30px rgba(251,191,36,.8),0 0 0 6px rgba(251,191,36,.15)}
-}
-
-/* ── GÉNIE PANEL ── */
-.genius-panel{
-  position:fixed;bottom:90px;right:20px;z-index:999;
-  width:320px;max-height:70vh;
-  background:#0f172a;border:1px solid rgba(251,191,36,.3);
-  border-radius:20px;
-  box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px rgba(251,191,36,.1);
-  display:flex;flex-direction:column;
-  transform:translateY(20px) scale(.95);opacity:0;
-  pointer-events:none;transition:all .3s cubic-bezier(.4,0,.2,1);
-}
-.genius-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
-.genius-header{
-  padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.08);
-  display:flex;justify-content:space-between;align-items:center;flex-shrink:0;
-}
-.genius-header-title{font-weight:800;font-size:1em;color:white;display:flex;align-items:center;gap:8px}
-.genius-header-sub{font-size:.75em;color:var(--muted);margin-top:2px}
-.genius-close{
-  background:none;border:none;color:var(--muted);cursor:pointer;
-  font-size:1.2em;padding:4px;transition:color .2s;
-}
-.genius-close:hover{color:white}
-.genius-body{flex:1;overflow-y:auto;padding:12px 14px}
-.genius-body::-webkit-scrollbar{width:4px}
-.genius-body::-webkit-scrollbar-track{background:transparent}
-.genius-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
-.genius-word{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 12px;background:rgba(255,255,255,.04);
-  border-radius:10px;margin-bottom:6px;border:1px solid rgba(255,255,255,.07);
-}
-.genius-word-fr{font-weight:700;font-size:.9em;color:white}
-.genius-word-phon{font-size:.72em;color:var(--p);font-style:italic}
-.genius-word-en{font-size:.8em;color:var(--muted);flex:1}
-.genius-remove{
-  background:none;border:none;cursor:pointer;
-  color:var(--muted);font-size:.9em;padding:2px 6px;
-  border-radius:6px;transition:all .2s;
-}
-.genius-remove:hover{background:rgba(244,114,182,.2);color:var(--rose)}
-.genius-empty{text-align:center;padding:24px;color:var(--muted);font-size:.88em}
-.genius-empty-icon{font-size:2.5em;margin-bottom:8px}
-.genius-footer{
-  padding:12px 14px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0;
-}
-.genius-tip{font-size:.73em;color:var(--muted);text-align:center;line-height:1.5}
-.genius-quiz-btn{
-  width:100%;padding:10px;margin-top:8px;
-  background:linear-gradient(135deg,var(--amber),#f97316);
-  color:white;border:none;border-radius:12px;
-  font-weight:700;font-size:.85em;cursor:pointer;
-  font-family:inherit;transition:all .2s;
-}
-.genius-quiz-btn:hover{opacity:.9;transform:translateY(-1px)}
-
-/* ── EMPTY ── */
-.empty{text-align:center;padding:28px;color:var(--muted);font-size:.88em}
-.empty-icon{font-size:2.5em;margin-bottom:8px}
-
-/* ── TOAST ── */
-.toast{
-  position:fixed;bottom:90px;left:50%;
-  transform:translateX(-50%) translateY(10px);
-  background:#1e293b;color:white;padding:11px 20px;
-  border-radius:30px;font-weight:600;font-size:.85em;opacity:0;
-  transition:all .3s;z-index:2000;pointer-events:none;
-  border:1px solid var(--border);box-shadow:0 8px 20px rgba(0,0,0,.4);
-}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ── MODAL ── */
-.modal-bg{
-  position:fixed;inset:0;background:rgba(0,0,0,.7);
-  z-index:1001;display:none;align-items:center;justify-content:center;padding:20px;
-  backdrop-filter:blur(4px);
-}
-.modal-bg.open{display:flex}
-.modal{
-  background:#0f172a;border:1px solid var(--border);
-  border-radius:20px;padding:28px;max-width:320px;width:100%;
-  text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);
-}
-.modal h3{font-size:1.1em;font-weight:800;color:white;margin-bottom:14px}
-.modal input{
-  width:100%;padding:13px;background:rgba(255,255,255,.07);
-  border:1px solid var(--border);border-radius:12px;
-  color:white;font-size:1em;font-family:inherit;outline:none;margin-bottom:14px;
-}
-.modal input::placeholder{color:var(--muted)}
-.modal input:focus{border-color:var(--p)}
-.modal-btns{display:flex;gap:10px}
-.modal-btns button{
-  flex:1;padding:12px;border:none;border-radius:12px;
-  font-weight:700;cursor:pointer;font-size:.9em;font-family:inherit;transition:all .2s;
-}
-
-@media(max-width:640px){
-  body{padding:10px}
-  .bento{grid-template-columns:repeat(3,1fr)}
-  .node{width:38px;height:38px;font-size:.72em}
-  .genius-panel{width:calc(100vw - 32px);right:16px}
-  .bottom-cta{flex-direction:column}
-}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
 
-<div class="wrap">
+<div class="bg-wrap">
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+</div>
 
-<!-- ── NAV ── -->
-<nav class="nav glass" style="margin-bottom:12px">
-  <a href="quiz.html">🏠 Home</a>
-  <a href="quiz.html?section=lecons">📚 Lessons</a>
-  <a href="quiz.html?section=levels">🎮 Levels</a>
-  <a href="vocabulary.html">📖 Vocab</a>
-  <a href="dashboard.html" class="active">📊 My Space</a>
-  <a href="games/listen.html" class="game">🎧 Listen</a>
-  <a href="games/phrase-builder.html" class="game">🧩 Phrases</a>
-</nav>
+<div class="page">
 
-<!-- ── PLAYER BAR ── -->
-<div class="player-bar glass" style="margin-bottom:12px">
-  <select id="playerSelect" onchange="loadPlayer(this.value)">
-    <option value="">— Select a player —</option>
+<!-- TOP BAR : player + thème -->
+<div class="top-bar">
+  <select id="selPlayer" onchange="loadPlayer(this.value)">
+    <option value="">— Choose a player —</option>
   </select>
-  <button class="btn btn-primary" onclick="openModal()">+ New</button>
-  <button class="btn btn-green" onclick="doExport()">⬇️ Export</button>
-  <label class="btn btn-glass" style="cursor:pointer">
-    ⬆️ Import<input type="file" accept=".json" style="display:none" onchange="doImport(event)">
+  <button class="btn-top btn-top-primary" onclick="openModal()">＋ New</button>
+  
+  <div class="theme-picker">
+    <button class="theme-btn" onclick="toggleTheme()" title="Theme">🎨</button>
+    <div class="theme-dropdown" id="themeDrop">
+      <div class="theme-opt" onclick="applyTheme('ardoise')">
+        <div class="th-dot th-ardoise"></div><span>Ardoise</span>
+      </div>
+      <div class="theme-opt" onclick="applyTheme('mauve')">
+        <div class="th-dot th-mauve"></div><span>Mauve</span>
+      </div>
+      <div class="theme-opt" onclick="applyTheme('terra')">
+        <div class="th-dot th-terra"></div><span>Terra</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT/EXPORT -->
+<div class="card save-bar">
+  <p>💾 Save or transfer your progress</p>
+  <button class="btn-top btn-top-ghost" onclick="doExport()">⬇ Export</button>
+  <label class="btn-top btn-top-ghost" style="cursor:pointer">
+    ⬆ Import<input type="file" accept=".json" style="display:none" onchange="doImport(event)">
   </label>
 </div>
 
-<!-- ── HERO CARD ── -->
-<div class="hero glass" id="heroCard" style="margin-bottom:12px">
-  <div class="avatar-wrap">
-    <div class="avatar" id="heroAvatar">?</div>
-    <div class="level-badge" id="heroLevelBadge">1</div>
-  </div>
-  <div class="hero-info">
-    <div class="hero-name" id="heroName">No player selected</div>
-    <div class="hero-sub" id="heroSub">Create or select a player to start</div>
-    <div class="xp-wrap">
-      <div class="xp-labels">
-        <span id="xpCurrent">0 pts</span>
-        <span id="xpNext">Next: 100 pts</span>
+<!-- HERO -->
+<div class="hero" id="heroCard">
+  <div class="hero-inner">
+    <div class="hero-avatar" id="heroAv">
+      ?<<span class="hero-lvl-badge" id="heroLvl">1</span>
+    </div>
+    <div class="hero-info">
+      <div class="hero-name" id="heroName">Welcome</div>
+      <div class="hero-tagline" id="heroTag">Select a player to begin your journey</div>
+      <div class="xp-label">
+        <span id="xpNow">0 pts</span>
+        <span id="xpGoal">Next milestone: 100 pts</span>
       </div>
-      <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat"><div class="hero-stat-num" id="heroCompleted">0</div><div class="hero-stat-label">Done</div></div>
-      <div class="hero-stat"><div class="hero-stat-num streak-num" id="heroStreak">0🔥</div><div class="hero-stat-label">Streak</div></div>
-      <div class="hero-stat"><div class="hero-stat-num" id="heroAccuracy">—</div><div class="hero-stat-label">Accuracy</div></div>
-      <div class="hero-stat"><div class="hero-stat-num" id="heroSessions">0</div><div class="hero-stat-label">Sessions</div></div>
+      <div class="xp-track"><div class="xp-fill" id="xpBar" style="width:0%"></div></div>
+      <div class="hero-pills" id="heroPills">
+        <div class="hero-pill"><span class="pill-num" id="p_streak">0</span>&nbsp;🔥 streak</div>
+        <div class="hero-pill"><span class="pill-num" id="p_acc">—</span>&nbsp;accuracy</div>
+        <div class="hero-pill"><span class="pill-num" id="p_sess">0</span>&nbsp;sessions</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ── BENTO STATS ── -->
-<div class="bento" style="margin-bottom:14px">
-  <div class="bento-card b-indigo"><div class="bento-num" id="bLevel">—</div><div class="bento-label">Level</div></div>
-  <div class="bento-card b-cyan"><div class="bento-num" id="bScore">—</div><div class="bento-label">Points</div></div>
-  <div class="bento-card b-green"><div class="bento-num" id="bDone">—</div><div class="bento-label">Levels done</div></div>
+<!-- BENTO -->
+<div class="bento">
+  <div class="bento-tile primary"><div class="bento-num" id="b1">—</div><div class="bento-lbl">Current level</div></div>
+  <div class="bento-tile coral"><div class="bento-num" id="b2">—</div><div class="bento-lbl">Points</div></div>
+  <div class="bento-tile gold"><div class="bento-num" id="b3">—</div><div class="bento-lbl">Levels done</div></div>
 </div>
 
-<!-- ── JOURNEY MAP ── -->
-<div class="journey-wrap glass" style="margin-bottom:14px">
-  <div class="journey-title">🗺️ Your journey — tap a level to explore</div>
-  <div class="journey-map" id="journeyMap"></div>
+<!-- JOURNEY MAP -->
+<div class="card journey-card">
+  <div class="journey-head">
+    <div class="journey-title">🗺️ Your French<br>Journey</div>
+    <div class="journey-sub">Tap any level<br>✅ = vocabulary &nbsp;•&nbsp; 🎯 = play quiz</div>
+  </div>
+  <div class="journey-hint">✅ Completed → opens vocabulary for that level &nbsp;|&nbsp; 🎯 Current → launches the quiz directly</div>
+  <div id="jMap"></div>
 </div>
 
-<!-- ── TABS ── -->
+<!-- TABS -->
 <div class="tabs">
-  <button class="tab-btn active" onclick="showTab('badges')" id="tab-badges">🏅 Badges</button>
-  <button class="tab-btn" onclick="showTab('history')" id="tab-history">📜 History</button>
-  <button class="tab-btn" onclick="showTab('fiches')" id="tab-fiches">📝 Errors</button>
-  <button class="tab-btn" onclick="showTab('cameleon')" id="tab-cameleon">🦎 Cameleon</button>
+  <button class="tab on" id="tab-badges" onclick="showTab('badges')">🏅 Badges</button>
+  <button class="tab" id="tab-history" onclick="showTab('history')">📜 History</button>
+  <button class="tab" id="tab-fiches" onclick="showTab('fiches')">📝 Errors</button>
+  <button class="tab" id="tab-cameleon" onclick="showTab('cameleon')">🦎 Cameleon</button>
 </div>
 
-<div id="tab-content-badges">
-  <div class="section-head" id="badgeCount">🏅 Badges — 0 earned</div>
-  <div class="badges-grid" id="badgesGrid"></div>
+<div id="tc-badges">
+  <div class="sec-head">
+    <div class="sec-title">🏅 Badges</div>
+    <div class="sec-sub">Earned badges link to their level vocabulary</div>
+  </div>
+  <div class="badges" id="badgeGrid"></div>
 </div>
-<div id="tab-content-history" style="display:none">
-  <div id="historyList"></div>
+<div id="tc-history" style="display:none">
+  <div class="sec-head"><div class="sec-title">📜 Recent sessions</div></div>
+  <div id="histList"></div>
 </div>
-<div id="tab-content-fiches" style="display:none">
-  <div id="fichesList"></div>
+<div id="tc-fiches" style="display:none">
+  <div class="sec-head">
+    <div class="sec-title">📝 Error cards</div>
+    <div class="sec-sub">Last 30 mistakes — review & retry</div>
+  </div>
+  <div id="ficheList"></div>
 </div>
-<div id="tab-content-cameleon" style="display:none">
-  <div class="cameleon-box glass">
-    <span class="cameleon-emoji" id="camEmoji">🦎</span>
-    <div class="cameleon-title" id="camTitle">Beginner Cameleon</div>
-    <div class="cameleon-desc" id="camDesc">Keep practising!</div>
-    <div class="stage-pills" id="camStages"></div>
+<div id="tc-cameleon" style="display:none">
+  <div class="cam-box">
+    <span class="cam-emoji" id="camE">🦎</span>
+    <div class="cam-name" id="camN">Beginner Cameleon</div>
+    <div class="cam-desc" id="camD">Keep practising to transform!</div>
+    <div class="cam-stages" id="camS"></div>
   </div>
 </div>
 
-<!-- ── BOTTOM CTA ── -->
-<div class="bottom-cta">
-  <a href="quiz.html?section=levels" class="cta-btn cta-play">🎮 Play now</a>
-  <a href="quiz.html?section=lecons" class="cta-btn cta-lessons">📚 Lessons</a>
-  <a href="vocabulary.html" class="cta-btn cta-vocab">📖 Vocab</a>
+<!-- CTA -->
+<div class="cta-bar">
+  <a href="quiz.html?section=levels" class="cta cta-play">🎮 Play now</a>
+  <a href="quiz.html?section=lecons" class="cta cta-learn">📚 Lessons</a>
+  <a href="vocabulary.html" class="cta cta-vocab">📖 Vocabulary</a>
 </div>
 
-</div><!-- /.wrap -->
+</div>
 
-<!-- ── 🪔 GÉNIE BUTTON ── -->
-<button class="genius-fab" id="geniusFab" onclick="toggleGenius()" title="Mon Génie — My saved words">🪔</button>
+<!-- NAV BOTTOM -->
+<<nav class="nav-bottom">
+  <a href="quiz.html"><span class="nav-ico">🏠</span>Home</a>
+  <a href="quiz.html?section=lecons"><span class="nav-ico">📚</span>Lessons</a>
+  <a href="quiz.html?section=levels"><span class="nav-ico">🎮</span>Play</a>
+  <a href="vocabulary.html"><span class="nav-ico">📖</span>Vocab</a>
+  <a href="dashboard.html" class="here"><span class="nav-ico">📊</span>Space</a>
+</nav>
 
-<!-- ── GÉNIE PANEL ── -->
-<div class="genius-panel" id="geniusPanel">
-  <div class="genius-header">
+<!-- GÉNIE FAB -->
+<button class="fab" id="fabBtn" onclick="toggleGenius()">
+  🪔<<span class="fab-badge" id="fabCount" style="display:none">0</span>
+</button>
+
+<!-- GÉNIE PANEL -->
+<div class="genius" id="gPanel">
+  <div class="g-head">
     <div>
-      <div class="genius-header-title">🪔 Mon Génie</div>
-      <div class="genius-header-sub">Your personal word collection</div>
+      <div class="g-title">🪔 Mon Génie</div>
+      <div class="g-sub">Your personal word collection</div>
     </div>
-    <button class="genius-close" onclick="toggleGenius()">✕</button>
+    <button class="g-close" onclick="toggleGenius()">✕</button>
   </div>
-  <div class="genius-body" id="geniusBody"></div>
-  <div class="genius-footer">
-    <div class="genius-tip">⭐ Star any word in Vocabulary to save it here</div>
-    <button class="genius-quiz-btn" onclick="quizGenius()">🎯 Quiz me on my words!</button>
+  <div class="g-body" id="gBody"></div>
+  <div class="g-foot">
+    <div class="g-tip">⭐ Star any word in Vocabulary to add it here</div>
+    <button class="g-quiz" onclick="quizMe()">🎯 Quiz me on my words!</button>
   </div>
 </div>
 
-<!-- ── TOAST ── -->
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- ── MODAL NEW PLAYER ── -->
-<div class="modal-bg" id="modalBg">
+<!-- MODAL -->
+<div class="modal-wrap" id="modalWrap">
   <div class="modal">
-    <div style="font-size:2em;margin-bottom:10px">👤</div>
-    <h3>New player</h3>
-    <input type="text" id="modalName" placeholder="Your first name" autocapitalize="words"
-      onkeyup="if(event.key==='Enter')createPlayer()">
+    <div class="modal-title">👤 New player</div>
+    <input type="text" id="mInput" placeholder="Your first name" autocapitalize="words"
+      onkeyup="if(event.key==='Enter')doCreate()">
     <div class="modal-btns">
-      <button onclick="createPlayer()" style="background:linear-gradient(135deg,#818cf8,#6366f1);color:white">✓ Create</button>
-      <button onclick="closeModal()" style="background:rgba(255,255,255,.08);color:#94a3b8">✕ Cancel</button>
+      <button onclick="doCreate()" class="btn-modal-primary">✓ Create</button>
+      <button onclick="closeModal()" class="btn-modal-ghost">✕ Cancel</button>
     </div>
   </div>
 </div>
 
-<script>
-// ════════════════════════════════════════════════════
-// CONFIG
-// ════════════════════════════════════════════════════
-const KEY = "dailyFrench_players";
-const GENIUS_KEY = "dailyFrench_genius";
-const LN = {
-  1:"Greetings 🙋",2:"Market 🛒",3:"Garden 🌿",4:"Neighbours 🏘️",
-  5:"Tastes ❤️",6:"Shops 🏬",7:"Friends 👫",8:"Weather 🌤️",
-  9:"Verbs ⚡",10:"Politeness 🎩",11:"Daily life 🇫🇷",
-  12:"Routine 🌅",13:"Emotions ❤️",14:"Needs 🍽️",15:"House 🏡",
-  16:"Family 👨‍👩‍👧",17:"Plans 📅",18:"Health 💊",19:"Cooking 🍳",20:"Living French 🗣️"
-};
-const BADGES=[
-  {id:1,icon:"🙋",name:"First Step",desc:"Level 1",lv:1},
-  {id:2,icon:"🛒",name:"Shopper",desc:"Level 2",lv:2},
-  {id:3,icon:"🌿",name:"Gardener",desc:"Level 3",lv:3},
-  {id:4,icon:"🏘️",name:"Neighbour",desc:"Level 4",lv:4},
-  {id:5,icon:"❤️",name:"Foodie",desc:"Level 5",lv:5},
-  {id:6,icon:"🏬",name:"Customer",desc:"Level 6",lv:6},
-  {id:7,icon:"👫",name:"Social",desc:"Level 7",lv:7},
-  {id:8,icon:"🌤️",name:"Météo",desc:"Level 8",lv:8},
-  {id:9,icon:"⚡",name:"Verb Master",desc:"Level 9",lv:9},
-  {id:10,icon:"🎩",name:"Polite",desc:"Level 10",lv:10},
-  {id:11,icon:"🇫🇷",name:"Local",desc:"Level 11",lv:11},
-  {id:12,icon:"🌅",name:"Early Bird",desc:"Level 12",lv:12},
-  {id:13,icon:"❤️",name:"Emotional",desc:"Level 13",lv:13},
-  {id:14,icon:"🍽️",name:"Well-fed",desc:"Level 14",lv:14},
-  {id:15,icon:"🏡",name:"Homebody",desc:"Level 15",lv:15},
-  {id:16,icon:"👨‍👩‍👧",name:"Family",desc:"Level 16",lv:16},
-  {id:17,icon:"📅",name:"Planner",desc:"Level 17",lv:17},
-  {id:18,icon:"💊",name:"Healthy",desc:"Level 18",lv:18},
-  {id:19,icon:"🍳",name:"Chef",desc:"Level 19",lv:19},
-  {id:20,icon:"🗣️",name:"True French",desc:"Level 20",lv:20},
-  {id:21,icon:"🔥",name:"On Fire",desc:"5+ streak",lv:null,c:p=>p.streak>=5},
-  {id:22,icon:"🔥🔥",name:"Unstoppable",desc:"10+ streak",lv:null,c:p=>p.streak>=10},
-  {id:23,icon:"🎯",name:"Perfectionist",desc:"100% score",lv:null,c:p=>p.sessionHistory&&p.sessionHistory.some(s=>s.pct===100)},
-  {id:24,icon:"⭐",name:"Rising Star",desc:"5 levels",lv:null,c:p=>p.completed&&p.completed.length>=5},
-  {id:25,icon:"🌟",name:"Star",desc:"10 levels",lv:null,c:p=>p.completed&&p.completed.length>=10},
-  {id:26,icon:"👑",name:"Legend",desc:"15 levels",lv:null,c:p=>p.completed&&p.completed.length>=15},
-  {id:27,icon:"🏆",name:"Champion",desc:"All 20!",lv:null,c:p=>p.completed&&p.completed.length>=20},
-  {id:28,icon:"💎",name:"Diamond",desc:"500+ pts",lv:null,c:p=>p.score>=500},
-  {id:29,icon:"🌈",name:"Polyglot",desc:"1000+ pts",lv:null,c:p=>p.score>=1000},
-  {id:30,icon:"🥖",name:"Vrai Français",desc:"Everything done!",lv:null,c:p=>p.completed&&p.completed.length>=20&&p.score>=1000}
-];
-const CAMELEON=[
-  {min:0,emoji:"🦎",title:"Beginner Cameleon",desc:"Keep practising to change colour!"},
-  {min:3,emoji:"🐸",title:"Green Cameleon",desc:"You're getting stronger!"},
-  {min:6,emoji:"🦜",title:"Colourful Cameleon",desc:"Halfway there!"},
-  {min:10,emoji:"🦚",title:"Proud Cameleon",desc:"Almost a master!"},
-  {min:15,emoji:"🐉",title:"Dragon Cameleon",desc:"You are a legend! 🏆"}
-];
-
-// ════════════════════════════════════════════════════
-// UTILS
-// ════════════════════════════════════════════════════
-const $=id=>document.getElementById(id);
-function getP(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return {};}}
-function setP(d){localStorage.setItem(KEY,JSON.stringify(d));}
-function getG(){try{return JSON.parse(localStorage.getItem(GENIUS_KEY))||[];}catch(e){return [];}}
-function setG(d){localStorage.setItem(GENIUS_KEY,JSON.stringify(d));}
-function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),3000);}
-
-let cur=null;
-
-// ════════════════════════════════════════════════════
-// PLAYER MANAGEMENT
-// ════════════════════════════════════════════════════
-function openModal(){$("modalBg").classList.add("open");$("modalName").value="";setTimeout(()=>$("modalName").focus(),100);}
-function closeModal(){$("modalBg").classList.remove("open");}
-function createPlayer(){
-  const n=$("modalName").value.trim();if(!n)return;
-  const p=getP();if(p[n]){toast("Player already exists!");return;}
-  p[n]={name:n,currentLevel:1,score:0,completed:[],totalQuestions:0,
-    totalCorrect:0,streak:0,lastPlayed:null,errorHistory:[],sessionHistory:[],activeSession:null};
-  setP(p);closeModal();loadPlayer(n);toast("Welcome "+n+"! 🎉");
-}
-
-function populateSelect(active){
-  const sel=$("playerSelect"),p=getP();
-  sel.innerHTML="<option value=''>— Select a player —</option>";
-  Object.keys(p).forEach(n=>{
-    const o=document.createElement("option");
-    o.value=n;o.textContent=n+" (Lvl."+p[n].currentLevel+")";
-    if(n===active)o.selected=true;
-    sel.appendChild(o);
-  });
-}
-
-function loadPlayer(name){if(!name)return;cur=name;render(name);}
-
-// ════════════════════════════════════════════════════
-// RENDER ALL
-// ════════════════════════════════════════════════════
-function render(name){
-  populateSelect(name);
-  const all=getP(),p=all[name];
-  if(!p)return;
-  const done=p.completed||[];
-  const score=p.score||0;
-  const cur_lvl=p.currentLevel||1;
-
-  // Hero
-  $("heroAvatar").textContent=p.name.charAt(0).toUpperCase();
-  $("heroLevelBadge").textContent=cur_lvl;
-  $("heroName").textContent=p.name;
-  $("heroSub").textContent="Level "+cur_lvl+" • "+score+" pts • "+done.length+" levels completed";
-  // XP bar: 50pts per level tier
-  const xpPerLevel=100;const xp=score%xpPerLevel;const pct=Math.round(xp/xpPerLevel*100);
-  $("xpCurrent").textContent=score+" pts";
-  $("xpNext").textContent="Next: "+((Math.floor(score/xpPerLevel)+1)*xpPerLevel)+" pts";
-  $("xpFill").style.width=pct+"%";
-  $("heroCompleted").textContent=done.length;
-  $("heroStreak").textContent=(p.streak||0)+"🔥";
-  const rate=p.totalQuestions>0?Math.round(p.totalCorrect/p.totalQuestions*100):0;
-  $("heroAccuracy").textContent=rate+"%";
-  $("heroSessions").textContent=(p.sessionHistory||[]).length;
-
-  // Bento
-  $("bLevel").textContent=cur_lvl;
-  $("bScore").textContent=score;
-  $("bDone").textContent=done.length+"/20";
-
-  renderJourney(p);
-  renderBadges(p);
-  renderHistory(p);
-  renderFiches(p);
-  renderCameleon(p);
-}
-
-// ════════════════════════════════════════════════════
-// JOURNEY MAP
-// ════════════════════════════════════════════════════
-function renderJourney(p){
-  const done=p.completed||[];
-  const curLvl=p.currentLevel||1;
-  const map=$("journeyMap");
-  // Layout: rows of 5, alternating direction
-  // [1-5] → [6-10] → [11-15] → [16-20]
-  const rows=[[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15],[16,17,18,19,20]];
-  let html="";
-  rows.forEach((row,ri)=>{
-    const rev=ri%2===1;
-    const displayRow=rev?[...row].reverse():row;
-    // Row of nodes
-    html+='<div class="journey-row'+(rev?" reverse":"")+'">';
-    displayRow.forEach((lvl,ni)=>{
-      const isDone=done.includes(lvl);
-      const isCur=lvl===curLvl;
-      const isLocked=!isDone&&!isCur&&lvl>curLvl;
-      let nodeCls="node";
-      if(isDone)nodeCls+=" done";
-      else if(isCur)nodeCls+=" current";
-      else if(isLocked)nodeCls+=" locked";
-      const icon=isDone?'<span class="node-check">✓</span>':isCur?"▶":lvl;
-      const onclick=isLocked?"":`onclick="nodeClick(${lvl},${isDone})"`;
-      html+=`<div class="${nodeCls}" ${onclick}>
-        ${icon}
-        <div class="node-tip">${isDone?"📖 ":"▶️ "}Lvl ${lvl}: ${LN[lvl]||""}</div>
-      </div>`;
-      // Line between nodes (not after last)
-      if(ni<displayRow.length-1){
-        const nextLvl=displayRow[ni+1];
-        const lineDone=done.includes(lvl)&&done.includes(nextLvl);
-        const lineCur=done.includes(lvl)&&nextLvl===curLvl;
-        let lineCls="node-line";
-        if(rev){if(lineDone)lineCls+=" reverse-done";else if(lineCur)lineCls+=" current";}
-        else{if(lineDone)lineCls+=" done";else if(lineCur)lineCls+=" current";}
-        html+=`<div class="${lineCls}"></div>`;
-      }
-    });
-    html+='</div>';
-    // Vertical connector between rows (not after last row)
-    if(ri<rows.length-1){
-      const lastInRow=rev?row[0]:row[row.length-1];
-      const firstInNext=ri%2===0?rows[ri+1][rows[ri+1].length-1]:rows[ri+1][0];
-      const connDone=done.includes(lastInRow)&&(done.includes(firstInNext)||firstInNext===curLvl);
-      const align=ri%2===0?"right":"left";
-      html+=`<div class="journey-connector">
-        <div class="journey-connector-line${connDone?" done":""} ${align}"></div>
-      </div>`;
-    }
-  });
-  map.innerHTML=html;
-}
-
-function nodeClick(lvl,isDone){
-  // If done: open vocab. Otherwise: open quiz.
-  if(isDone){
-    window.location.href="vocabulary.html?level="+lvl;
-  }else{
-    window.location.href="quiz.html?level="+lvl;
-  }
-}
-
-// ════════════════════════════════════════════════════
-// TABS
-// ════════════════════════════════════════════════════
-function showTab(id){
-  ["badges","history","fiches","cameleon"].forEach(t=>{
-    $("tab-content-"+t).style.display=t===id?"block":"none";
-    $("tab-"+t).classList.toggle("active",t===id);
-  });
-}
-
-// ════════════════════════════════════════════════════
-// BADGES
-// ════════════════════════════════════════════════════
-function renderBadges(p){
-  const grid=$("badgesGrid");
-  let earned=0,h="";
-  BADGES.forEach(b=>{
-    const ok=b.lv?(p.completed&&p.completed.includes(b.lv)):(b.c?b.c(p):false);
-    if(ok)earned++;
-    const link=ok&&b.lv?"vocabulary.html?level="+b.lv:"quiz.html?section=levels";
-    const hint=ok&&b.lv?`<div class="badge-hint">📖 Lvl ${b.lv} vocab →</div>`:"";
-    h+=`<a href="${link}" class="badge-cube ${ok?"earned":""}" title="${b.desc}">
-      <div class="badge-icon">${ok?b.icon:"🔒"}</div>
-      <div class="badge-name">${b.name}</div>
-      <div class="badge-desc">${b.desc}</div>
-      ${hint}
-    </a>`;
-  });
-  grid.innerHTML=h;
-  $("badgeCount").textContent=`🏅 Badges — ${earned}/${BADGES.length} earned`;
-  $("tab-badges").textContent=`🏅 Badges (${earned})`;
-}
-
-// ════════════════════════════════════════════════════
-// HISTORY
-// ════════════════════════════════════════════════════
-function renderHistory(p){
-  const el=$("historyList");
-  const hist=(p.sessionHistory||[]).slice().reverse().slice(0,20);
-  if(!hist.length){el.innerHTML='<div class="empty"><div class="empty-icon">📜</div>No sessions yet — go play!</div>';return;}
-  el.innerHTML=hist.map(s=>{
-    const d=new Date(s.date);
-    return `<div class="history-item">
-      <div>
-        <div class="hist-title">Level ${s.level}: ${LN[s.level]||""}</div>
-        <div class="hist-sub">${d.toLocaleDateString()} ${d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})} • ${s.mode||"mixed"}</div>
-      </div>
-      <div class="hist-score ${s.passed?"pass":"fail"}">${s.correct}/${s.total} (${s.pct}%)</div>
-    </div>`;
-  }).join("");
-}
-
-// ════════════════════════════════════════════════════
-// FICHES ERREURS
-// ════════════════════════════════════════════════════
-function renderFiches(p){
-  const el=$("fichesList");
-  const errs=(p.errorHistory||[]).slice().reverse().slice(0,30);
-  if(!errs.length){el.innerHTML='<div class="empty"><div class="empty-icon">🎉</div>No errors — you\'re nailing it!</div>';return;}
-  el.innerHTML=errs.map(e=>`<div class="fiche-card">
-    <div class="fiche-q">❓ ${e.question}</div>
-    <div class="fiche-a">✅ ${e.correctAnswer}</div>
-    ${e.explanation?`<div style="font-size:.75em;color:var(--muted);margin-top:4px">💡 ${e.explanation}</div>`:""}
-    <div style="font-size:.68em;color:var(--muted);margin-top:4px">Level ${e.level} • ${new Date(e.date).toLocaleDateString()}</div>
-  </div>`).join("");
-}
-
-// ════════════════════════════════════════════════════
-// CAMELEON
-// ════════════════════════════════════════════════════
-function renderCameleon(p){
-  const done=(p.completed||[]).length;
-  const s=CAMELEON.slice().reverse().find(x=>done>=x.min)||CAMELEON[0];
-  $("camEmoji").textContent=s.emoji;
-  $("camTitle").textContent=s.title;
-  $("camDesc").textContent=s.desc+" ("+done+"/20)";
-  $("camStages").innerHTML=CAMELEON.map(x=>`<div class="stage-pill ${done>=x.min?"done":""}">${x.emoji}</div>`).join("");
-}
-
-// ════════════════════════════════════════════════════
-// 🪔 GÉNIE
-// ════════════════════════════════════════════════════
-let geniusOpen=false;
-function toggleGenius(){
-  geniusOpen=!geniusOpen;
-  $("geniusPanel").classList.toggle("open",geniusOpen);
-  if(geniusOpen)renderGenius();
-}
-
-function renderGenius(){
-  const words=getG();
-  const body=$("geniusBody");
-  if(!words.length){
-    body.innerHTML=`<div class="genius-empty">
-      <div class="genius-empty-icon">🪔</div>
-      No words saved yet.<br>Go to <a href="vocabulary.html" style="color:var(--amber)">Vocabulary</a> and tap ⭐ on any word!
-    </div>`;
-    return;
-  }
-  body.innerHTML=words.map((w,i)=>`
-    <div class="genius-word">
-      <div>
-        <div class="genius-word-fr">${w.fr} <span class="genius-word-phon">${w.phon||""}</span></div>
-        <div class="genius-word-en">${w.en}</div>
-      </div>
-      <button class="genius-remove" onclick="removeGenius(${i})" title="Remove">✕</button>
-    </div>
-  `).join("");
-}
-
-function removeGenius(idx){
-  const words=getG();words.splice(idx,1);setG(words);
-  renderGenius();toast("Word removed from Génie");
-}
-
-function quizGenius(){
-  const words=getG();
-  if(!words.length){toast("Add some words first!");return;}
-  // Mini quiz on Génie words (simple alert for now, can be expanded)
-  const word=words[Math.floor(Math.random()*words.length)];
-  const answer=prompt(`🪔 Génie Quiz!\n\nHow do you say in French:\n"${word.en}"`);
-  if(answer===null)return;
-  const clean=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
-  if(clean(answer)===clean(word.fr)){
-    toast("✅ Correct! "+word.fr+" = "+word.en);
-  }else{
-    toast("❌ Answer: "+word.fr+" ("+word.phon+") = "+word.en);
-  }
-}
-
-// ════════════════════════════════════════════════════
-// EXPORT / IMPORT
-// ════════════════════════════════════════════════════
-function doExport(){
-  const p=getP();
-  if(!Object.keys(p).length){toast("No data to export.");return;}
-  const blob=new Blob([JSON.stringify(p,null,2)],{type:"application/json"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");a.href=url;
-  a.download="DailyFrench-save-"+new Date().toISOString().slice(0,10)+".json";
-  a.click();URL.revokeObjectURL(url);toast("Exported! ✅");
-}
-function doImport(evt){
-  const file=evt.target.files[0];if(!file)return;
-  const r=new FileReader();
-  r.onload=function(e){
-    try{
-      const d=JSON.parse(e.target.result);
-      if(typeof d==="object"&&d!==null){
-        setP(d);const names=Object.keys(d);
-        if(names.length)loadPlayer(names[0]);
-        toast("Imported! ✅");
-      }else toast("Invalid file.");
-    }catch{toast("Error reading file.");}
-  };
-  r.readAsText(file);evt.target.value="";
-}
-
-// ════════════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════════════
-document.addEventListener("DOMContentLoaded",()=>{
-  // Génie count on FAB
-  function updateGeniusBadge(){
-    const count=getG().length;
-    $("geniusFab").title=`🪔 Mon Génie — ${count} word${count!==1?"s":""}`;
-  }
-  updateGeniusBadge();
-
-  // URL param ?player=X
-  const params=new URLSearchParams(window.location.search);
-  const pname=params.get("player");
-  const players=getP();
-  const names=Object.keys(players);
-  const target=pname||(names.length>0?names[0]:null);
-  if(target)loadPlayer(target);
-  else populateSelect(null);
-
-  // Modal keyboard
-  $("modalBg").addEventListener("click",e=>{if(e.target===$("modalBg"))closeModal();});
-
-  // Close genius on outside click
-  document.addEventListener("click",e=>{
-    if(geniusOpen&&!$("geniusPanel").contains(e.target)&&!$("geniusFab").contains(e.target)){
-      geniusOpen=false;$("geniusPanel").classList.remove("open");
-    }
-  });
-});
-</script>
+<script src="js/utils.js"></script>
+<script src="js/dashboard.js"></script>
 </body>
 </html>
