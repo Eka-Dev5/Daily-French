@@ -84,38 +84,38 @@
   <div id="jMap"></div>
 </div>
 
-<!-- TABS -->
-<div class="tabs">
-  <button class="tab on" id="tab-badges" onclick="showTab('badges')">🏅 Badges</button>
-  <button class="tab" id="tab-history" onclick="showTab('history')">📜 History</button>
-  <button class="tab" id="tab-fiches" onclick="showTab('fiches')">📝 Errors</button>
-  <button class="tab" id="tab-cameleon" onclick="showTab('cameleon')">🦎 Cameleon</button>
-</div>
+<!-- ═══ MENU LATÉRAL (bouton ☰ en haut à droite) ═══ -->
+<button class="menu-btn" id="menuBtn" onclick="toggleMenu()" title="Menu">☰</button>
 
-<div id="tc-badges">
-  <div class="sec-head">
-    <div class="sec-title">🏅 Badges</div>
-    <div class="sec-sub">Earned badges link to their level vocabulary</div>
+<!-- Overlay sombre -->
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+<!-- Le menu qui glisse -->
+<div class="side-menu" id="sideMenu">
+  <div class="menu-head">
+    <div class="menu-title">📊 My Space</div>
+    <div class="menu-sub">Your progress & stats</div>
   </div>
-  <div class="badges" id="badgeGrid"></div>
-</div>
-<div id="tc-history" style="display:none">
-  <div class="sec-head"><div class="sec-title">📜 Recent sessions</div></div>
-  <div id="histList"></div>
-</div>
-<div id="tc-fiches" style="display:none">
-  <div class="sec-head">
-    <div class="sec-title">📝 Error cards</div>
-    <div class="sec-sub">Last 30 mistakes — review & retry</div>
+  <div class="menu-list">
+    <div class="menu-item on" id="mi-badges" onclick="showTab('badges');toggleMenu()">
+      <span class="mi-ico">🏅</span>
+      <span class="mi-label">Badges</span>
+    </div>
+    <div class="menu-item" id="mi-history" onclick="showTab('history');toggleMenu()">
+      <span class="mi-ico">📜</span>
+      <span class="mi-label">History</span>
+    </div>
+    <div class="menu-item" id="mi-fiches" onclick="showTab('fiches');toggleMenu()">
+      <span class="mi-ico">📝</span>
+      <span class="mi-label">Errors</span>
+    </div>
+    <div class="menu-item" id="mi-cameleon" onclick="showTab('cameleon');toggleMenu()">
+      <span class="mi-ico">🦎</span>
+      <span class="mi-label">Cameleon</span>
+    </div>
   </div>
-  <div id="ficheList"></div>
-</div>
-<div id="tc-cameleon" style="display:none">
-  <div class="cam-box">
-    <span class="cam-emoji" id="camE">🦎</span>
-    <div class="cam-name" id="camN">Beginner Cameleon</div>
-    <div class="cam-desc" id="camD">Keep practising to transform!</div>
-    <div class="cam-stages" id="camS"></div>
+  <div class="menu-close">
+    <button class="menu-close-btn" onclick="toggleMenu()">✕ Close</button>
   </div>
 </div>
 
