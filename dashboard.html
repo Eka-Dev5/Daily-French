@@ -84,38 +84,18 @@
   <div id="jMap"></div>
 </div>
 
-<!-- ═══ MENU LATÉRAL (bouton ☰ en haut à droite) ═══ -->
-<button class="menu-btn" id="menuBtn" onclick="toggleMenu()" title="Menu">☰</button>
-
-<!-- Overlay sombre -->
-<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
-
-<!-- Le menu qui glisse -->
-<div class="side-menu" id="sideMenu">
-  <div class="menu-head">
-    <div class="menu-title">📊 My Space</div>
-    <div class="menu-sub">Your progress & stats</div>
-  </div>
-  <div class="menu-list">
-    <div class="menu-item on" id="mi-badges" onclick="showTab('badges');toggleMenu()">
-      <span class="mi-ico">🏅</span>
-      <span class="mi-label">Badges</span>
-    </div>
-    <div class="menu-item" id="mi-history" onclick="showTab('history');toggleMenu()">
-      <span class="mi-ico">📜</span>
-      <span class="mi-label">History</span>
-    </div>
-    <div class="menu-item" id="mi-fiches" onclick="showTab('fiches');toggleMenu()">
-      <span class="mi-ico">📝</span>
-      <span class="mi-label">Errors</span>
-    </div>
-    <div class="menu-item" id="mi-cameleon" onclick="showTab('cameleon');toggleMenu()">
-      <span class="mi-ico">🦎</span>
-      <span class="mi-label">Cameleon</span>
-    </div>
-  </div>
-  <div class="menu-close">
-    <button class="menu-close-btn" onclick="toggleMenu()">✕ Close</button>
+<!-- ═══ MENU DÉPLIANT VERS LE BAS ═══ -->
+<div class="menu-dropdown-wrap">
+  <button class="menu-toggle" onclick="toggleDropdownMenu()" id="menuToggleBtn">
+    <span id="menuToggleLabel">🏅 Badges</span>
+    <span class="menu-arrow" id="menuArrow">▼</span>
+  </button>
+  
+  <div class="menu-dropdown" id="menuDropdown">
+    <div class="menu-d-item on" id="md-badges" onclick="switchTab('badges')">🏅 Badges</div>
+    <div class="menu-d-item" id="md-history" onclick="switchTab('history')">📜 History</div>
+    <div class="menu-d-item" id="md-fiches" onclick="switchTab('fiches')">📝 Errors</div>
+    <div class="menu-d-item" id="md-cameleon" onclick="switchTab('cameleon')">🦎 Cameleon</div>
   </div>
 </div>
 
@@ -124,8 +104,7 @@
   <a href="quiz.html?section=levels" class="cta cta-play">🎮 Play now</a>
   <a href="quiz.html?section=lecons" class="cta cta-learn">📚 Lessons</a>
   <a href="vocabulary.html" class="cta cta-vocab">📖 Vocabulary</a>
-</div>
-
+  </div>
 </div>
 
 <!-- NAV BOTTOM -->
