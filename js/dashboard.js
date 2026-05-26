@@ -8,12 +8,28 @@
 //    Bouton ☰ → ouvre le menu depuis la droite
 // ══════════════════════════════════════════════════════
 
-function toggleMenu(){
-  // Ouvre/ferme le menu
-  document.getElementById('sideMenu').classList.toggle('open');
-  // Ouvre/ferme l'overlay sombre derrière
-  document.getElementById('menuOverlay').classList.toggle('open');
+// ═══ MENU DÉPLIANT VERS LE BAS ═══
+function toggleDropdownMenu(){
+  document.getElementById('menuDropdown').classList.toggle('open');
+  document.getElementById('menuToggleBtn').classList.toggle('open');
 }
+
+function switchTab(id){
+  // Ferme le menu
+  document.getElementById('menuDropdown').classList.remove('open');
+  document.getElementById('menuToggleBtn').classList.remove('open');
+  
+  // Met à jour le label du bouton
+  const labels = {
+    badges: '🏅 Badges',
+    history: '📜 History',
+    fiches: '📝 Errors',
+    cameleon: '🦎 Cameleon'
+  };
+  document.getElementById('menuToggleLabel').textContent = labels[id];
+  
+  
+
 
 // ══════════════════════════════════════════════════════
 // 2. TABS / SECTIONS
@@ -21,18 +37,14 @@ function toggleMenu(){
 //    et met à jour le menu latéral
 // ══════════════════════════════════════════════════════
 
-function showTab(id){
-  // Liste des 4 sections
+// Affiche la bonne section
   const sections = ["badges","history","fiches","cameleon"];
-
   sections.forEach(t => {
-    // Affiche ou cache la section
     const el = document.getElementById("tc-" + t);
-    if (el) el.style.display = (t === id) ? "block" : "none";
-
-    // Met à jour l'item actif dans le menu latéral (si existe)
-    const mi = document.getElementById("mi-" + t);
-    if (mi) mi.classList.toggle("on", t === id);
+    if(el) el.style.display = (t === id) ? "block" : "none";
+    
+    const md = document.getElementById("md-" + t);
+    if(md) md.classList.toggle("on", t === id);
   });
 }
 
