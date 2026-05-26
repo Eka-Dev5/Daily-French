@@ -2,6 +2,20 @@
 // DAILY FRENCH — Dashboard JS
 // v3.1 — séparé du HTML et CSS
 // ══════════════════════════════════════════════════════
+// ═══ MENU LATÉRAL ═══
+function toggleMenu(){
+  document.getElementById('sideMenu').classList.toggle('open');
+  document.getElementById('menuOverlay').classList.toggle('open');
+}
+
+// Modifier showTab pour mettre à jour le menu aussi
+function showTab(id){
+  ["badges","history","fiches","cameleon"].forEach(t=>{
+    document.getElementById("tc-"+t).style.display=t===id?"block":"none";
+    document.getElementById("tab-"+t)?.classList?.toggle("on",t===id);
+    document.getElementById("mi-"+t)?.classList?.toggle("on",t===id);
+  });
+}
 
 // ─── THÈMES ───
 const THEMES = {
