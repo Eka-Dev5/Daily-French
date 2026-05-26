@@ -1,0 +1,40 @@
+// ═══════════════════════════════════════════════════════════════════
+// CONFIG — Daily French 🥖
+// ═══════════════════════════════════════════════════════════════════
+
+const SUBJECT_CONFIG = {
+  name: "Daily French",
+  emoji: "🥖",
+  lang: "fr",
+  storageKey: "dailyFrench_v1",
+  playersKey: "dailyFrench_players",
+  dashboardFile: "dashboard.html",
+  vocabularyFile: "vocabulary.html",
+  maxLevel: 20
+};
+
+const FEATURES = {
+  voice: {
+    enabled: true,
+    tts: true,
+    stt: true,
+    pronunciationCheck: true,
+    serialMode: false
+  },
+  pictures: {
+    enabled: true,
+    lazyLoad: true
+  },
+  offline: {
+    serviceWorker: false
+  }
+};
+
+const LEVEL_NAMES = {
+  1:"Greetings 🙋", 2:"At the market 🛒", 3:"In the garden 🌿", 4:"Neighbours 🏘️",
+  5:"Tastes & desires ❤️", 6:"At the shops 🏬", 7:"Friends & going out 👫",
+  8:"Weather 🌤️", 9:"Essential verbs ⚡", 10:"Politeness 🎩", 11:"Daily life in France 🇫🇷",
+  12:"My Routine 🌅", 13:"My Emotions ❤️", 14:"My Needs 🍽️", 15:"My House 🏡",
+  16:"My Family 👨‍👩‍👧", 17:"My Plans 📅", 18:"My Health 💊", 19:"My Cooking 🍳",
+  20:"Living French 🗣️"
+};
