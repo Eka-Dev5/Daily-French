@@ -8,8 +8,31 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/quiz.css">
 
-<!-- Styles complémentaires (leçons + popup vocab + CTA) -->
+<!-- ═══ STYLES COMPLÉMENTAIRES (Leçons + Popup vocab + Tailles + Centrage) ═══ -->
 <style>
+/* ── TAILLES AUGMENTÉES pour public 40+ ── */
+.quiz-home-title{font-family:'Fraunces',serif;font-size:1.7em;font-weight:900;color:var(--text);line-height:1.3;margin-bottom:12px;text-align:center}
+.quiz-home-sub{font-size:1.05em;color:var(--muted);margin-bottom:24px;text-align:center}
+.mode-title{font-weight:700;margin-bottom:14px;color:var(--text);font-size:1.05em}
+.mode-btn{font-size:1em;padding:14px}
+.level-title{font-size:1.15em;font-weight:700}
+.level-obj{font-size:.9em}
+.level-status{font-size:.85em;font-weight:600;margin-top:8px}
+.question-num{font-size:.9em;color:var(--muted);margin-bottom:10px;font-weight:600}
+.question-text{font-size:1.35em;font-weight:700;color:var(--text);line-height:1.5;margin-bottom:16px}
+.option-btn{font-size:1em;padding:16px 18px}
+.answer-input{font-size:1.15em;padding:16px}
+.feedback-title{font-size:1.15em;font-weight:700;margin-bottom:6px}
+.feedback-correct{font-size:1em;margin-bottom:6px}
+.feedback-explanation{font-size:.95em;color:var(--muted);margin-top:6px}
+.result-num{font-size:2.6em;font-weight:800}
+.result-sub{font-size:.85em;opacity:.9}
+.result-msg{font-size:1.15em;text-align:center;margin-bottom:20px}
+.hint-box{font-size:.95em}
+.sec-title{font-size:1.4em}
+.sec-sub{font-size:.95em}
+.empty{font-size:1em;text-align:center;padding:24px;color:var(--muted)}
+
 /* ── Leçons ── */
 .lessons-list{display:grid;gap:10px}
 .lesson-card{background:var(--bg-card);border:2px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .25s}
@@ -27,6 +50,15 @@
 .lesson-ex-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:.75em;cursor:pointer;transition:all .2s;flex-shrink:0}
 .lesson-ex-btn:hover{background:var(--primary-light);border-color:var(--primary)}
 .lesson-ex-en{display:none;color:var(--green);font-size:.88em;margin-top:8px;padding:10px;background:var(--green-light);border-radius:var(--r-sm);border-left:3px solid var(--green)}
+
+/* ── Lesson Intro (avant quiz) ── */
+.lesson-intro{background:var(--bg-card);border-radius:var(--r-lg);padding:24px;margin-bottom:14px;border:1px solid var(--border);display:none}
+.lesson-intro-title{font-family:'Fraunces',serif;font-size:1.3em;font-weight:900;margin-bottom:8px;color:var(--text)}
+.lesson-intro-obj{font-size:.95em;color:var(--muted);margin-bottom:14px}
+.lesson-intro-content{line-height:1.6;font-size:.92em;margin-bottom:14px}
+.lesson-intro-vocab{display:inline-block;margin-bottom:14px;color:var(--primary);font-weight:700;text-decoration:none;border-bottom:1px dashed var(--primary)}
+.lesson-intro-start{width:100%;padding:14px;background:var(--primary);color:white;border:none;border-radius:var(--r-sm);font-weight:700;font-size:1em;cursor:pointer;font-family:'Inter',sans-serif}
+.lesson-intro-start:hover{background:var(--primary-mid)}
 
 /* ── Popup vocabulaire ── */
 .vocab-modal-content{position:relative;background:var(--bg-card);border-radius:var(--r-lg);padding:24px;max-width:420px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg);border:2px solid var(--border)}
@@ -49,9 +81,6 @@
 
 /* ── Sections headers ── */
 .sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}
-.sec-title{font-family:'Fraunces',serif;font-size:1.3em;font-weight:700;color:var(--text)}
-.sec-sub{font-size:.88em;color:var(--muted)}
-.empty{text-align:center;padding:24px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -110,7 +139,7 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════
-     SECTIONS
+     SECTIONS (IDs alignés sur game-engine.js)
      ═══════════════════════════════════════════════════════ -->
 
 <!-- ─── SECTION HOME ─── -->
@@ -143,7 +172,7 @@
       <div class="sec-title">📚 Lessons</div>
       <div class="sec-sub">20 levels to master everyday French</div>
     </div>
-    <div id="lessonsList" class="lessons-list">
+    <div id="lessonsContainer" class="lessons-list">
       <div class="empty">Loading lessons...</div>
     </div>
   </div>
@@ -164,12 +193,12 @@
         <button class="mode-btn" data-mode="libre" onclick="selectMode('libre')">✍️ Written</button>
       </div>
     </div>
-    <div id="levelsGrid" class="levels-grid"></div>
+    <div id="levelsContainer" class="levels-grid"></div>
   </div>
 </div>
 
-<!-- ─── SECTION GAME ─── -->
-<div id="game" class="section">
+<!-- ─── SECTION JEU ─── -->
+<div id="jeu" class="section">
   <div class="card">
     <div class="game-header">
       <div class="game-title" id="gameTitle">Level 1</div>
@@ -178,27 +207,36 @@
     
     <div class="progress-wrap">
       <div class="progress-info">
-        <span id="qCounter">Q1/10</span>
-        <span id="qScore">0 ✓</span>
+        <span id="questionCounter">Q1/10</span>
+        <span id="scoreDisplay">0 ✓</span>
       </div>
-      <div class="progress-bar"><div class="progress-fill" id="qProgress" style="width:0%"></div></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
     </div>
     
     <div class="hint-box" id="hintBox"></div>
     
+    <!-- Lesson Intro (avant les questions) -->
+    <div class="lesson-intro" id="lessonIntro">
+      <div class="lesson-intro-title" id="lessonIntroTitle"></div>
+      <div class="lesson-intro-obj" id="lessonIntroObj"></div>
+      <div class="lesson-intro-content" id="lessonIntroContent"></div>
+      <a class="lesson-intro-vocab" id="lessonIntroVocabulary" href="#">📖 Level vocabulary</a>
+      <button class="lesson-intro-start" onclick="startQuestions()">Start Quiz →</button>
+    </div>
+    
     <div class="question-box">
-      <div class="question-num" id="qNum">1. Multiple Choice</div>
-      <div class="question-text" id="qText">Question text here</div>
-      <div class="options-grid" id="qcmGrid"></div>
-      <div id="libreBox" style="display:none">
-        <input type="text" id="answerInput" class="answer-input" placeholder="Type your answer in French..." autocomplete="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter')validateAnswer()">
+      <div class="question-num" id="questionNum">1. MULTIPLE CHOICE</div>
+      <div class="question-text" id="questionText">Question text here</div>
+      <div class="options-grid" id="qcmOptions"></div>
+      <div id="libreInput" style="display:none">
+        <input type="text" id="answerInput" class="answer-input" placeholder="Type your answer in French..." autocomplete="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter'){const n=document.getElementById('nextBtn');const v=document.getElementById('validateBtn');if(n&&n.style.display!=='none')nextQuestion();else if(v)validateAnswer();}">
       </div>
     </div>
     
     <div class="feedback" id="feedback">
-      <div class="feedback-title" id="fbTitle"></div>
-      <div class="feedback-correct" id="fbCorrect"></div>
-      <div class="feedback-explanation" id="fbExp"></div>
+      <div class="feedback-title" id="feedbackTitle"></div>
+      <div class="feedback-correct" id="feedbackCorrect"></div>
+      <div class="feedback-explanation" id="feedbackExplanation"></div>
     </div>
     
     <div class="game-actions">
@@ -209,15 +247,15 @@
 </div>
 
 <!-- ─── SECTION RÉSULTATS ─── -->
-<div id="results" class="section">
+<div id="resultats" class="section">
   <div class="card" style="text-align:center">
     <div class="result-circle">
-      <div class="result-num" id="resPct">0%</div>
+      <div class="result-num" id="resultPct">0%</div>
       <div class="result-sub">Score</div>
     </div>
-    <div class="result-msg" id="resMsg"></div>
+    <div class="result-msg" id="resultMsg"></div>
     <div class="result-btns">
-      <button class="btn btn-primary" id="nextLvlBtn" onclick="startNextLevel()" style="display:none">Next level →</button>
+      <button class="btn btn-primary" id="nextLevelBtn" onclick="startNextLevel()" style="display:none">Next level →</button>
       <button class="btn btn-ghost" onclick="retryLevel()">↻ Retry</button>
       <button class="btn btn-ghost" onclick="quitGame()">🏠 Home</button>
     </div>
