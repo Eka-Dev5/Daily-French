@@ -4,8 +4,7 @@
 // ═══════════════════════════════════════════════════════════════════
 
 // ═══════════════════════════════════════════════════════════════════
-// 1. WRAPPERS DASHBOARD — Pour que le hero, le select et le modal fonctionnent
-//    exactement comme dans dashboard.html
+// 1. WRAPPERS DASHBOARD — Hero, select, modal, joueur
 // ═══════════════════════════════════════════════════════════════════
 
 function fillSelect(active) {
@@ -68,6 +67,7 @@ function renderBento(p) {
   if (b3) b3.textContent = (p.completed || []).length + "/20";
 }
 
+// ── MODAL — Fonctions robustes avec listeners attachés dans init ──
 function openModal() {
   const wrap = document.getElementById("modalWrap");
   if (wrap) wrap.classList.add("open");
@@ -81,16 +81,21 @@ function closeModal() {
 }
 
 function doCreate() {
-  const n = document.getElementById("mInput").value.trim();
-  if (!n) return;
+  const inp = document.getElementById("mInput");
+  if (!inp) { console.error("mInput not found"); return; }
+  const n = inp.value.trim();
+  if (!n) { showToast("Please enter a name!"); return; }
+  
   const players = getPlayers();
   if (players[n]) { showToast("Player already exists!"); return; }
+  
   players[n] = {
     name: n, currentLevel: 1, score: 0, completed: [],
     totalQuestions: 0, totalCorrect: 0, streak: 0,
     lastPlayed: null, errorHistory: [], sessionHistory: [], activeSession: null
   };
   savePlayers(players);
+  
   closeModal();
   switchPlayer(n);
   loadPlayer(n);
@@ -100,34 +105,39 @@ function doCreate() {
 function doExport() { exportSave(); }
 function doImport(ev) { importSave(ev); }
 
-// Surcharge updatePlayerDisplay (de players.js) pour utiliser le hero dashboard
-const _origUpdatePlayerDisplay = (typeof updatePlayerDisplay === "function") ? updatePlayerDisplay : function(){};
-updatePlayerDisplay = function() {
-  const players = getPlayers();
-  const current = gameState.currentPlayer;
-  if (!current || !players[current]) {
-    const heroAv = document.getElementById("heroAv");
-    const heroName = document.getElementById("heroName");
-    if (heroAv) heroAv.innerHTML = '?<<span class="hero-lvl-badge" id="heroLvl">1</span>';
-    if (heroName) heroName.textContent = "Welcome";
-    fillSelect(null);
-    return;
-  }
-  loadPlayer(current);
-};
+// Surcharge updatePlayerDisplay pour utiliser le hero dashboard
+if (typeof updatePlayerDisplay === "function") {
+  const _origUpdatePlayerDisplay = updatePlayerDisplay;
+  updatePlayerDisplay = function() {
+    const players = getPlayers();
+    const current = gameState.currentPlayer;
+    if (!current || !players[current]) {
+      const heroAv = document.getElementById("heroAv");
+      const heroName = document.getElementById("heroName");
+      if (heroAv) heroAv.innerHTML = '?<<span class="hero-lvl-badge" id="heroLvl">1</span>';
+      if (heroName) heroName.textContent = "Welcome";
+      fillSelect(null);
+      return;
+    }
+    loadPlayer(current);
+  };
+}
 
 // ═══════════════════════════════════════════════════════════════════
-// 2. SURCHARGE selectMode — Supporte data-mode (plusieurs groupes de boutons)
+// 2. SURCHARGE selectMode — Supporte data-mode
 // ═══════════════════════════════════════════════════════════════════
-selectMode = function(mode) {
-  gameState.currentMode = mode;
-  document.querySelectorAll(".mode-btn").forEach(b => {
-    b.classList.toggle("selected", b.getAttribute("data-mode") === mode);
-  });
-};
+if (typeof selectMode === "function") {
+  const _origSelectMode = selectMode;
+  selectMode = function(mode) {
+    gameState.currentMode = mode;
+    document.querySelectorAll(".mode-btn").forEach(b => {
+      b.classList.toggle("selected", b.getAttribute("data-mode") === mode);
+    });
+  };
+}
 
 // ═══════════════════════════════════════════════════════════════════
-// 3. RENDER LESSONS — 20 leçons avec highlight vocab + bouton English
+// 3. RENDER LESSONS — 20 leçons avec highlight vocab
 // ═══════════════════════════════════════════════════════════════════
 function renderLessons() {
   const container = document.getElementById("lessonsContainer");
@@ -140,11 +150,10 @@ function renderLessons() {
   container.innerHTML = LESSONS_DATA.map(l => {
     const hasVocab = (typeof highlightVocabularyWords === "function");
     const contentHtml = l.content ? (hasVocab ? highlightVocabularyWords(l.content) : l.content) : "";
-    // Extraction traduction si présente (🇬🇧)
     let trans = "";
     if (l.content && l.content.includes("🇬🇧")) {
       const parts = l.content.split("🇬🇧");
-      if (parts[1]) trans = parts[1].split(/<<\/p>|<\/div>|<br>/)[0].replace(/<<[^>]*>/g,"").trim();
+      if (parts[1]) trans = parts[1].split(/<\/p>|<\/div>|<br>/)[0].replace(/<[^>]*>/g,"").trim();
     }
     return `
       <div class="lesson-card" id="lesson-${l.num}">
@@ -165,7 +174,7 @@ function renderLessons() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 4. TOGGLE LESSON — Ouvre/ferme une leçon
+// 4. TOGGLE LESSON
 // ═══════════════════════════════════════════════════════════════════
 function toggleLesson(num) {
   const body = document.getElementById("lesson-body-" + num);
@@ -193,7 +202,7 @@ function routeSection() {
   const section = params.get("section");
   const lvlParam = params.get("level");
   
-  if (lvlParam) return; // game-engine.js gère ?level=X
+  if (lvlParam) return;
   
   if (section === "lecons") {
     showSection("lecons");
@@ -208,26 +217,72 @@ function routeSection() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 6. PATCH renderQuestion — Force le highlight vocab + fallback
+// 6. PATCH renderQuestion — Highlight vocab
 // ═══════════════════════════════════════════════════════════════════
-const _origRenderQuestion = renderQuestion;
-renderQuestion = function() {
-  _origRenderQuestion();
-  const qText = document.getElementById("questionText");
-  if (qText && typeof highlightVocabularyWords === "function") {
-    if (!qText.querySelector(".vocab-highlight")) {
-      const raw = qText.textContent;
-      qText.innerHTML = highlightVocabularyWords(raw);
+if (typeof renderQuestion === "function") {
+  const _origRenderQuestion = renderQuestion;
+  renderQuestion = function() {
+    _origRenderQuestion();
+    const qText = document.getElementById("questionText");
+    if (qText && typeof highlightVocabularyWords === "function") {
+      if (!qText.querySelector(".vocab-highlight")) {
+        const raw = qText.textContent;
+        qText.innerHTML = highlightVocabularyWords(raw);
+      }
     }
-  } else if (qText && typeof highlightVocabularyWords !== "function") {
-    console.warn("vocabulary-engine.js not loaded — highlight disabled");
-  }
-};
+  };
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // 7. INIT — Au chargement de la page
 // ═══════════════════════════════════════════════════════════════════
 document.addEventListener("DOMContentLoaded", () => {
+  
+  // ── Listeners MODAL (attachés ici, pas en inline HTML) ──
+  const btnCreate = document.getElementById("btnCreatePlayer");
+  const btnCancel = document.getElementById("btnCancelModal");
+  const inpModal = document.getElementById("mInput");
+  const modalWrap = document.getElementById("modalWrap");
+  
+  if (btnCreate) {
+    btnCreate.addEventListener("click", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      doCreate();
+    });
+  }
+  
+  if (btnCancel) {
+    btnCancel.addEventListener("click", function(e) {
+      e.preventDefault();
+      closeModal();
+    });
+  }
+  
+  if (inpModal) {
+    inpModal.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        doCreate();
+      }
+    });
+  }
+  
+  if (modalWrap) {
+    modalWrap.addEventListener("click", function(e) {
+      if (e.target === modalWrap) closeModal();
+    });
+  }
+  
+  // ── Vocab popup overlay click ──
+  const vocabModal = document.getElementById("vocabulary-popup-modal");
+  if (vocabModal) {
+    vocabModal.addEventListener("click", function(e) {
+      if (e.target === vocabModal) closeVocabPopup();
+    });
+  }
+  
+  // ── Init joueur + routing ──
   setTimeout(() => {
     const players = getPlayers();
     const names = Object.keys(players);
@@ -237,16 +292,5 @@ document.addEventListener("DOMContentLoaded", () => {
     else fillSelect(null);
     
     routeSection();
-    
-    // Modal overlay click
-    const modalWrap = document.getElementById("modalWrap");
-    if (modalWrap) {
-      modalWrap.addEventListener("click", e => { if (e.target === modalWrap) closeModal(); });
-    }
-    // Vocab popup overlay click
-    const vocabModal = document.getElementById("vocabulary-popup-modal");
-    if (vocabModal) {
-      vocabModal.addEventListener("click", e => { if (e.target === vocabModal) closeVocabPopup(); });
-    }
   }, 150);
 });
