@@ -1,159 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>My Space — Daily French 🥖</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/dashboard.css">
-</head>
-<body>
+<style>
+/* ═══ TAILLES AUGMENTÉES pour public 40+ ═══ */
 
-<div class="bg-wrap">
-  <div class="bg-orb orb-1"></div>
-  <div class="bg-orb orb-2"></div>
-  <div class="bg-orb orb-3"></div>
-</div>
+/* Top bar */
+.top-bar select{font-size:1.05em!important;padding:14px 18px!important;min-height:52px!important}
+.btn-top{font-size:1em!important;padding:14px 18px!important;min-height:52px!important}
 
-<div class="page">
+/* Hero */
+.hero-name{font-size:1.9em!important}
+.hero-tagline{font-size:1.1em!important}
+.hero-pill{font-size:1.05em!important;padding:8px 16px!important}
+.pill-num{font-size:1.25em!important}
+.xp-label{font-size:.95em!important}
 
-<!-- TOP BAR : select + New player -->
-<div class="top-bar">
-  <select id="selPlayer" onchange="loadPlayer(this.value)">
-    <option value="">— Choose a player —</option>
-  </select>
-  
-  <div class="btn-row">
-    <button class="btn-top btn-top-primary" onclick="openModal()">＋ New player</button>
-  </div>
-</div>
+/* Bento */
+.bento-num{font-size:2.4em!important}
+.bento-lbl{font-size:.9em!important}
+.bento-tile{padding:26px 18px!important}
 
+/* Journey map */
+.journey-title{font-size:1.5em!important}
+.journey-sub{font-size:1em!important}
+.journey-hint{font-size:1em!important;padding:16px 20px!important}
+.node{font-size:1em!important;padding:14px 6px 12px!important;min-height:72px!important}
+.node-num{font-size:1.15em!important}
+.node-ico{font-size:1.05em!important}
+.node-tip{font-size:.85em!important}
+.j-legend-item{font-size:.88em!important}
 
+/* Menu dépliant */
+.menu-toggle{font-size:1.1em!important;padding:16px 20px!important}
+.menu-d-item{font-size:1.05em!important;padding:16px 20px!important}
 
+/* Badges */
+.badge-icon{font-size:2em!important}
+.badge-name{font-size:.88em!important}
+.badge-desc{font-size:.82em!important}
 
-<!-- IMPORT/EXPORT -->
-<!-- SAVE BAR : Export/Import seuls -->
-<div class="card save-bar">
-  <p>💾 Save or transfer your progress</p>
-  <div class="btn-row">
-    <button class="btn-top btn-top-ghost" onclick="doExport()">⬇ Export</button>
-    <label class="btn-top btn-top-ghost" style="cursor:pointer">
-      ⬆ Import<input type="file" accept=".json" style="display:none" onchange="doImport(event)">
-    </label>
-  </div>
-</div>
+/* History */
+.hist-t{font-size:1em!important}
+.hist-s{font-size:.88em!important}
 
-<!-- HERO -->
-<div class="hero" id="heroCard">
-  <div class="hero-inner">
-    <div class="hero-avatar" id="heroAv">
-      ?<<span class="hero-lvl-badge" id="heroLvl">1</span>
-    </div>
-    <div class="hero-info">
-      <div class="hero-name" id="heroName">Welcome</div>
-      <div class="hero-tagline" id="heroTag">Select a player to begin your journey</div>
-      <div class="xp-label">
-        <span id="xpNow">0 pts</span>
-        <span id="xpGoal">Next milestone: 100 pts</span>
-      </div>
-      <div class="xp-track"><div class="xp-fill" id="xpBar" style="width:0%"></div></div>
-      <div class="hero-pills" id="heroPills">
-        <div class="hero-pill"><span class="pill-num" id="p_streak">0</span>&nbsp;🔥 streak</div>
-        <div class="hero-pill"><span class="pill-num" id="p_acc">—</span>&nbsp;accuracy</div>
-        <div class="hero-pill"><span class="pill-num" id="p_sess">0</span>&nbsp;sessions</div>
-      </div>
-    </div>
-  </div>
-</div>
+/* Fiches erreurs */
+.fiche-q{font-size:1em!important}
+.fiche-a{font-size:.92em!important}
+.fiche-m{font-size:.88em!important}
 
-<!-- BENTO -->
-<div class="bento">
-  <div class="bento-tile primary"><div class="bento-num" id="b1">—</div><div class="bento-lbl">Current level</div></div>
-  <div class="bento-tile coral"><div class="bento-num" id="b2">—</div><div class="bento-lbl">Points</div></div>
-  <div class="bento-tile gold"><div class="bento-num" id="b3">—</div><div class="bento-lbl">Levels done</div></div>
-</div>
+/* Caméléon */
+.cam-emoji{font-size:4em!important}
+.cam-name{font-size:1.4em!important}
+.cam-desc{font-size:1em!important}
+.cam-stage{font-size:.85em!important;padding:6px 14px!important}
 
-<!-- JOURNEY MAP -->
-<div class="card journey-card">
-  <div class="journey-head">
-    <div class="journey-title">🗺️ Your French<br>Journey</div>
-    <div class="journey-sub">Tap any level<br>✅ = vocabulary &nbsp;•&nbsp; 🎯 = play quiz</div>
-  </div>
-  <div class="journey-hint">✅ Completed → opens vocabulary for that level &nbsp;|&nbsp; 🎯 Current → launches the quiz directly</div>
-  <div id="jMap"></div>
-</div>
+/* CTA */
+.cta{font-size:1.05em!important;padding:18px 14px!important;min-height:56px!important}
 
-<!-- ═══ MENU DÉPLIANT VERS LE BAS ═══ -->
-<div class="menu-dropdown-wrap">
-  <button class="menu-toggle" onclick="toggleDropdownMenu()" id="menuToggleBtn">
-    <span id="menuToggleLabel">🏅 Badges</span>
-    <span class="menu-arrow" id="menuArrow">▼</span>
-  </button>
-  
-  <div class="menu-dropdown" id="menuDropdown">
-    <div class="menu-d-item on" id="md-badges" onclick="switchTab('badges')">🏅 Badges</div>
-    <div class="menu-d-item" id="md-history" onclick="switchTab('history')">📜 History</div>
-    <div class="menu-d-item" id="md-fiches" onclick="switchTab('fiches')">📝 Errors</div>
-    <div class="menu-d-item" id="md-cameleon" onclick="switchTab('cameleon')">🦎 Cameleon</div>
-  </div>
-</div>
+/* Nav bottom */
+.nav-bottom a{font-size:.95em!important;padding:10px 16px!important}
+.nav-bottom a .nav-ico{font-size:1.8em!important}
 
-<!-- CTA -->
-<div class="cta-bar">
-  <a href="quiz.html?section=levels" class="cta cta-play">🎮 Play now</a>
-  <a href="quiz.html?section=lecons" class="cta cta-learn">📚 Lessons</a>
-  <a href="vocabulary.html" class="cta cta-vocab">📖 Vocabulary</a>
-  </div>
-</div>
+/* Modal */
+.modal-title{font-size:1.4em!important}
+.modal input{font-size:1.1em!important;padding:14px 16px!important}
+.modal-btns button{font-size:1.05em!important;padding:14px!important}
 
-<!-- NAV BOTTOM -->
-<<nav class="nav-bottom">
-  <a href="quiz.html"><span class="nav-ico">🏠</span>Home</a>
-  <a href="quiz.html?section=lecons"><span class="nav-ico">📚</span>Lessons</a>
-  <a href="quiz.html?section=levels"><span class="nav-ico">🎮</span>Play</a>
-  <a href="vocabulary.html"><span class="nav-ico">📖</span>Vocab</a>
-  <a href="dashboard.html" class="here"><span class="nav-ico">📊</span>Space</a>
-</nav>
+/* Toast */
+.toast{font-size:1em!important;padding:13px 24px!important}
 
-<!-- GÉNIE FAB -->
-<button class="fab" id="fabBtn" onclick="toggleGenius()">
-  🪔<<span class="fab-badge" id="fabCount" style="display:none">0</span>
-</button>
-
-<!-- GÉNIE PANEL -->
-<div class="genius" id="gPanel">
-  <div class="g-head">
-    <div>
-      <div class="g-title">🪔 Mon Génie</div>
-      <div class="g-sub">Your personal word collection</div>
-    </div>
-    <button class="g-close" onclick="toggleGenius()">✕</button>
-  </div>
-  <div class="g-body" id="gBody"></div>
-  <div class="g-foot">
-    <div class="g-tip">⭐ Star any word in Vocabulary to add it here</div>
-    <button class="g-quiz" onclick="quizMe()">🎯 Quiz me on my words!</button>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- MODAL -->
-<div class="modal-wrap" id="modalWrap">
-  <div class="modal">
-    <div class="modal-title">👤 New player</div>
-    <input type="text" id="mInput" placeholder="Your first name" autocapitalize="words"
-      onkeyup="if(event.key==='Enter')doCreate()">
-    <div class="modal-btns">
-      <button onclick="doCreate()" class="btn-modal-primary">✓ Create</button>
-      <button onclick="closeModal()" class="btn-modal-ghost">✕ Cancel</button>
-    </div>
-  </div>
-</div>
-
-<script src="js/utils.js"></script>
-<script src="js/dashboard.js"></script>
-</body>
-</html>
+/* Responsive mobile */
+@media(max-width:600px){
+  .hero-name{font-size:1.5em!important}
+  .hero-tagline{font-size:1em!important}
+  .journey-title{font-size:1.25em!important}
+  .node{font-size:.9em!important;min-height:60px!important}
+  .bento-num{font-size:2em!important}
+  .nav-bottom a{font-size:.85em!important;padding:8px 12px!important}
+  .nav-bottom a .nav-ico{font-size:1.5em!important}
+}
+</style>
