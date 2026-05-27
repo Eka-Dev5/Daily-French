@@ -1,24 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Quiz — Daily French 🥖</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/quiz.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Daily French 🥖 — Quiz</title>
+  <link rel="stylesheet" href="css/quiz.css">
 </head>
 <body>
-<!-- ... (même HTML que avant, mais sans les styles inline de taille) ... -->
 
-<!-- ═══ SCRIPTS (ordre critique) ═══ -->
-<script src="js/config.js"></script>
-<script src="js/data.js"></script>
-<script src="js/vocabulary-data.js"></script>
-<script src="js/vocabulary-engine.js"></script>
-<script src="js/core.js"></script>        <!-- ← NOUVEAU : joueur, hero, modal, theme -->
-<script src="js/ui-utils.js"></script>
-<script src="js/game-engine.js"></script>
-<script src="js/quiz.js"></script>
+  <!-- Toast notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Modal : création / sélection joueur -->
+  <div id="modalWrap" class="modal-wrap">
+    <div class="modal">
+      <h3 id="modalTitle">New Player</h3>
+      <input type="text" id="mInput" maxlength="30" placeholder="Your name" autocapitalize="off" autocomplete="off">
+      <div class="modal-actions">
+        <button id="btnCancelModal" class="btn-ghost">Cancel</button>
+        <button id="btnCreatePlayer" class="btn-primary">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup définition vocabulaire -->
+  <div id="vocabulary-popup-modal" class="vocab-popup-modal">
+    <div class="vocab-popup-content">
+      <button class="vocab-popup-close" onclick="if(typeof closeVocabPopup==='function')closeVocabPopup()">×</button>
+      <div id="vocab-popup-body"></div>
+    </div>
+  </div>
+
+  <!-- Navigation bottom fixe -->
+  <nav class="nav-bottom">
+    <a href="dashboard.html" class="nav-item">🏠<<span>Home</span></a>
+    <a href="quiz.html?section=lecons" class="nav-item">📚<<span>Lessons</span></a>
+    <a href="quiz.html?section=levels" class="nav-item">🎮<<span>Play</span></a>
+    <a href="vocabulary.html" class="nav-item">📖<<span>Vocab</span></a>
+    <a href="dashboard.html" class="nav-item">📊<<span>Space</span></a>
+  </nav>
+
+  <!-- Hero : avatar + nom + progression -->
+  <header class="hero">
+    <div class="hero-avatar" id="heroAv">?
+      <span class="hero-lvl-badge" id="heroLvl">1</span>
+    </div>
+    <div class="hero-info">
+      <div class="hero-name" id="heroName">Guest</div>
+      <div class="hero-tag" id="heroTag">Level 1 · 0 pts · 0/20 levels</div>
+    </div>
+    <div class="hero-xp">
+      <div class="xp-bar"><div class="xp-fill" id="xpBar"></div></div>
+      <div class="xp-text"><span id="xpNow">0</span> pts · Next: <span id="xpGoal">100</span> pts</div>
+    </div>
+    <div class="hero-switch">
+      <select id="selPlayer" onchange="if(this.value&&typeof loadPlayer==='function'){loadPlayer(this.value)}">
+        <option value="">Choose a player</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- Bento : 3 tuiles stats -->
+  <div class="bento-grid">
+    <div class="bento-tile">
+      <div class="bento-num" id="b1">1</div>
+      <div class="bento-label">Level</div>
+    </div>
+    <div class="bento-tile">
+      <div class="bento-num" id="b2">0</div>
+      <div class="bento-label">Points</div>
+    </div>
+    <div class="bento-tile">
+      <div class="bento-num" id="b3">0/20</div>
+      <div class="bento-label">Done</div>
+    </div>
+  </div>
+
+  <!-- Section : accueil -->
+  <section id="home" class="section">
+    <h1 class="page-title">🥖 Daily French</h1>
+    <p class="page-subtitle">Learn French, one question at a time</p>
+
+    <div class="mode-selector">
+      <button class="mode-btn active" data-mode="mixte">Mixed</button>
+      <button class="mode-btn" data-mode="qcm">QCM</button>
+      <button class="mode-btn" data-mode="libre">Written</button>
+    </div>
+
+    <div class="cta-group">
+      <a href="quiz.html?section=levels" class="btn btn-primary btn-large">🎮 Play Now</a>
+      <a href="quiz.html?section=lecons" class="btn btn-secondary btn-large">📚 Learn</a>
+      <a href="vocabulary.html" class="btn btn-secondary btn-large">📖 Vocabulary</a>
+    </div>
+  </section>
+
+  <!-- Section : leçons -->
+  <section id="lecons" class="section" style="display:none;">
+    <h2 class="section-title">📚 Lessons</h2>
+    <div id="lessonsContainer" class="lessons-container"></div>
+  </section>
+
+  <!-- Section : grille des niveaux -->
+  <section id="levels" class="section" style="display:none;">
+    <h2 class="section-title">🎮 Choose a Level</h2>
+    <div id="levelsContainer" class="levels-container"></div>
+  </section>
+
+  <!-- Section : quiz actif -->
+  <section id="jeu" class="section" style="display:none;">
+
+    <!-- Intro leçon avant questions -->
+    <div id="lessonIntro" class="lesson-intro" style="display:none;">
+      <h3 id="lessonIntroTitle" class="intro-title"></h3>
+      <p id="lessonIntroObj" class="intro-objective"></p>
+      <div id="lessonIntroContent" class="intro-content"></div>
+      <div id="lessonIntroVocabulary" class="intro-vocab"></div>
+      <button id="startLevelBtn" class="btn btn-primary btn-large">Start Level</button>
+    </div>
+
+    <!-- Zone de jeu -->
+    <div id="gameArea" class="game-area">
+      <div class="game-header">
+        <div id="gameTitle" class="game-title">Level 1</div>
+        <div class="game-meta">
+          <span id="questionCounter" class="counter">1 / 10</span>
+          <span id="scoreDisplay" class="score">0 pts</span>
+        </div>
+        <div class="progress-track">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <div id="questionText" class="question-text"></div>
+
+      <div id="qcmOptions" class="qcm-options"></div>
+
+      <div id="libreInput" class="libre-input" style="display:none;">
+        <input type="text" id="answerInput" class="answer-input" placeholder="Type your answer here…" autocapitalize="off" autocomplete="off" spellcheck="false">
+      </div>
+
+      <div id="hintBox" class="hint-box" style="display:none;"></div>
+
+      <div class="game-actions">
+        <button id="validateBtn" class="btn btn-primary btn-large">Validate</button>
+        <button id="nextBtn" class="btn btn-secondary btn-large" style="display:none;">Next</button>
+      </div>
+
+      <div id="feedbackArea" class="feedback-area" style="display:none;">
+        <div id="feedbackTitle" class="feedback-title"></div>
+        <div id="feedbackCorrect" class="feedback-correct"></div>
+        <div id="feedbackExplanation" class="feedback-explanation"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section : résultats -->
+  <section id="resultats" class="section" style="display:none;">
+    <h2 class="section-title">🎯 Results</h2>
+    <div class="result-circle">
+      <div id="resultPct" class="result-pct">0%</div>
+    </div>
+    <div id="resultMsg" class="result-message"></div>
+    <div class="result-actions">
+      <button id="retryBtn" class="btn btn-secondary btn-large">Retry</button>
+      <button id="nextLevelBtn" class="btn btn-primary btn-large">Next Level</button>
+      <button id="quitBtn" class="btn btn-ghost btn-large">Quit</button>
+    </div>
+  </section>
+
+  <!-- Chargement JS : ordre critique -->
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/vocabulary-data.js"></script>
+  <script src="js/vocabulary-engine.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/ui-utils.js"></script>
+  <script src="js/game-engine.js"></script>
+  <script src="js/quiz.js"></script>
+
 </body>
 </html>
