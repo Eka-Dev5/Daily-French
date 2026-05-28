@@ -1,325 +1,620 @@
-/* ═══════════════════════════════════════════════════════════
-   DAILY FRENCH — Quiz Styles
-   Gris lumineux, hero, bento, nav bottom (même design Dashboard)
-   ═══════════════════════════════════════════════════════════ */
+/**
+ * quiz.css — Styles spécifiques au quiz Daily French
+ * 
+ * Complète base.css avec :
+ *   • Sélecteur de mode (mixte / QCM / écrit)
+ *   • Cartes de leçons collapsibles
+ *   • Grille des niveaux 1-20
+ *   • Zone de jeu : question, options QCM, input libre, feedback
+ *   • Écran de résultats avec cercle de progression
+ *   • Responsive ajusté pour la concentration en jeu
+ */
 
-:root {
-  --primary:#4A5568; --primary-mid:#64748B; --primary-light:#F1F5F9;
-  --coral:#F97316; --coral-light:#FFF7ED;
-  --gold:#F59E0B; --gold-light:#FFFBEB;
-  --green:#059669; --green-light:#ECFDF5;
-  --red:#DC2626; --red-light:#FFF5F5;
-  --text:#1E293B; --muted:#64748B; --subtle:#94A3B8;
-  --border:#E2E8F0; --bg:#F5F7FA; --bg-card:#F8FAFC; --white:#FFFFFF;
-  --shadow-sm:0 1px 3px rgba(0,0,0,.06);
-  --shadow:0 4px 12px rgba(51,65,85,.1);
-  --shadow-lg:0 12px 32px rgba(51,65,85,.15);
-  --r:16px; --r-lg:24px; --r-sm:12px;
+/* ═══════════════════════════════════════════════════════════════════
+   1. SÉLECTEUR DE MODE — Trois boutons toggle exclusifs
+   ═══════════════════════════════════════════════════════════════════ */
+
+.mode-selector {
+  display: flex;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+  background: var(--bg-card);
+  padding: 6px;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
 }
 
-*{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-tap-highlight-color:transparent}
-
-body{
-  font-family:'Inter',system-ui,sans-serif;
-  background:var(--bg); min-height:100vh;
-  color:var(--text); padding-bottom:90px;
+.mode-btn {
+  flex: 1;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  padding: 12px 8px;
+  border-radius: var(--r-sm);
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 48px;
 }
 
-/* Fond orbes */
-.bg-wrap{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--bg)}
-.bg-orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.08}
-.orb-1{width:500px;height:500px;background:#CBD5E1;top:-200px;left:-200px}
-.orb-2{width:400px;height:400px;background:#E2E8F0;top:40%;right:-150px}
-.orb-3{width:350px;height:350px;background:#F1F5F9;bottom:-150px;left:30%}
-
-.page{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:16px}
-
-/* Barre du haut */
-.top-bar{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
-.top-bar select{
-  width:100%;padding:12px 16px;background:var(--bg-card);
-  border:2px solid var(--border);border-radius:var(--r-sm);
-  color:var(--text);font-family:'Inter',sans-serif;font-size:.95em;
-  cursor:pointer;min-height:48px;
-}
-.top-bar select:focus{outline:none;border-color:var(--primary)}
-.btn-row{display:flex;gap:10px;flex-wrap:wrap;width:100%}
-.btn-top{
-  flex:1;min-width:120px;padding:12px 16px;border:none;
-  border-radius:var(--r-sm);cursor:pointer;font-weight:700;
-  font-size:.9em;font-family:'Inter',sans-serif;transition:all .2s;
-  display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  min-height:48px;white-space:nowrap;
-}
-.btn-top-primary{background:var(--primary);color:var(--white)}
-.btn-top-primary:hover{background:var(--primary-mid);transform:translateY(-1px)}
-.btn-top-ghost{background:var(--bg-card);color:#475569;border:2px solid #94A3B8}
-.btn-top-ghost:hover{border-color:var(--primary);color:var(--primary)}
-
-/* Hero */
-.hero{
-  padding:32px 28px;margin-bottom:16px;
-  background:linear-gradient(135deg,#475569 0%,#64748B 40%,#94A3B8 70%,#CBD5E1 100%);
-  border-radius:var(--r-lg);color:var(--white);position:relative;overflow:hidden;
-  box-shadow:var(--shadow-lg);
-}
-.hero::before{content:'';position:absolute;top:-40px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.15)}
-.hero::after{content:'';position:absolute;bottom:-30px;left:25%;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.10)}
-.hero-inner{position:relative;z-index:1;display:flex;gap:20px;align-items:flex-start}
-.hero-avatar{
-  width:64px;height:64px;border-radius:50%;flex-shrink:0;
-  background:rgba(255,255,255,.18);border:3px solid rgba(255,255,255,.35);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.5em;font-weight:900;font-family:'Fraunces',serif;position:relative;
-}
-.hero-lvl-badge{
-  position:absolute;bottom:-4px;right:-4px;background:var(--gold);
-  color:#1a0a00;border-radius:20px;padding:2px 8px;
-  font-size:.65em;font-weight:800;border:2px solid var(--white);
-}
-.hero-info{flex:1;min-width:0}
-.hero-name{font-family:'Fraunces',serif;font-size:1.6em;font-weight:900;margin-bottom:4px}
-.hero-tagline{font-size:.92em;opacity:.85;margin-bottom:14px}
-.xp-label{display:flex;justify-content:space-between;font-size:.82em;opacity:.8;margin-bottom:6px}
-.xp-track{height:10px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden}
-.xp-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#FDE68A,#F59E0B);transition:width 1s cubic-bezier(.4,0,.2,1)}
-.hero-pills{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center}
-.hero-pill{
-  background:rgba(255,255,255,.12);border-radius:20px;
-  padding:7px 14px;font-size:.88em;font-weight:600;border:1px solid rgba(255,255,255,.2);
-}
-.pill-num{font-size:1.1em;font-weight:800}
-
-/* Bento */
-.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-.bento-tile{
-  padding:22px 16px;border-radius:var(--r);background:var(--bg-card);
-  border:1px solid var(--border);box-shadow:var(--shadow-sm);
-  display:flex;flex-direction:column;gap:6px;transition:transform .2s;
-}
-.bento-tile:hover{transform:translateY(-2px)}
-.bento-tile.primary{background:#E2E8F0;border-color:rgba(74,85,104,.08)}
-.bento-tile.coral{background:var(--coral-light);border-color:rgba(249,115,22,.08)}
-.bento-tile.gold{background:var(--gold-light);border-color:rgba(245,158,11,.08)}
-.bento-num{font-family:'Fraunces',serif;font-size:1.9em;font-weight:900;line-height:1}
-.bento-tile.primary .bento-num{color:var(--primary)}
-.bento-tile.coral .bento-num{color:var(--coral)}
-.bento-tile.gold .bento-num{color:var(--gold)}
-.bento-lbl{font-size:.75em;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-
-/* Cartes */
-.card{
-  background:var(--bg-card);border-radius:var(--r-lg);
-  border:1px solid var(--border);box-shadow:var(--shadow-sm);
-  padding:28px 24px;margin-bottom:14px;
+.mode-btn.active {
+  background: var(--primary);
+  color: var(--white);
+  box-shadow: var(--shadow-sm);
 }
 
-/* Sections */
-.section{display:none}
-.section.active{display:block}
+/* ═══════════════════════════════════════════════════════════════════
+   2. APPELS À L'ACTION — Groupe de boutons sur l'accueil
+   ═══════════════════════════════════════════════════════════════════ */
 
-/* Accueil quiz */
-.quiz-home-title{font-family:'Fraunces',serif;font-size:1.35em;font-weight:900;color:var(--text);line-height:1.3;margin-bottom:8px}
-.quiz-home-sub{font-size:.92em;color:var(--muted);margin-bottom:20px}
-
-/* Sélecteur mode */
-.mode-selector{
-  background:var(--bg-card);border-radius:var(--r);padding:18px 20px;
-  margin-bottom:16px;border:1px solid var(--border);
-}
-.mode-title{font-weight:700;margin-bottom:12px;color:var(--text);font-size:.95em}
-.mode-btns{display:flex;gap:10px;flex-wrap:wrap}
-.mode-btn{
-  flex:1;padding:11px;border:2px solid var(--border);background:var(--white);
-  border-radius:var(--r-sm);cursor:pointer;font-weight:700;
-  transition:all .2s;text-align:center;min-width:90px;font-size:.9em;
-  font-family:'Inter',sans-serif;
-}
-.mode-btn.selected,.mode-btn:hover{border-color:var(--primary);background:var(--primary);color:var(--white)}
-
-/* Grille niveaux */
-.levels-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-.level-card{
-  border:2px solid var(--border);border-radius:var(--r);padding:16px;
-  transition:all .25s;background:var(--bg-card);cursor:pointer;
-}
-.level-card:hover:not(.locked){border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow)}
-.level-card.locked{opacity:.35;cursor:default;box-shadow:none}
-.level-card.done{border-color:rgba(5,150,105,.3);background:var(--green-light)}
-.level-card.current{border-color:rgba(74,85,104,.4);background:var(--primary-light)}
-.level-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.level-num{font-size:.78em;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-.level-title{font-size:1.05em;font-weight:700;color:var(--text);margin-bottom:4px}
-.level-obj{font-size:.82em;color:var(--muted)}
-.level-status{font-size:.75em;color:var(--muted);margin-top:8px;font-weight:600}
-
-/* Jeu */
-.game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.game-title{font-family:'Fraunces',serif;font-size:1.3em;font-weight:900;color:var(--text)}
-.progress-wrap{margin-bottom:14px}
-.progress-info{display:flex;justify-content:space-between;font-size:.85em;color:var(--muted);margin-bottom:4px}
-.progress-bar{height:10px;background:var(--border);border-radius:99px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-mid));transition:width .4s;border-radius:99px}
-
-/* Question */
-.question-box{background:var(--bg-card);border-radius:var(--r-lg);padding:24px;margin-bottom:14px;border:1px solid var(--border)}
-.question-num{font-size:.82em;color:var(--muted);margin-bottom:8px;font-weight:600}
-.question-text{font-size:1.2em;font-weight:700;color:var(--text);line-height:1.5;margin-bottom:16px}
-
-/* Options QCM */
-.options-grid{display:grid;gap:10px}
-.option-btn{
-  padding:14px 18px;border:2px solid var(--border);background:var(--white);
-  border-radius:var(--r-sm);cursor:pointer;text-align:left;font-size:.95em;
-  transition:all .2s;font-family:'Inter',sans-serif;
-}
-.option-btn:hover:not(:disabled){border-color:var(--primary);background:var(--primary-light)}
-.option-btn.selected{border-color:var(--primary);background:var(--primary-light)}
-.option-btn.correct{border-color:var(--green)!important;background:var(--green-light)!important;color:var(--green)!important}
-.option-btn.wrong{border-color:var(--red)!important;background:var(--red-light)!important;color:var(--red)!important}
-.option-btn:disabled{cursor:not-allowed}
-
-/* Input libre */
-.answer-input{
-  width:100%;padding:14px 16px;border:2px solid var(--border);
-  border-radius:var(--r-sm);font-size:1.05em;margin-top:10px;
-  transition:border-color .2s;font-family:'Inter',sans-serif;
-}
-.answer-input:focus{outline:none;border-color:var(--primary)}
-.answer-input.correct{border-color:var(--green);background:var(--green-light)}
-.answer-input.wrong{border-color:var(--red);background:var(--red-light)}
-
-/* Feedback */
-.feedback{border-radius:var(--r-sm);padding:16px 18px;margin-top:14px;display:none}
-.feedback.show{display:block;animation:fadeIn .3s}
-.feedback.correct-fb{background:var(--green-light);border-left:4px solid var(--green)}
-.feedback.wrong-fb{background:var(--red-light);border-left:4px solid var(--red)}
-.feedback-title{font-weight:700;font-size:1.05em;margin-bottom:5px}
-.feedback-correct{font-size:.95em;color:var(--text);margin-bottom:6px}
-.feedback-explanation{font-size:.88em;color:var(--muted);margin-top:5px}
-
-/* Hint */
-.hint-box{
-  background:var(--gold-light);border-left:4px solid var(--gold);
-  padding:12px 16px;border-radius:0 var(--r-sm) var(--r-sm) 0;
-  margin-bottom:14px;font-size:.9em;color:#92400E;display:none;
+.cta-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
 }
 
-/* Actions */
-.game-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-.game-actions button{flex:1;min-height:48px}
+.cta-group .btn {
+  width: 100%;
+  justify-content: center;
+}
 
-/* Résultats */
-.result-circle{
-  width:130px;height:130px;border-radius:50%;
-  background:linear-gradient(135deg,var(--primary),var(--primary-mid));
-  color:var(--white);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;margin:0 auto 20px;
-  box-shadow:var(--shadow-lg);
-}
-.result-num{font-size:2.4em;font-weight:800}
-.result-sub{font-size:.78em;opacity:.9}
-.result-msg{font-size:1.05em;color:var(--text);margin-bottom:20px;text-align:center}
-.result-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+/* ═══════════════════════════════════════════════════════════════════
+   3. CARTES DE LEÇONS — Collapsible, numérotées, vocabulaire surligné
+   ═══════════════════════════════════════════════════════════════════ */
 
-/* Boutons */
-.btn{
-  padding:12px 18px;border:none;border-radius:var(--r-sm);
-  cursor:pointer;font-weight:700;font-size:.9em;
-  transition:all .2s;text-decoration:none;display:inline-flex;
-  align-items:center;justify-content:center;gap:6px;
-  min-height:48px;font-family:'Inter',sans-serif;
+.lessons-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
 }
-.btn-primary{background:var(--primary);color:var(--white)}
-.btn-primary:hover{background:var(--primary-mid);transform:translateY(-1px)}
-.btn-ghost{background:var(--bg-card);color:var(--muted);border:2px solid var(--border)}
-.btn-ghost:hover{border-color:var(--primary);color:var(--primary)}
-.btn-success{background:var(--green);color:var(--white)}
-.btn-success:hover{opacity:.9}
-.btn-danger{background:var(--red-light);color:var(--red);border:2px solid rgba(220,38,38,.2)}
-.btn-danger:hover{background:var(--red);color:var(--white)}
 
-/* Nav bottom */
-.nav-bottom{
-  position:fixed;bottom:0;left:0;right:0;z-index:1000;
-  background:rgba(255,255,255,.98);backdrop-filter:blur(12px);
-  border-top:1px solid var(--border);display:flex;
-  justify-content:space-around;align-items:center;
-  padding:10px 0 calc(10px + env(safe-area-inset-bottom));
-  box-shadow:0 -4px 20px rgba(0,0,0,.08);
+.lesson-card {
+  background: var(--white);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-fast);
 }
-.nav-bottom a{
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  padding:8px 14px;color:var(--muted);text-decoration:none;
-  font-size:.82em;font-weight:600;transition:all .2s;
-  border-radius:12px;min-width:60px;
-}
-.nav-bottom a:hover{color:var(--primary);background:var(--primary-light)}
-.nav-bottom a.here{color:var(--primary);background:var(--primary-light)}
-.nav-ico{font-size:1.6em}
 
-/* Toast */
-.toast{
-  position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;
-  transform:translateX(-50%) translateY(8px);background:var(--text);
-  color:var(--white);padding:11px 22px;border-radius:30px;
-  font-weight:600;font-size:.88em;opacity:0;transition:all .3s;
-  z-index:9999;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.2);
+.lesson-card.open {
+  box-shadow: var(--shadow);
 }
-.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* Modal */
-.modal-wrap{
-  position:fixed;inset:0;background:rgba(30,41,59,.4);z-index:2000;
-  display:none;align-items:center;justify-content:center;padding:20px;
-  backdrop-filter:blur(4px);
+.lesson-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition-fast);
 }
-.modal-wrap.open{display:flex}
-.modal{
-  background:var(--bg-card);border-radius:var(--r-lg);padding:24px;
-  max-width:320px;width:100%;text-align:center;box-shadow:var(--shadow-lg);
-}
-.modal-title{font-family:'Fraunces',serif;font-size:1.2em;font-weight:900;margin-bottom:14px;color:var(--text)}
-.modal input{
-  width:100%;padding:12px 14px;border:2px solid var(--border);
-  border-radius:var(--r-sm);font-size:.95em;font-family:'Inter',sans-serif;
-  color:var(--text);outline:none;margin-bottom:14px;transition:border-color .2s;
-}
-.modal input:focus{border-color:var(--primary)}
-.modal-btns{display:flex;gap:10px}
-.modal-btns button{flex:1;padding:12px;border:none;border-radius:var(--r-sm);font-weight:700;cursor:pointer;font-size:.9em;font-family:'Inter',sans-serif}
-.btn-modal-primary{background:var(--primary);color:var(--white)}
-.btn-modal-ghost{background:#F1F5F9;color:var(--muted)}
 
-/* Animations */
-@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-
-/* Responsive */
-@media(max-width:600px){
-  .page{padding:12px}
-  .hero{padding:22px 20px}
-  .hero-avatar{width:56px;height:56px;font-size:1.4em}
-  .hero-name{font-size:1.35em}
-  .bento{gap:8px}
-  .bento-tile{padding:14px 10px}
-  .bento-num{font-size:1.7em}
-  .levels-grid{grid-template-columns:1fr}
-  .question-box{padding:18px 16px}
-  .question-text{font-size:1.1em}
-  .option-btn{padding:12px 14px;font-size:.9em}
-  .nav-bottom a{padding:5px 8px;font-size:.68em;min-width:48px}
-  .nav-ico{font-size:1.2em}
-  .toast{bottom:calc(75px + env(safe-area-inset-bottom))}
+.lesson-header:hover {
+  background: var(--bg-card);
 }
-@media(min-width:901px){
-  .page{padding:20px}
-  body{padding-bottom:20px}
-  .nav-bottom{
-    position:relative;bottom:auto;left:auto;right:auto;
-    border-top:none;border-radius:var(--r-lg);box-shadow:var(--shadow-sm);
-    margin-bottom:14px;padding:10px 16px;justify-content:center;gap:12px;
+
+.lesson-header:active {
+  background: var(--primary-light);
+}
+
+.lesson-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--white);
+  font-size: var(--font-sm);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.lesson-title {
+  flex: 1;
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.lesson-chevron {
+  font-size: var(--font-sm);
+  color: var(--subtle);
+  transition: transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.lesson-card.open .lesson-chevron {
+  transform: rotate(180deg);
+}
+
+.lesson-body {
+  padding: 0 var(--space-md) var(--space-md);
+  font-size: var(--font-sm);
+  line-height: 1.7;
+  color: var(--text);
+  display: none;
+}
+
+.lesson-body .vocab-word {
+  font-size: inherit;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. GRILLE DES NIVEAUX — 20 tuiles cliquables
+   ═══════════════════════════════════════════════════════════════════ */
+
+.levels-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-sm);
+}
+
+.level-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: var(--r);
+  padding: var(--space-md) var(--space-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 100px;
+  position: relative;
+  font-size: var(--font-xxl);
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.level-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.level-tile:active {
+  transform: scale(0.96);
+}
+
+.level-tile.locked {
+  background: var(--bg-card);
+  border-color: var(--border);
+  color: var(--subtle);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.level-tile.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.level-tile.completed {
+  border-color: var(--green);
+  background: var(--green-light);
+  color: var(--green);
+}
+
+.level-title {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.3;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. ZONE DE JEU — En-tête, compteur, barre de progression
+   ═══════════════════════════════════════════════════════════════════ */
+
+.game-area {
+  background: var(--white);
+  border-radius: var(--r-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.game-header {
+  margin-bottom: var(--space-lg);
+}
+
+.game-title {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: var(--space-xs);
+}
+
+.game-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-sm);
+  color: var(--muted);
+  margin-bottom: var(--space-sm);
+}
+
+.counter {
+  font-weight: 600;
+}
+
+.score {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.progress-track {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--primary-mid));
+  border-radius: 4px;
+  transition: width 400ms ease;
+  width: 0%;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. TEXTE DE LA QUESTION — Grande taille pour lisibilité
+   ═══════════════════════════════════════════════════════════════════ */
+
+.question-text {
+  font-size: var(--font-lg);
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.5;
+  margin-bottom: var(--space-lg);
+  word-wrap: break-word;
+}
+
+.question-text .vocab-word {
+  font-size: inherit;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. OPTIONS QCM — Boutons verticaux, états selected/correct/wrong
+   ═══════════════════════════════════════════════════════════════════ */
+
+.qcm-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.option-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  text-align: left;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--r);
+  padding: var(--space-md);
+  font-size: var(--font-md);
+  color: var(--text);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 56px;
+}
+
+.option-btn:hover {
+  border-color: var(--primary-mid);
+  background: var(--primary-light);
+}
+
+.option-btn:active {
+  transform: scale(0.98);
+}
+
+.option-btn.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.option-btn.correct {
+  border-color: var(--green);
+  background: var(--green-light);
+  color: var(--green);
+}
+
+.option-btn.wrong {
+  border-color: var(--red);
+  background: var(--red-light);
+  color: var(--red);
+}
+
+/* Indicateur visuel devant l'option */
+.option-btn::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--subtle);
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.option-btn.selected::before {
+  border-color: var(--primary);
+  background: var(--primary);
+  box-shadow: inset 0 0 0 4px var(--white);
+}
+
+.option-btn.correct::before {
+  border-color: var(--green);
+  background: var(--green);
+  box-shadow: inset 0 0 0 4px var(--white);
+}
+
+.option-btn.wrong::before {
+  border-color: var(--red);
+  background: var(--red);
+  box-shadow: inset 0 0 0 4px var(--white);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   8. INPUT ÉCRIT — Champ large, centré, touche Entrée pour valider
+   ═══════════════════════════════════════════════════════════════════ */
+
+.libre-input {
+  margin-bottom: var(--space-lg);
+}
+
+.answer-input {
+  font-size: var(--font-lg);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   9. BOÎTE D'INDICE — Apparition conditionnelle sous la question
+   ═══════════════════════════════════════════════════════════════════ */
+
+.hint-box {
+  background: var(--gold-light);
+  border-left: 4px solid var(--gold);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-sm);
+  color: var(--text);
+  margin-bottom: var(--space-lg);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   10. BOUTONS DE JEU — Validate et Next, disposition centrée
+   ═══════════════════════════════════════════════════════════════════ */
+
+.game-actions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: center;
+  margin-top: var(--space-md);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   11. FEEDBACK — Bandeau post-validation, couleur selon résultat
+   ═══════════════════════════════════════════════════════════════════ */
+
+.feedback-area {
+  border-radius: var(--r);
+  padding: var(--space-md);
+  margin-top: var(--space-lg);
+  animation: slideUp 300ms ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.feedback-success {
+  background: var(--green-light);
+  border: 1px solid var(--green);
+}
+
+.feedback-error {
+  background: var(--red-light);
+  border: 1px solid var(--red);
+}
+
+.feedback-title {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  margin-bottom: var(--space-xs);
+}
+
+.feedback-success .feedback-title {
+  color: var(--green);
+}
+
+.feedback-error .feedback-title {
+  color: var(--red);
+}
+
+.feedback-correct {
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+}
+
+.feedback-explanation {
+  font-size: var(--font-sm);
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   12. INTRO DE LEÇON — Avant le début des questions
+   ═══════════════════════════════════════════════════════════════════ */
+
+.lesson-intro {
+  background: var(--white);
+  border-radius: var(--r-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-bottom: var(--space-md);
+}
+
+.intro-title {
+  font-size: var(--font-xl);
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: var(--space-sm);
+}
+
+.intro-objective {
+  font-size: var(--font-md);
+  color: var(--muted);
+  margin-bottom: var(--space-md);
+  font-style: italic;
+}
+
+.intro-content {
+  font-size: var(--font-sm);
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: var(--space-md);
+}
+
+.intro-vocab {
+  font-size: var(--font-sm);
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--r-sm);
+  margin-bottom: var(--space-lg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   13. ÉCRAN DE RÉSULTATS — Cercle, message, actions post-niveau
+   ═══════════════════════════════════════════════════════════════════ */
+
+.result-circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: conic-gradient(var(--primary) calc(var(--pct, 0) * 1%), var(--bg-card) 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-lg);
+  position: relative;
+  box-shadow: var(--shadow);
+}
+
+.result-circle::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  background: var(--white);
+}
+
+.result-pct {
+  position: relative;
+  z-index: 1;
+  font-size: var(--font-xxl);
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.result-message {
+  text-align: center;
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--space-lg);
+}
+
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   14. RESPONSIVE QUIZ — Ajustements pour petits écrans en jeu
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  .game-area {
+    padding: var(--space-md);
+    border-radius: var(--r);
   }
-  .nav-bottom a{flex-direction:row;gap:6px;font-size:.85em;padding:8px 16px}
-  .nav-bottom a .nav-ico{font-size:1.1em}
+
+  .question-text {
+    font-size: var(--font-md);
+  }
+
+  .option-btn {
+    padding: var(--space-sm);
+    font-size: var(--font-sm);
+    min-height: 48px;
+  }
+
+  .result-circle {
+    width: 120px;
+    height: 120px;
+  }
+
+  .result-pct {
+    font-size: var(--font-xl);
+  }
+
+  .levels-container {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+
+  .level-tile {
+    min-height: 80px;
+    font-size: var(--font-xl);
+  }
+}
+
+@media (min-width: 768px) {
+  .levels-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .cta-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .cta-group .btn {
+    width: auto;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .result-actions {
+    flex-direction: row;
+    justify-content: center;
+    max-width: none;
+  }
 }
