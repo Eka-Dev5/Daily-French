@@ -695,14 +695,15 @@ function renderHero(p) {
     sess: document.getElementById('p_sess')
   };
 
-  if (els.av) els.av.innerHTML = p.name.charAt(0).toUpperCase() +
-    '<span class="hero-lvl-badge" id="heroLvl">' + lvl + '</span>';
+  if (els.av) els.av.innerHTML = p.name.charAt(0).toUpperCase();
   if (els.name) els.name.textContent = p.name;
   if (els.tag) els.tag.textContent = I18n.t('level') + ' ' + lvl + ' · ' + score + ' pts · ' + done.length + '/20 ' + I18n.t('levelsDone').toLowerCase();
-  if (els.xpNow) els.xpNow.textContent = score + ' pts';
+  
+  if (els.xpNow) els.xpNow.textContent = score;
   const ms = Math.ceil(score / 100) * 100;
-  if (els.xpGoal) els.xpGoal.textContent = 'Next: ' + ms + ' pts';
+  if (els.xpGoal) els.xpGoal.textContent = ms;
   if (els.xpBar) els.xpBar.style.width = Math.round(score % 100) + '%';
+  
   if (els.streak) els.streak.textContent = p.streak || 0;
   const acc = p.totalQuestions > 0 ? Math.round(p.totalCorrect / p.totalQuestions * 100) + '%' : '—';
   if (els.acc) els.acc.textContent = acc;
