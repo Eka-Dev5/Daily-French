@@ -1,462 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Vocabulary — Daily French 🥖</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root{
-  --primary:#667eea;--secondary:#764ba2;--success:#10b981;
-  --text:#1a202c;--muted:#6b7280;--border:#e5e7eb;
-  --card-bg:rgba(255,255,255,0.92);
-}
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  font-family:'Inter',system-ui,sans-serif;
-  min-height:100vh;
-  background:linear-gradient(135deg,#667eea 0%,#764ba2 50%,#06b6d4 100%);
-  padding:20px;
-}
-
-/* ── BG ORBS ── */
-.orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:.25;pointer-events:none;z-index:0}
-.orb1{width:400px;height:400px;background:#667eea;top:-100px;left:-100px}
-.orb2{width:300px;height:300px;background:#06b6d4;bottom:-50px;right:-50px}
-.orb3{width:200px;height:200px;background:#764ba2;top:40%;left:60%}
-
-/* ── CARD ── */
-.card{
-  position:relative;z-index:1;
-  max-width:1000px;margin:0 auto;
-  background:var(--card-bg);
-  backdrop-filter:blur(20px);
-  border-radius:24px;padding:28px 24px;
-  box-shadow:0 25px 60px rgba(0,0,0,.25),0 0 0 1px rgba(255,255,255,.3) inset;
-}
-
-/* ── TITLE ── */
-.page-title{
-  font-size:1.8em;font-weight:800;text-align:center;margin-bottom:4px;
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.tagline{text-align:center;color:var(--muted);font-size:.88em;margin-bottom:20px}
-
-/* ── NAV ── */
-.nav-links{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-.nav-btn{
-  display:inline-block;padding:7px 14px;border-radius:20px;
-  background:rgba(102,126,234,.12);color:var(--primary);
-  font-weight:700;text-decoration:none;font-size:.82em;
-  border:none;cursor:pointer;transition:all .2s;white-space:nowrap;
-}
-.nav-btn:hover{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;transform:translateY(-1px)}
-.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white}
-.nav-btn.game{background:rgba(245,158,11,.15);color:#92400e}
-.nav-btn.game:hover{background:linear-gradient(135deg,#f59e0b,#ef4444);color:white}
-
-/* ── SEARCH ── */
-.search-area{
-  display:flex;align-items:center;gap:10px;margin-bottom:16px;
-  background:rgba(102,126,234,.06);border-radius:16px;padding:12px 16px;
-  border:2px solid rgba(102,126,234,.15);
-}
-.flags{display:flex;gap:6px;flex-shrink:0}
-.flag{
-  font-size:1.5em;cursor:pointer;opacity:.4;border-radius:50%;padding:4px;
-  transition:all .2s;border:2px solid transparent;
-}
-.flag.active{opacity:1;border-color:var(--primary);background:rgba(102,126,234,.12)}
-.search-input{
-  flex:1;padding:8px 12px;border:2px solid var(--border);border-radius:30px;
-  font-size:.92em;font-family:inherit;background:white;outline:none;min-width:0;
-}
-.search-input:focus{border-color:var(--primary)}
-.search-btn{
-  padding:9px 18px;border:none;border-radius:30px;
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:white;font-weight:700;font-size:.85em;cursor:pointer;
-  white-space:nowrap;flex-shrink:0;font-family:inherit;transition:all .2s;
-}
-.search-btn:hover{opacity:.9;transform:translateY(-1px)}
-
-/* ── FILTER TRIGGERS ── */
-.filter-row{display:flex;gap:8px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
-.filter-trigger{
-  background:rgba(102,126,234,.1);color:var(--primary);
-  padding:8px 18px;border-radius:30px;font-weight:700;font-size:.84em;
-  cursor:pointer;border:2px solid transparent;transition:all .2s;font-family:inherit;
-}
-.filter-trigger.active{
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:white;box-shadow:0 4px 12px rgba(102,126,234,.35);
-}
-
-/* ── FILTER PANELS ── */
-.filters-panel{
-  background:rgba(102,126,234,.05);border-radius:14px;
-  padding:12px 14px;margin-bottom:14px;border:1px solid rgba(102,126,234,.12);
-  display:none;
-}
-.filters-panel.open{display:block}
-.chips{display:flex;flex-wrap:wrap;gap:7px}
-.chip{
-  background:white;border:2px solid var(--border);border-radius:30px;
-  padding:5px 12px;font-size:.8em;font-weight:600;cursor:pointer;
-  transition:all .2s;color:var(--text);font-family:inherit;
-}
-.chip:hover{border-color:var(--primary);color:var(--primary)}
-.chip.active{
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:white;border-color:transparent;
-}
-
-/* ── COUNTER ── */
-.result-count{text-align:right;font-size:.75em;color:var(--muted);margin-bottom:12px}
-
-/* ── WORD GRID ── */
-.lexique-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-
-.word-card{
-  background:white;border-left:4px solid var(--primary);border-radius:14px;
-  padding:14px 16px;transition:all .22s;
-  box-shadow:0 2px 8px rgba(0,0,0,.06);
-}
-.word-card:hover{
-  transform:translateY(-3px);
-  box-shadow:0 8px 20px rgba(102,126,234,.18);
-  border-left-color:var(--secondary);
-}
-.main-word{font-size:1.2em;font-weight:800;color:var(--text);margin-bottom:2px}
-.phonetic{font-style:italic;color:var(--secondary);font-size:.75em;margin-left:6px;font-weight:400}
-.translation{font-size:.88em;color:#4a5568;margin:4px 0 8px;font-weight:600}
-.definition{
-  font-size:.76em;color:var(--muted);line-height:1.5;
-  border-top:1px solid var(--border);padding-top:7px;margin-top:5px;
-}
-.badge-row{margin-top:10px;display:flex;flex-wrap:wrap;gap:5px}
-.badge-level{
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:white;border-radius:20px;padding:2px 8px;font-size:.62em;font-weight:700;
-}
-.badge-cat{
-  background:#ede9fe;color:#5b21b6;border-radius:20px;
-  padding:2px 8px;font-size:.62em;font-weight:600;
-}
-.word-ex{font-size:.75em;color:var(--muted);margin-top:6px;line-height:1.4}
-.word-lit{font-size:.68em;color:#9ca3af;margin-top:3px;font-style:italic}
-.ex-toggle{
-  background:none;border:1px solid var(--border);border-radius:7px;
-  padding:1px 6px;font-size:.74em;cursor:pointer;margin-left:5px;
-  vertical-align:middle;transition:all .2s;font-family:inherit;
-}
-.ex-toggle:hover{background:#f0f4ff;border-color:var(--primary)}
-.ex-en{display:none;font-style:italic;color:var(--success);font-size:.76em;margin-top:4px}
-
-/* ── EMPTY ── */
-.no-result{
-  text-align:center;padding:50px 20px;color:var(--muted);
-  background:rgba(102,126,234,.04);border-radius:20px;
-}
-.no-result-emoji{font-size:3em;margin-bottom:12px}
-
-/* ── SAVE BAR ── */
-.save-bar{
-  margin-top:22px;padding-top:16px;border-top:1px solid var(--border);
-  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
-}
-.save-bar p{font-size:.8em;color:var(--muted);flex:1;min-width:120px}
-.save-btn{
-  padding:8px 16px;border:none;border-radius:20px;cursor:pointer;
-  font-weight:700;font-size:.82em;font-family:inherit;transition:all .2s;
-}
-.save-btn.export{background:#d1fae5;color:#065f46}
-.save-btn.import-label{background:#dbeafe;color:#1e40af;cursor:pointer}
-
-@media(max-width:640px){
-  body{padding:12px}
-  .card{padding:18px 14px}
-  .page-title{font-size:1.5em}
-  .search-area{flex-wrap:wrap}
-  .flags{width:100%;justify-content:center}
-  .lexique-grid{grid-template-columns:1fr}
-}
-</style>
-<script src="js/config.js"></script>
-<script src="js/vocabulary-data.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Daily French 🥖 — Vocabulary</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/vocabulary.css">
 </head>
 <body>
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<div class="orb orb3"></div>
 
-<div class="card">
-  <div class="page-title">📖 Vocabulary — Daily French 🥖</div>
-  <div class="tagline">Search • Filter by level or theme • 🇫🇷 ⇆ 🇬🇧</div>
+  <!-- Notification éphémère -->
+  <div id="toast" class="toast"></div>
 
-  <!-- NAV -->
-  <div class="nav-links">
-    <a href="quiz.html" class="nav-btn">🏠 Home</a>
-    <a href="quiz.html?section=levels" class="nav-btn">🎮 Levels</a>
-    <a href="quiz.html?section=lecons" class="nav-btn">📚 Lessons</a>
-    <a href="dashboard.html" class="nav-btn">📊 My Space</a>
-    <a href="games/listen.html" class="nav-btn game">🎧 Listen</a>
-    <a href="games/phrase-builder.html" class="nav-btn game">🧩 Phrases</a>
-  </div>
-
-  <!-- SEARCH -->
-  <div class="search-area">
-    <div class="flags" id="flagsContainer">
-      <div class="flag active" data-sense="enfr" title="English → Français">🇬🇧</div>
-      <div class="flag" data-sense="fren" title="Français → English">🇫🇷</div>
+  <!-- Modal : création / sélection de joueur -->
+  <div id="modalWrap" class="modal-wrap">
+    <div class="modal">
+      <h3 id="modalTitle">New Player</h3>
+      <input type="text" id="mInput" maxlength="30" placeholder="Your name" autocapitalize="off" autocomplete="off">
+      <div class="modal-actions">
+        <button id="btnCancelModal" class="btn-ghost">Cancel</button>
+        <button id="btnCreatePlayer" class="btn-primary">Create</button>
+      </div>
     </div>
-    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search a word…" autocorrect="off" autocapitalize="none">
-    <button id="searchBtn" class="search-btn">🔎 Search</button>
   </div>
 
-  <!-- FILTER TRIGGERS -->
-  <div class="filter-row">
-    <button id="showLevelsBtn" class="filter-trigger active">📊 Levels</button>
-    <button id="showThemesBtn" class="filter-trigger">🏷️ Themes</button>
+  <!-- Popup de définition d'un mot -->
+  <div id="vocabulary-popup-modal" class="vocab-popup-modal">
+    <div class="vocab-popup-content">
+      <button class="vocab-popup-close" onclick="if(typeof closeVocabPopup==='function')closeVocabPopup()">×</button>
+      <div id="vocab-popup-body"></div>
+    </div>
   </div>
 
-  <div id="levelsPanel" class="filters-panel open">
-    <div class="chips" id="levelChips"></div>
+  <!-- Navigation bottom fixe -->
+  <nav class="nav-bottom">
+    <a href="dashboard.html" class="nav-item">🏠<<span>Home</span></a>
+    <a href="quiz.html?section=lecons" class="nav-item">📚<<span>Lessons</span></a>
+    <a href="quiz.html?section=levels" class="nav-item">🎮<<span>Play</span></a>
+    <a href="vocabulary.html" class="nav-item">📖<<span>Vocab</span></a>
+    <a href="dashboard.html" class="nav-item">📊<<span>Space</span></a>
+  </nav>
+
+  <!-- Hero : identité du joueur -->
+  <header class="hero">
+    <div class="hero-avatar" id="heroAv">?
+      <span class="hero-lvl-badge" id="heroLvl">1</span>
+    </div>
+    <div class="hero-info">
+      <div class="hero-name" id="heroName">Guest</div>
+      <div class="hero-tag" id="heroTag">Level 1 · 0 pts · 0/20 levels</div>
+    </div>
+    <div class="hero-xp">
+      <div class="xp-bar"><div class="xp-fill" id="xpBar"></div></div>
+      <div class="xp-text"><span id="xpNow">0</span> pts · Next: <span id="xpGoal">100</span> pts</div>
+    </div>
+    <div class="hero-switch">
+      <select id="selPlayer" onchange="if(this.value&&typeof loadPlayer==='function'){loadPlayer(this.value)}">
+        <option value="">Choose a player</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- Bento : 3 tuiles stats joueur (mêmes IDs que core.js) -->
+  <div class="bento-grid">
+    <div class="bento-tile">
+      <div class="bento-num" id="b1">1</div>
+      <div class="bento-label">Level</div>
+    </div>
+    <div class="bento-tile">
+      <div class="bento-num" id="b2">0</div>
+      <div class="bento-label">Points</div>
+    </div>
+    <div class="bento-tile">
+      <div class="bento-num" id="b3">0/20</div>
+      <div class="bento-label">Done</div>
+    </div>
   </div>
-  <div id="themesPanel" class="filters-panel">
-    <div class="chips" id="themeChips"></div>
-  </div>
 
-  <div class="result-count" id="resultCount"></div>
-  <div id="lexiqueGrid" class="lexique-grid"></div>
+  <!-- Section principale : lexique -->
+  <section id="vocabSection" class="section active">
+    <h2 class="section-title">📖 Vocabulary</h2>
 
-  <!-- SAVE BAR -->
-  <div class="save-bar">
-    <p>💾 Transfer your progress to another device</p>
-    <button class="save-btn export" id="exportBtn">⬇️ Export save</button>
-    <label class="save-btn import-label">
-      ⬆️ Import save
-      <input type="file" accept=".json" id="importFile" style="display:none" onchange="importSave(event)">
-    </label>
-  </div>
-</div>
+    <!-- Barre d'outils : recherche + filtres -->
+    <div class="vocab-toolbar">
+      <input type="text" id="vocabSearch" placeholder="Search French or English…" autocapitalize="off" autocomplete="off">
+      <select id="vocabFilterLevel">
+        <option value="">All levels</option>
+      </select>
+      <select id="vocabFilterCat">
+        <option value="">All categories</option>
+      </select>
+    </div>
 
-<script>
-(function(){
-  const KEY = typeof SUBJECT_CONFIG !== 'undefined' ? SUBJECT_CONFIG.playersKey : 'dailyFrench_players';
-  let allWords=[], currentSense="enfr", selectedLevel=null, selectedTheme=null;
-  let searchActive=false, currentSearchTerm="", savedLevel=null, savedTheme=null;
+    <!-- Compteur de résultats -->
+    <div class="vocab-meta"><span id="vocabCount">0</span> words</div>
 
-  const themeIcons={
-    "greeting":"👋","introduction":"🙋","politeness":"🎩","expression":"💬",
-    "quantity":"⚖️","commerce":"🏬","food":"🍎","nature":"🌿","tool":"🔧",
-    "verb":"⚡","social":"👥","place":"🏠","sensation":"🌡️","feeling":"❤️",
-    "object":"📦","weather":"🌤️","time":"⏰","season":"🍂","state":"🔄",
-    "misc":"📌","admin":"🏛️","car":"🚗","post":"📮","telecom":"📱",
-    "health":"🏥","family":"👨‍👩‍👧","travel":"✈️","direction":"🧭",
-    "hobby":"🎨","body":"🫀","daily":"📅","routine":"🌅","emotion":"❤️",
-    "need":"🍽️","house":"🏡","cooking":"🍳"
-  };
+    <!-- Grille des mots -->
+    <div id="vocabGrid" class="vocab-grid"></div>
+  </section>
 
-  const flags=document.querySelectorAll(".flag");
-  const searchInput=document.getElementById("searchInput");
-  const searchBtn=document.getElementById("searchBtn");
-  const showLevelsBtn=document.getElementById("showLevelsBtn");
-  const showThemesBtn=document.getElementById("showThemesBtn");
-  const levelsPanel=document.getElementById("levelsPanel");
-  const themesPanel=document.getElementById("themesPanel");
-  const levelChipsDiv=document.getElementById("levelChips");
-  const themeChipsDiv=document.getElementById("themeChips");
-  const resultSpan=document.getElementById("resultCount");
-  const gridDiv=document.getElementById("lexiqueGrid");
+  <!-- Chargement JS : ordre critique -->
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/vocabulary-data.js"></script>
+  <script src="js/vocabulary-engine.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/ui-utils.js"></script>
+  <script src="js/vocabulary.js"></script>
 
-  function loadData(){
-    if(typeof VOCABULARY_BDD!=="undefined"&&Array.isArray(VOCABULARY_BDD)&&VOCABULARY_BDD.length){
-      allWords=[...VOCABULARY_BDD]; return true;
-    }
-    gridDiv.innerHTML='<div class="no-result"><div class="no-result-emoji">❌</div>vocabulary-data.js not loaded. Check the js/ folder.</div>';
-    return false;
-  }
-
-  function norm(s){ return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
-  function esc(s){ return s?s.replace(/[&<>]/g,m=>m==="&"?"&amp;":m==="<"?"&lt;":"&gt;"):""; }
-
-  function getFiltered(){
-    let f=[...allWords];
-    if(selectedLevel&&selectedLevel!=="all") f=f.filter(w=>String(w.level)===selectedLevel);
-    if(selectedTheme&&selectedTheme!=="all")  f=f.filter(w=>w.cat===selectedTheme);
-    if(searchActive&&currentSearchTerm.trim()){
-      const t=norm(currentSearchTerm);
-      f=f.filter(w=>norm(w.fr).includes(t)||norm(w.en).includes(t)||norm(w.phon||"").includes(t));
-    }
-    return f;
-  }
-
-  function renderWords(words){
-    if(!words.length){
-      gridDiv.innerHTML='<div class="no-result"><div class="no-result-emoji">✨</div>No words found for these criteria.</div>';
-      resultSpan.textContent="0 words";
-      return;
-    }
-    resultSpan.textContent=words.length+" word"+(words.length>1?"s":"");
-    const rev=currentSense==="enfr";
-    gridDiv.innerHTML=words.map(w=>{
-      const icon=themeIcons[w.cat]||"🏷️";
-      const cat=w.cat?w.cat.charAt(0).toUpperCase()+w.cat.slice(1):"General";
-      const hasExEn=w.ex_en&&w.ex_en.trim();
-      const hasLit=w.lit&&w.lit.trim();
-      const exBtn=hasExEn?`<button class="ex-toggle" onclick="toggleEx(this)">🇬🇧</button>`:"";
-      const exEnSpan=hasExEn?`<span class="ex-en">${esc(w.ex_en)}</span>`:"";
-      const litDiv=hasLit?`<div class="word-lit">💡 ${esc(w.lit)}</div>`:"";
-      const badges=`<div class="badge-row"><span class="badge-level">Lvl.${w.level}</span><span class="badge-cat">${icon} ${cat}</span></div>`;
-      const defText=rev&&w.def_en?w.def_en:(w.def||"");
-      const defHtml=defText?`<div class="definition">${esc(defText)}</div>`:"";
-      const exHtml=`<div class="word-ex">${esc(w.ex||"")}${exBtn}${exEnSpan}</div>${litDiv}`;
-      if(rev){
-        // EN→FR : show French word big, English below
-        return `<div class="word-card">
-          <div class="main-word">${esc(w.fr)} <span class="phonetic">${esc(w.phon||"")}</span></div>
-          <div class="translation">${esc(w.en)}</div>
-          ${defHtml}${exHtml}${badges}
-        </div>`;
-      }
-      // FR→EN : show English big, French below
-      return `<div class="word-card">
-        <div class="main-word">${esc(w.en)}</div>
-        <div class="translation">${esc(w.fr)} <span class="phonetic">${esc(w.phon||"")}</span></div>
-        ${defHtml}${exHtml}${badges}
-      </div>`;
-    }).join("");
-  }
-
-  window.toggleEx=function(btn){
-    const span=btn.nextElementSibling; if(!span)return;
-    const vis=span.style.display==="block";
-    span.style.display=vis?"none":"block";
-    btn.textContent=vis?"🇬🇧":"🇫🇷";
-  };
-
-  function updateUI(){
-    document.querySelectorAll("#levelChips .chip").forEach(c=>{
-      c.classList.toggle("active",c.dataset.level===(selectedLevel||"")||(c.dataset.level==="all"&&selectedLevel==="all"));
-    });
-    document.querySelectorAll("#themeChips .chip").forEach(c=>{
-      c.classList.toggle("active",c.dataset.theme===(selectedTheme||"")||(c.dataset.theme==="all"&&selectedTheme==="all"));
-    });
-    flags.forEach(f=>f.classList.toggle("active",f.dataset.sense===currentSense));
-    renderWords(getFiltered());
-  }
-
-  function buildLevelChips(){
-    const maxLevel=typeof SUBJECT_CONFIG!=="undefined"?SUBJECT_CONFIG.maxLevel:20;
-    const allChip=document.createElement("div");
-    allChip.className="chip active";allChip.dataset.level="all";allChip.textContent="📚 All levels";
-    allChip.addEventListener("click",()=>{if(searchActive)return;selectedLevel=selectedLevel==="all"?null:"all";updateUI();});
-    levelChipsDiv.appendChild(allChip);
-    for(let i=1;i<=maxLevel;i++){
-      const c=document.createElement("div");
-      c.className="chip";c.dataset.level=String(i);c.textContent="Level "+i;
-      c.addEventListener("click",()=>{if(searchActive)return;selectedLevel=selectedLevel===String(i)?null:String(i);updateUI();});
-      levelChipsDiv.appendChild(c);
-    }
-  }
-
-  function buildThemeChips(){
-    const themes=[...new Set(allWords.map(w=>w.cat).filter(Boolean))].sort();
-    const allC=document.createElement("div");
-    allC.className="chip";allC.dataset.theme="all";allC.textContent="🏷️ All";
-    allC.addEventListener("click",()=>{if(searchActive)return;selectedTheme=selectedTheme==="all"?null:"all";updateUI();});
-    themeChipsDiv.appendChild(allC);
-    themes.forEach(t=>{
-      const c=document.createElement("div");
-      c.className="chip";c.dataset.theme=t;
-      c.textContent=(themeIcons[t]||"🏷️")+" "+t.charAt(0).toUpperCase()+t.slice(1);
-      c.addEventListener("click",()=>{if(searchActive)return;selectedTheme=selectedTheme===t?null:t;updateUI();});
-      themeChipsDiv.appendChild(c);
-    });
-  }
-
-  function showLevels(){
-    if(levelsPanel.classList.contains("open")&&showLevelsBtn.classList.contains("active")){
-      levelsPanel.classList.remove("open");showLevelsBtn.classList.remove("active");return;
-    }
-    levelsPanel.classList.add("open");themesPanel.classList.remove("open");
-    showLevelsBtn.classList.add("active");showThemesBtn.classList.remove("active");
-  }
-  function showThemes(){
-    if(themesPanel.classList.contains("open")&&showThemesBtn.classList.contains("active")){
-      themesPanel.classList.remove("open");showThemesBtn.classList.remove("active");return;
-    }
-    themesPanel.classList.add("open");levelsPanel.classList.remove("open");
-    showThemesBtn.classList.add("active");showLevelsBtn.classList.remove("active");
-  }
-
-  function doSearch(){
-    const t=searchInput.value.trim();
-    if(!t){resetSearch();return;}
-    savedLevel=selectedLevel;savedTheme=selectedTheme;
-    searchActive=true;currentSearchTerm=t;selectedLevel=null;selectedTheme=null;
-    searchBtn.textContent="✕ Clear";
-    levelsPanel.classList.remove("open");themesPanel.classList.remove("open");
-    showLevelsBtn.classList.remove("active");showThemesBtn.classList.remove("active");
-    updateUI();
-  }
-  function resetSearch(){
-    if(!searchActive)return;
-    searchActive=false;currentSearchTerm="";searchInput.value="";
-    searchBtn.textContent="🔎 Search";
-    selectedLevel=savedLevel;selectedTheme=savedTheme;
-    if(savedTheme)showThemes();else showLevels();
-    updateUI();
-  }
-
-  // Export/Import
-  document.getElementById("exportBtn").addEventListener("click",function(){
-    try{
-      const players=JSON.parse(localStorage.getItem(KEY)||"{}");
-      if(!Object.keys(players).length){alert("No save data found.");return;}
-      const blob=new Blob([JSON.stringify(players,null,2)],{type:"application/json"});
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement("a");a.href=url;
-      a.download="DailyFrench-save-"+new Date().toISOString().slice(0,10)+".json";
-      a.click();URL.revokeObjectURL(url);
-    }catch(e){alert("Export error: "+e.message);}
-  });
-
-  window.importSave=function(event){
-    const file=event.target.files[0];if(!file)return;
-    const reader=new FileReader();
-    reader.onload=function(e){
-      try{
-        const data=JSON.parse(e.target.result);
-        if(typeof data==="object"&&data!==null){
-          localStorage.setItem(KEY,JSON.stringify(data));
-          alert("Save imported! "+Object.keys(data).join(", "));
-        }else{alert("Invalid file.");}
-      }catch(err){alert("Error: unrecognised file.");}
-    };
-    reader.readAsText(file);
-    event.target.value="";
-  };
-
-  function init(){
-    if(!loadData())return;
-    buildLevelChips();buildThemeChips();
-    showLevels();updateUI();
-    showLevelsBtn.addEventListener("click",showLevels);
-    showThemesBtn.addEventListener("click",showThemes);
-    searchBtn.addEventListener("click",()=>searchActive?resetSearch():doSearch());
-    searchInput.addEventListener("keypress",e=>{if(e.key==="Enter")searchActive?resetSearch():doSearch();});
-    flags.forEach(f=>f.addEventListener("click",()=>{currentSense=f.dataset.sense;updateUI();}));
-    // URL param ?level=N
-    const lvl=new URLSearchParams(window.location.search).get("level");
-    if(lvl){selectedLevel=lvl;showLevels();updateUI();}
-  }
-
-  document.addEventListener("DOMContentLoaded",init);
-})();
-</script>
 </body>
 </html>
