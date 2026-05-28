@@ -1,0 +1,658 @@
+/**
+ * base.css — Fondation visuelle Daily French
+ * 
+ * Ce fichier est chargé par TOUTES les pages (quiz, dashboard, vocabulary).
+ * Il fournit : variables CSS thémables, reset typographique, composants
+ * partagés, responsive iOS/Android, et respect des préférences utilisateur.
+ * 
+ * Thèmes : Ardoise (défaut), Mauve, Terra — basculés via classe sur <html>.
+ * Tailles : augmentées de ~30 % pour lisibilité sur mobile et yeux matures.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   1. VARIABLES CSS — Thème Ardoise (défaut)
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Palette principale Ardoise */
+  --primary:        #4A5568;
+  --primary-mid:    #64748B;
+  --primary-light:  #F1F5F9;
+  --hero-from:      #475569;
+  --hero-via:       #64748B;
+  --hero-to:        #CBD5E1;
+
+  /* Accents fonctionnels */
+  --coral:          #F97316;
+  --coral-light:    #FFF7ED;
+  --gold:           #F59E0B;
+  --gold-light:     #FFFBEB;
+  --green:          #059669;
+  --green-light:    #ECFDF5;
+  --red:            #DC2626;
+  --red-light:      #FFF5F5;
+
+  /* Texte et surfaces */
+  --text:           #1E293B;
+  --muted:          #64748B;
+  --subtle:         #94A3B8;
+  --border:         #E2E8F0;
+  --bg:             #F5F7FA;
+  --bg-card:        #F8FAFC;
+  --white:          #FFFFFF;
+
+  /* Ombres portées */
+  --shadow-sm:      0 1px 3px rgba(0,0,0,0.06);
+  --shadow:         0 4px 16px rgba(51,65,85,0.12);
+  --shadow-lg:      0 16px 48px rgba(51,65,85,0.18);
+
+  /* Rayons de bordure */
+  --r-sm:           12px;
+  --r:              16px;
+  --r-lg:           24px;
+
+  /* Typographie — base 21px (+31% par rapport au 16px standard) */
+  --font-base:      21px;
+  --font-xs:        0.85rem;   /* ~18px */
+  --font-sm:        0.95rem;   /* ~20px */
+  --font-md:        1.15rem;   /* ~24px */
+  --font-lg:        1.4rem;    /* ~29px */
+  --font-xl:        1.8rem;    /* ~38px */
+  --font-xxl:       2.4rem;    /* ~50px */
+
+  /* Espacement proportionnel */
+  --space-unit:     1rem;
+  --space-xs:       0.5rem;
+  --space-sm:       0.75rem;
+  --space-md:       1.25rem;
+  --space-lg:       2rem;
+  --space-xl:       3rem;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   2. THÈMES ALTERNATIFS — Mauve & Terra
+   ═══════════════════════════════════════════════════════════════════ */
+
+[data-theme="mauve"] {
+  --primary:        #7C3AED;
+  --primary-mid:    #8B5CF6;
+  --primary-light:  #EDE9FE;
+  --hero-from:      #581C87;
+  --hero-via:       #7C3AED;
+  --hero-to:        #A855F7;
+  --shadow:         0 4px 16px rgba(124,58,237,0.12);
+  --shadow-lg:      0 16px 48px rgba(124,58,237,0.18);
+}
+
+[data-theme="terra"] {
+  --primary:        #9A3412;
+  --primary-mid:    #C2410C;
+  --primary-light:  #FFF7ED;
+  --hero-from:      #7C2D12;
+  --hero-via:       #9A3412;
+  --hero-to:        #EA580C;
+  --shadow:         0 4px 16px rgba(154,52,18,0.12);
+  --shadow-lg:      0 16px 48px rgba(154,52,18,0.18);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. RESET & BASE — Box-sizing, fonte, anti-aliasing
+   ═══════════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: var(--font-base);
+  -webkit-text-size-adjust: 100%;         /* Empêche iOS de zoomer le texte */
+  -webkit-font-smoothing: antialiased;    /* Rendu typographique net sur macOS/iOS */
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  /* Marge basse pour la nav fixe + safe-area iPhone notch/Dynamic Island */
+  padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. ORBES DÉCORATIFS — Fond flou, non interactif, z-index négatif
+   ═══════════════════════════════════════════════════════════════════ */
+
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.orb-1 {
+  width: 400px;
+  height: 400px;
+  background: var(--primary-mid);
+  top: -100px;
+  right: -100px;
+}
+
+.orb-2 {
+  width: 300px;
+  height: 300px;
+  background: var(--coral);
+  bottom: 100px;
+  left: -80px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. HERO — Bandeau d'identité joueur avec gradient dynamique
+   ═══════════════════════════════════════════════════════════════════ */
+
+.hero {
+  background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-via) 50%, var(--hero-to) 100%);
+  color: var(--white);
+  padding: var(--space-lg) var(--space-md);
+  padding-top: calc(var(--space-lg) + env(safe-area-inset-top, 0px));
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-xl);
+  font-weight: 700;
+  position: relative;
+}
+
+.hero-lvl-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: var(--gold);
+  color: var(--text);
+  font-size: var(--font-xs);
+  font-weight: 700;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--white);
+}
+
+.hero-info {
+  margin-top: var(--space-sm);
+}
+
+.hero-name {
+  font-size: var(--font-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.hero-tag {
+  font-size: var(--font-sm);
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.hero-xp {
+  margin-top: var(--space-md);
+}
+
+.xp-bar {
+  height: 10px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.xp-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 5px;
+  transition: width var(--transition-base);
+  width: 0%;
+}
+
+.xp-text {
+  font-size: var(--font-xs);
+  opacity: 0.85;
+  margin-top: 4px;
+  text-align: right;
+}
+
+.hero-switch {
+  margin-top: var(--space-sm);
+  display: flex;
+  gap: var(--space-xs);
+  align-items: center;
+}
+
+.hero-switch select {
+  flex: 1;
+  font-size: var(--font-sm);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. BENTO — Grille de 3 tuiles récapitulatives
+   ═══════════════════════════════════════════════════════════════════ */
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  margin-top: calc(-1 * var(--space-lg));
+  position: relative;
+  z-index: 2;
+}
+
+.bento-tile {
+  background: var(--white);
+  border-radius: var(--r);
+  padding: var(--space-md);
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: transform var(--transition-fast);
+}
+
+.bento-tile:active {
+  transform: scale(0.96);   /* Feedback tactile immédiat sur mobile */
+}
+
+.bento-num {
+  font-size: var(--font-xxl);
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1.1;
+}
+
+.bento-label {
+  font-size: var(--font-xs);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. NAVIGATION BOTTOM — Fixe, safe-area, touch 44px+
+   ═══════════════════════════════════════════════════════════════════ */
+
+.nav-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(64px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.75rem;        /* Texte compact, mais icône grande */
+  min-height: 44px;          /* Apple Human Interface Guideline */
+  min-width: 44px;
+  flex: 1;
+  transition: color var(--transition-fast);
+}
+
+.nav-item span {
+  font-size: 0.75rem;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  color: var(--primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   8. MODAL — Overlay centré, fond verre dépoli, focus trap prêt
+   ═══════════════════════════════════════════════════════════════════ */
+
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  background: rgba(30,41,59,0.6);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: var(--space-md);
+}
+
+.modal-wrap.open {
+  display: flex;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: var(--r-lg);
+  padding: var(--space-lg);
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--shadow-lg);
+  animation: modalIn 250ms ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal h3 {
+  font-size: var(--font-lg);
+  margin-bottom: var(--space-md);
+  color: var(--text);
+}
+
+.modal-actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   9. TOAST — Notification éphémère, file d'attente, non-intrusif
+   ═══════════════════════════════════════════════════════════════════ */
+
+.toast {
+  position: fixed;
+  bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--text);
+  color: var(--white);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--r-sm);
+  font-size: var(--font-sm);
+  box-shadow: var(--shadow-lg);
+  z-index: 300;
+  opacity: 0;
+  transition: all 300ms ease;
+  pointer-events: none;
+  white-space: nowrap;
+  max-width: 90vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toast.on {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   10. BOUTONS — Touch target 44px+, états hover/active/focus
+   ═══════════════════════════════════════════════════════════════════ */
+
+.btn,
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  border: none;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  min-height: 48px;           /* Doigt confortable sur mobile */
+  padding: 10px 20px;
+  transition: all var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.btn-primary:hover {
+  background: var(--primary-mid);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.btn-large {
+  font-size: var(--font-md);
+  min-height: 56px;
+  padding: 14px 28px;
+  border-radius: var(--r);
+}
+
+.btn-small {
+  font-size: var(--font-xs);
+  min-height: 36px;
+  padding: 6px 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   11. INPUTS — Lisibles, gros, sans autocapitalize iOS agressif
+   ═══════════════════════════════════════════════════════════════════ */
+
+input[type="text"],
+select,
+textarea {
+  font-family: inherit;
+  font-size: var(--font-sm);
+  color: var(--text);
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  width: 100%;
+  min-height: 48px;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary-mid);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   12. SECTIONS & CONTENEURS — Espacement cohérent
+   ═══════════════════════════════════════════════════════════════════ */
+
+.section {
+  display: none;               /* Masquée par défaut, affichée par JS */
+  padding: var(--space-md);
+  animation: fadeIn 300ms ease;
+}
+
+.section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.page-title {
+  font-size: var(--font-xxl);
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  font-size: var(--font-md);
+  color: var(--muted);
+  margin-bottom: var(--space-lg);
+}
+
+.section-title {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   13. CARTES & TILES — Surfaces blanches, ombre légère
+   ═══════════════════════════════════════════════════════════════════ */
+
+.card {
+  background: var(--white);
+  border-radius: var(--r);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  margin-bottom: var(--space-sm);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   14. RESPONSIVE — Desktop : contenu centré, max-width lisible
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (min-width: 768px) {
+  body {
+    padding-bottom: 0;        /* Pas de nav bottom fixe sur desktop */
+  }
+
+  .nav-bottom {
+    display: none;            /* Navigation latérale ou header sur desktop */
+  }
+
+  .bento-grid {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .section {
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --font-base: 22px;       /* Légèrement plus grand sur grand écran */
+  }
+
+  .hero {
+    border-radius: var(--r-lg);
+    margin: var(--space-md);
+    margin-bottom: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   15. ACCESSIBILITÉ — Respect des préférences utilisateur
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus visible clair pour navigation clavier */
+:focus-visible {
+  outline: 3px solid var(--primary-mid);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   16. UTILITAIRES — Classes helpers fréquemment utilisées
+   ═══════════════════════════════════════════════════════════════════ */
+
+.hidden { display: none !important; }
+.sr-only {                         /* Screen-reader only */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.text-center { text-align: center; }
+.mt-sm { margin-top: var(--space-sm); }
+.mt-md { margin-top: var(--space-md); }
+.mb-sm { margin-bottom: var(--space-sm); }
+.mb-md { margin-bottom: var(--space-md); }
+
+.empty-state {
+  text-align: center;
+  color: var(--subtle);
+  font-size: var(--font-sm);
+  padding: var(--space-xl) var(--space-md);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FIN base.css
+   ═══════════════════════════════════════════════════════════════════ */
