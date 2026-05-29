@@ -11,14 +11,13 @@
 </head>
 <body>
 
-  <!-- Notification éphémère -->
   <div id="toast" class="toast"></div>
 
-  <!-- Modal : création / sélection de joueur -->
   <div id="modalWrap" class="modal-wrap">
     <div class="modal">
       <h3 id="modalTitle">New Player</h3>
-      <input type="text" id="mInput" maxlength="30" placeholder="Your name" autocapitalize="off" autocomplete="off">
+      <input type="text" id="mInput" maxlength="30" placeholder="Your name"
+        autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false">
       <div class="modal-actions">
         <button id="btnCancelModal" class="btn-ghost">Cancel</button>
         <button id="btnCreatePlayer" class="btn-primary">Create</button>
@@ -26,7 +25,6 @@
     </div>
   </div>
 
-  <!-- Popup de définition d'un mot -->
   <div id="vocabulary-popup-modal" class="vocab-popup-modal">
     <div class="vocab-popup-content">
       <button class="vocab-popup-close" onclick="if(typeof closeVocabPopup==='function')closeVocabPopup()">×</button>
@@ -34,27 +32,36 @@
     </div>
   </div>
 
-  <!-- Navigation bottom fixe -->
+  <!-- NAV BOTTOM — format correct -->
   <nav class="nav-bottom">
-    <a href="dashboard.html" class="nav-item">🏠<<span>Home</span></a>
-    <a href="quiz.html?section=lecons" class="nav-item">📚<<span>Lessons</span></a>
-    <a href="quiz.html?section=levels" class="nav-item">🎮<<span>Play</span></a>
-    <a href="vocabulary.html" class="nav-item">📖<<span>Vocab</span></a>
-    <a href="dashboard.html" class="nav-item">📊<<span>Space</span></a>
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">🏠</span><span>Home</span>
+    </a>
+    <a href="quiz.html?section=lecons" class="nav-item">
+      <span class="nav-icon">📚</span><span>Lessons</span>
+    </a>
+    <a href="quiz.html?section=levels" class="nav-item">
+      <span class="nav-icon">🎮</span><span>Play</span>
+    </a>
+    <a href="vocabulary.html" class="nav-item active">
+      <span class="nav-icon">📖</span><span>Vocab</span>
+    </a>
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">📊</span><span>Space</span>
+    </a>
   </nav>
 
-  <!-- Hero : identité du joueur -->
   <header class="hero">
-    <div class="hero-avatar" id="heroAv">?
-      <span class="hero-lvl-badge" id="heroLvl">1</span>
-    </div>
+    <div class="hero-avatar" id="heroAv">?<span class="hero-lvl-badge" id="heroLvl">1</span></div>
     <div class="hero-info">
       <div class="hero-name" id="heroName">Guest</div>
       <div class="hero-tag" id="heroTag">Level 1 · 0 pts · 0/20 levels</div>
     </div>
     <div class="hero-xp">
-      <div class="xp-bar"><div class="xp-fill" id="xpBar"></div></div>
-      <div class="xp-text"><span id="xpNow">0</span> pts · Next: <span id="xpGoal">100</span> pts</div>
+      <div class="xp-bar"><div class="xp-fill" id="xpBar" style="width:0%"></div></div>
+      <div class="xp-text" id="xpText">
+        <span id="xpNow">0</span> pts · Next: <span id="xpGoal">100</span> pts
+      </div>
     </div>
     <div class="hero-switch">
       <select id="selPlayer" onchange="if(this.value&&typeof loadPlayer==='function'){loadPlayer(this.value)}">
@@ -63,7 +70,6 @@
     </div>
   </header>
 
-  <!-- Bento : 3 tuiles stats joueur (mêmes IDs que core.js) -->
   <div class="bento-grid">
     <div class="bento-tile">
       <div class="bento-num" id="b1">1</div>
@@ -79,13 +85,11 @@
     </div>
   </div>
 
-  <!-- Section principale : lexique -->
   <section id="vocabSection" class="section active">
     <h2 class="section-title">📖 Vocabulary</h2>
-
-    <!-- Barre d'outils : recherche + filtres -->
     <div class="vocab-toolbar">
-      <input type="text" id="vocabSearch" placeholder="Search French or English…" autocapitalize="off" autocomplete="off">
+      <input type="text" id="vocabSearch" placeholder="Search French or English…"
+        autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false">
       <select id="vocabFilterLevel">
         <option value="">All levels</option>
       </select>
@@ -93,15 +97,10 @@
         <option value="">All categories</option>
       </select>
     </div>
-
-    <!-- Compteur de résultats -->
     <div class="vocab-meta"><span id="vocabCount">0</span> words</div>
-
-    <!-- Grille des mots -->
     <div id="vocabGrid" class="vocab-grid"></div>
   </section>
 
-  <!-- Chargement JS : ordre critique -->
   <script src="js/config.js"></script>
   <script src="js/data.js"></script>
   <script src="js/vocabulary-data.js"></script>
