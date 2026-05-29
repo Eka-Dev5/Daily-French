@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Daily French 🥖 — Dashboard</title>
+  <title>Daily French 🥖 — My Space</title>
+  <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
 
-  <!-- Notification éphémère en bas d'écran -->
   <div id="toast" class="toast"></div>
 
-  <!-- Modal : création ou changement de joueur -->
   <div id="modalWrap" class="modal-wrap">
     <div class="modal">
       <h3 id="modalTitle">New Player</h3>
-      <input type="text" id="mInput" maxlength="30" placeholder="Your name" autocapitalize="off" autocomplete="off">
+      <input type="text" id="mInput" maxlength="30" placeholder="Your name"
+        autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false">
       <div class="modal-actions">
         <button id="btnCancelModal" class="btn-ghost">Cancel</button>
         <button id="btnCreatePlayer" class="btn-primary">Create</button>
@@ -25,7 +25,6 @@
     </div>
   </div>
 
-  <!-- Popup de définition vocabulaire -->
   <div id="vocabulary-popup-modal" class="vocab-popup-modal">
     <div class="vocab-popup-content">
       <button class="vocab-popup-close" onclick="if(typeof closeVocabPopup==='function')closeVocabPopup()">×</button>
@@ -33,27 +32,36 @@
     </div>
   </div>
 
-  <!-- Navigation bottom fixe : 5 liens -->
+  <!-- NAV BOTTOM — format correct avec nav-icon -->
   <nav class="nav-bottom">
-    <a href="dashboard.html" class="nav-item">🏠<<span>Home</span></a>
-    <a href="quiz.html?section=lecons" class="nav-item">📚<<span>Lessons</span></a>
-    <a href="quiz.html?section=levels" class="nav-item">🎮<<span>Play</span></a>
-    <a href="vocabulary.html" class="nav-item">📖<<span>Vocab</span></a>
-    <a href="dashboard.html" class="nav-item">📊<<span>Space</span></a>
+    <a href="dashboard.html" class="nav-item active">
+      <span class="nav-icon">🏠</span><span>Home</span>
+    </a>
+    <a href="quiz.html?section=lecons" class="nav-item">
+      <span class="nav-icon">📚</span><span>Lessons</span>
+    </a>
+    <a href="quiz.html?section=levels" class="nav-item">
+      <span class="nav-icon">🎮</span><span>Play</span>
+    </a>
+    <a href="vocabulary.html" class="nav-item">
+      <span class="nav-icon">📖</span><span>Vocab</span>
+    </a>
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">📊</span><span>Space</span>
+    </a>
   </nav>
 
-  <!-- Hero : identité du joueur, niveau, barre d'XP -->
   <header class="hero">
-    <div class="hero-avatar" id="heroAv">?
-      <span class="hero-lvl-badge" id="heroLvl">1</span>
-    </div>
+    <div class="hero-avatar" id="heroAv">?<span class="hero-lvl-badge" id="heroLvl">1</span></div>
     <div class="hero-info">
       <div class="hero-name" id="heroName">Guest</div>
       <div class="hero-tag" id="heroTag">Level 1 · 0 pts · 0/20 levels</div>
     </div>
     <div class="hero-xp">
-      <div class="xp-bar"><div class="xp-fill" id="xpBar"></div></div>
-      <div class="xp-text"><span id="xpNow">0</span> pts · Next: <span id="xpGoal">100</span> pts</div>
+      <div class="xp-bar"><div class="xp-fill" id="xpBar" style="width:0%"></div></div>
+      <div class="xp-text" id="xpText">
+        <span id="xpNow">0</span> pts · Next: <span id="xpGoal">100</span> pts
+      </div>
     </div>
     <div class="hero-switch">
       <select id="selPlayer" onchange="if(this.value&&typeof loadPlayer==='function'){loadPlayer(this.value)}">
@@ -63,7 +71,6 @@
     </div>
   </header>
 
-  <!-- Bento : 3 tuiles récapitulatives -->
   <div class="bento-grid">
     <div class="bento-tile">
       <div class="bento-num" id="b1">1</div>
@@ -79,42 +86,29 @@
     </div>
   </div>
 
-  <!-- Contenu principal du dashboard : 5 sections -->
   <main class="dashboard-main">
-
-    <!-- Carte des niveaux 1-20 : verrouillés, actifs, complétés -->
     <section class="dash-section" id="dash-levels">
       <h2 class="dash-title">🗺️ Journey</h2>
       <div id="journeyMap" class="journey-map"></div>
     </section>
-
-    <!-- Collection de badges 1-30 -->
     <section class="dash-section" id="dash-badges">
       <h2 class="dash-title">🏅 Badges</h2>
       <div id="badgesGrid" class="badges-grid"></div>
     </section>
-
-    <!-- Caméléon : assistant personnel 5 stades -->
     <section class="dash-section" id="dash-cameleon">
       <h2 class="dash-title">🦎 Cameleon</h2>
       <div id="cameleonStage" class="cameleon-stage"></div>
     </section>
-
-    <!-- Historique des sessions de jeu -->
     <section class="dash-section" id="dash-history">
       <h2 class="dash-title">📜 History</h2>
       <div id="historyList" class="history-list"></div>
     </section>
-
-    <!-- Mon Génie : mots favoris du joueur -->
     <section class="dash-section" id="dash-genius">
-      <h2 class="dash-title">🧠 My Genius</h2>
+      <h2 class="dash-title">🪔 Mon Génie</h2>
       <div id="geniusPanel" class="genius-panel"></div>
     </section>
-
   </main>
 
-  <!-- Chargement JS : ordre critique -->
   <script src="js/config.js"></script>
   <script src="js/data.js"></script>
   <script src="js/vocabulary-data.js"></script>
