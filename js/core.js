@@ -695,13 +695,19 @@ function renderHero(p) {
     sess: document.getElementById('p_sess')
   };
 
-  if (els.av) els.av.innerHTML = p.name.charAt(0).toUpperCase();
+  if (els.av) els.av.innerHTML = p.name.charAt(0).toUpperCase() + '<span class="hero-lvl-badge">' + lvl + '</span>';
   if (els.name) els.name.textContent = p.name;
   if (els.tag) els.tag.textContent = I18n.t('level') + ' ' + lvl + ' · ' + score + ' pts · ' + done.length + '/20 ' + I18n.t('levelsDone').toLowerCase();
 
-  if (els.xpNow) els.xpNow.textContent = score;
-  const ms = Math.ceil(score / 100) * 100;
-  if (els.xpGoal) els.xpGoal.textContent = ms;
+  const ms = score === 0 ? 100 : Math.ceil(score / 100) * 100;
+  // Reconstruire le texte XP en JS pour éviter les doublons HTML
+  const xpTextEl = document.querySelector('.xp-text');
+  if (xpTextEl) {
+    xpTextEl.innerHTML = '<span id="xpNow">' + score + '</span> pts &middot; Next: <span id="xpGoal">' + ms + '</span> pts';
+  } else {
+    if (els.xpNow) els.xpNow.textContent = score;
+    if (els.xpGoal) els.xpGoal.textContent = ms;
+  }
   if (els.xpBar) els.xpBar.style.width = Math.round(score % 100) + '%';
   
   if (els.streak) els.streak.textContent = p.streak || 0;
