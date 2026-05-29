@@ -1,251 +1,70 @@
-/**
- * vocabulary.css — Styles spécifiques à la page lexique
- * 
- * Surcharge et complète base.css pour :
- *   • Barre de recherche et filtres sticky
- *   • Grille responsive de cartes de mots
- *   • Surlignement cliquable dans les textes (leçons, questions)
- *   • Popup de définition enrichi
- */
-
-/* ═══════════════════════════════════════════════════════════════════
-   1. BARRE D'OUTILS — Recherche + filtres, responsive
-   ═══════════════════════════════════════════════════════════════════ */
+/* vocabulary.css — Styles page lexique */
 
 .vocab-toolbar {
-  display: flex;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-md);
-  flex-wrap: wrap;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--bg);
-  padding: var(--space-sm) 0;
+  display: flex; gap: var(--space-sm); margin-bottom: var(--space-md);
+  flex-wrap: wrap; position: sticky; top: 0; z-index: 10;
+  background: var(--bg); padding: var(--space-sm) 0;
 }
-
-.vocab-toolbar input[type="text"] {
-  flex: 1;
-  min-width: 200px;
-  font-size: var(--font-md);
-}
-
-.vocab-toolbar select {
-  min-width: 140px;
-  font-size: var(--font-sm);
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   2. MÉTA — Compteur de résultats
-   ═══════════════════════════════════════════════════════════════════ */
-
-.vocab-meta {
-  font-size: var(--font-sm);
-  color: var(--muted);
-  margin-bottom: var(--space-md);
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   3. GRILLE — Cartes de mots, responsive auto-fill
-   ═══════════════════════════════════════════════════════════════════ */
-
+.vocab-toolbar input[type="text"] { flex: 1; min-width: 180px; }
+.vocab-toolbar select { min-width: 130px; }
+.vocab-meta { font-size: var(--font-sm); color: var(--muted); margin-bottom: var(--space-md); }
 .vocab-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-sm);
-  padding-bottom: var(--space-xl);
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-sm); padding-bottom: calc(var(--space-xl) + 80px);
 }
-
-/* ═══════════════════════════════════════════════════════════════════
-   4. CARTE MOT — Surface blanche, clic pour popup définition
-   ═══════════════════════════════════════════════════════════════════ */
-
 .vocab-card {
-  background: var(--white);
-  border-radius: var(--r);
-  padding: var(--space-md);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
-  cursor: pointer;
+  background: var(--white); border-radius: var(--r);
+  padding: var(--space-md); box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border); cursor: pointer;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
-
-.vocab-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow);
-}
-
-.vocab-card:active {
-  transform: scale(0.97);
-}
-
-.vocab-fr {
-  font-size: var(--font-lg);
-  font-weight: 700;
-  color: var(--primary);
-  line-height: 1.2;
-}
-
-.vocab-en {
-  font-size: var(--font-md);
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-.vocab-phon {
-  font-size: var(--font-xs);
-  color: var(--subtle);
-  font-style: italic;
-  margin-top: 4px;
-  font-family: Georgia, serif;
-}
-
+.vocab-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.vocab-card:active { transform: scale(0.97); }
+.vocab-fr { font-size: var(--font-lg); font-weight: 700; color: var(--primary); }
+.vocab-en { font-size: var(--font-md); color: var(--muted); margin-top: 4px; }
+.vocab-phon { font-size: var(--font-xs); color: var(--subtle); font-style: italic; margin-top: 4px; }
 .vocab-cat {
-  display: inline-block;
-  font-size: var(--font-xs);
-  font-weight: 600;
-  background: var(--primary-light);
-  color: var(--primary);
-  padding: 4px 10px;
-  border-radius: 12px;
-  margin-top: var(--space-sm);
+  display: inline-block; font-size: var(--font-xs); font-weight: 600;
+  background: var(--primary-light); color: var(--primary);
+  padding: 4px 10px; border-radius: 12px; margin-top: var(--space-sm);
   text-transform: capitalize;
 }
-
-.vocab-lvl {
-  font-size: var(--font-xs);
-  color: var(--subtle);
-  margin-left: 8px;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   5. SURLIGNEMENT DANS TEXTE — Leçons et questions
-   ═══════════════════════════════════════════════════════════════════ */
-
+.vocab-lvl { font-size: var(--font-xs); color: var(--subtle); margin-left: 8px; }
 .vocab-word {
-  color: var(--primary);
-  border-bottom: 2px dotted var(--primary-mid);
-  cursor: pointer;
-  font-weight: 600;
-  transition: background var(--transition-fast), color var(--transition-fast);
-  border-radius: 2px;
-  padding: 0 2px;
+  color: var(--primary); border-bottom: 2px dotted var(--primary-mid);
+  cursor: pointer; font-weight: 600;
+  transition: background var(--transition-fast); padding: 0 2px;
 }
-
-.vocab-word:hover {
-  background: var(--primary-light);
-  color: var(--primary-mid);
-}
-
-.vocab-word:active {
-  background: var(--gold-light);
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   6. POPUP VOCABULAIRE — Overlay centré, contenu structuré
-   ═══════════════════════════════════════════════════════════════════ */
-
+.vocab-word:hover { background: var(--primary-light); }
 .vocab-popup-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(30, 41, 59, 0.6);
-  backdrop-filter: blur(6px);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 200;
-  padding: var(--space-md);
+  position: fixed; inset: 0; background: rgba(30,41,59,.6);
+  backdrop-filter: blur(6px); display: none; align-items: center;
+  justify-content: center; z-index: 200; padding: var(--space-md);
 }
-
 .vocab-popup-content {
-  background: var(--white);
-  border-radius: var(--r-lg);
-  padding: var(--space-lg);
-  width: 100%;
-  max-width: 420px;
-  box-shadow: var(--shadow-lg);
-  position: relative;
-  animation: modalIn 250ms ease;
+  background: var(--white); border-radius: var(--r-lg);
+  padding: var(--space-lg); width: 100%; max-width: 420px;
+  box-shadow: var(--shadow-lg); position: relative; animation: modalIn 250ms ease;
 }
-
 .vocab-popup-close {
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  background: none;
-  border: none;
-  font-size: var(--font-xl);
-  color: var(--muted);
-  cursor: pointer;
-  line-height: 1;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background var(--transition-fast);
+  position: absolute; top: 12px; right: 16px; background: none; border: none;
+  font-size: var(--font-xl); color: var(--muted); cursor: pointer;
+  width: 36px; height: 36px; display: flex; align-items: center;
+  justify-content: center; border-radius: 50%; transition: background var(--transition-fast);
 }
-
-.vocab-popup-close:hover {
-  background: var(--bg-card);
-}
-
-.vocab-popup-fr {
-  font-size: var(--font-xl);
-  font-weight: 800;
-  color: var(--primary);
-  padding-right: 40px;
-}
-
-.vocab-popup-en {
-  font-size: var(--font-lg);
-  color: var(--text);
-  margin-top: var(--space-xs);
-}
-
-.vocab-popup-phon {
-  font-size: var(--font-md);
-  color: var(--subtle);
-  font-style: italic;
-  margin-top: 4px;
-  font-family: Georgia, serif;
-}
-
+.vocab-popup-close:hover { background: var(--bg-card); }
+.vocab-popup-fr { font-size: var(--font-xl); font-weight: 800; color: var(--primary); padding-right: 40px; }
+.vocab-popup-en { font-size: var(--font-lg); color: var(--text); margin-top: var(--space-xs); }
+.vocab-popup-phon { font-size: var(--font-md); color: var(--subtle); font-style: italic; margin-top: 4px; }
 .vocab-popup-def {
-  font-size: var(--font-sm);
-  color: var(--muted);
-  margin-top: var(--space-md);
-  line-height: 1.6;
-  border-top: 1px solid var(--border);
-  padding-top: var(--space-sm);
+  font-size: var(--font-sm); color: var(--muted); margin-top: var(--space-md);
+  line-height: 1.6; border-top: 1px solid var(--border); padding-top: var(--space-sm);
 }
+.vocab-popup-meta { margin-top: var(--space-md); display: flex; gap: var(--space-xs); flex-wrap: wrap; }
+.vocab-popup-meta span { font-size: var(--font-xs); background: var(--bg-card); color: var(--muted); padding: 4px 10px; border-radius: 8px; }
 
-.vocab-popup-meta {
-  margin-top: var(--space-md);
-  display: flex;
-  gap: var(--space-xs);
-  flex-wrap: wrap;
-}
-
-.vocab-popup-meta span {
-  font-size: var(--font-xs);
-  background: var(--bg-card);
-  color: var(--muted);
-  padding: 4px 10px;
-  border-radius: 8px;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   7. RESPONSIVE — Ajustements mobile
-   ═══════════════════════════════════════════════════════════════════ */
-
-@media (max-width: 480px) {
-  .vocab-toolbar input[type="text"] {
-    width: 100%;
-    min-width: auto;
-  }
-  .vocab-grid {
-    grid-template-columns: 1fr;
-  }
+@media(max-width:480px) {
+  .vocab-toolbar input[type="text"] { width: 100%; min-width: auto; }
+  .vocab-grid { grid-template-columns: 1fr; }
 }

@@ -1,31 +1,18 @@
 /**
- * dashboard.css — Styles spécifiques au tableau de bord Daily French
- * 
- * Complète base.css avec :
- *   • Journey map : carte visuelle des 20 niveaux (verrouillé, actif, complété)
- *   • Grille de badges 1-30 (grisé vs débloqué)
- *   • Caméléon à 5 stades avec barre de progression
- *   • Historique des sessions sous forme de liste chronologique
- *   • Mon Génie : mots favoris + bouton mini-quiz
- *   • Sections dashboard avec titres et états vides
+ * dashboard.css — Styles tableau de bord Daily French
+ * Complète base.css : journey map, badges, cameleon, history, genius
  */
 
-/* ═══════════════════════════════════════════════════════════════════
-   1. CONTENEUR PRINCIPAL — Espacement sous le bento
-   ═══════════════════════════════════════════════════════════════════ */
-
+/* ── CONTENEUR PRINCIPAL ── */
 .dashboard-main {
   padding: var(--space-md);
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
-  padding-bottom: calc(var(--space-xl) + 80px);
+  padding-bottom: calc(var(--space-xl) + 90px);
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   2. SECTIONS DASHBOARD — Titre + contenu, style uniforme
-   ═══════════════════════════════════════════════════════════════════ */
-
+/* ── SECTIONS ── */
 .dash-section {
   background: var(--white);
   border-radius: var(--r-lg);
@@ -33,7 +20,6 @@
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border);
 }
-
 .dash-title {
   font-size: var(--font-lg);
   font-weight: 700;
@@ -44,16 +30,12 @@
   gap: 8px;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   3. JOURNEY MAP — Grille des 20 niveaux, 5 colonnes fixes
-   ═══════════════════════════════════════════════════════════════════ */
-
+/* ── JOURNEY MAP — 5 colonnes ── */
 .journey-map {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: var(--space-sm);
 }
-
 .journey-tile {
   aspect-ratio: 1;
   display: flex;
@@ -70,369 +52,114 @@
   font-size: var(--font-lg);
   font-weight: 700;
   color: var(--text);
-  min-height: 60px;
+  min-height: 58px;
 }
-
-.journey-tile:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
-}
-
-.journey-tile:active {
-  transform: scale(0.95);
-}
-
-.journey-tile.locked {
-  background: var(--bg);
-  border-color: var(--border);
-  color: var(--subtle);
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.journey-tile.active {
+.journey-tile:hover    { transform: translateY(-2px); box-shadow: var(--shadow); }
+.journey-tile:active   { transform: scale(0.95); }
+.journey-tile.locked   { background: var(--bg); color: var(--subtle); cursor: not-allowed; opacity: 0.5; }
+.journey-tile.active   {
   border-color: var(--primary);
   background: var(--primary-light);
   box-shadow: 0 0 0 3px var(--primary-light), var(--shadow);
-  animation: pulse 2s ease-in-out infinite;
+  animation: tile-pulse 2s ease-in-out infinite;
 }
-
-@keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 3px var(--primary-light), var(--shadow); }
-  50% { box-shadow: 0 0 0 6px var(--primary-light), var(--shadow); }
+@keyframes tile-pulse {
+  0%,100% { box-shadow: 0 0 0 3px var(--primary-light), var(--shadow); }
+  50%     { box-shadow: 0 0 0 6px var(--primary-light), var(--shadow); }
 }
+.journey-tile.completed { border-color: var(--green); background: var(--green-light); color: var(--green); }
+.journey-tile .check    { position: absolute; bottom: 3px; right: 5px; font-size: var(--font-xs); font-weight: 700; }
 
-.journey-tile.completed {
-  border-color: var(--green);
-  background: var(--green-light);
-  color: var(--green);
-}
-
-.journey-tile .check {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  font-size: var(--font-xs);
-  font-weight: 700;
-}
-
-/* Tooltip au survol (title natif enrichi par CSS si besoin) */
-.journey-tile[title] {
-  position: relative;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   4. BADGES — Grille 6 colonnes, états locked / unlocked
-   ═══════════════════════════════════════════════════════════════════ */
-
+/* ── BADGES ── */
 .badges-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
   gap: var(--space-sm);
 }
-
 .badge-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: var(--space-sm);
-  border-radius: var(--r);
-  background: var(--bg-card);
+  display: flex; flex-direction: column; align-items: center;
+  gap: 5px; padding: var(--space-sm);
+  border-radius: var(--r); background: var(--bg-card);
   border: 2px solid var(--border);
   transition: all var(--transition-fast);
-  text-align: center;
-  min-height: 100px;
-  justify-content: center;
+  text-align: center; min-height: 96px; justify-content: center;
 }
-
-.badge-item.locked {
-  opacity: 0.4;
-  filter: grayscale(1);
-}
-
+.badge-item.locked   { opacity: 0.35; filter: grayscale(1); }
 .badge-item.unlocked {
-  background: var(--gold-light);
-  border-color: var(--gold);
-  box-shadow: var(--shadow-sm);
+  background: var(--gold-light); border-color: var(--gold); box-shadow: var(--shadow-sm);
 }
+.badge-item.unlocked:hover { transform: translateY(-3px) scale(1.02); box-shadow: var(--shadow); }
+.badge-icon  { font-size: 1.9rem; line-height: 1; }
+.badge-label { font-size: var(--font-xs); font-weight: 600; color: var(--muted); line-height: 1.2; }
+.badge-item.unlocked .badge-label { color: var(--text); }
 
-.badge-item.unlocked:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: var(--shadow);
-}
-
-.badge-icon {
-  font-size: 2rem;
-  line-height: 1;
-}
-
-.badge-label {
-  font-size: var(--font-xs);
-  font-weight: 600;
-  color: var(--muted);
-  line-height: 1.2;
-}
-
-.badge-item.unlocked .badge-label {
-  color: var(--text);
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   5. CAMELEON — Avatar centré, barre de progression, message
-   ═══════════════════════════════════════════════════════════════════ */
-
+/* ── CAMELEON ── */
 .cameleon-stage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--space-sm);
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: var(--space-sm);
 }
-
 .cameleon-avatar {
-  font-size: 4rem;
-  line-height: 1;
-  animation: bounce 3s ease-in-out infinite;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+  font-size: 3.8rem; line-height: 1;
+  animation: cam-bounce 3s ease-in-out infinite;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.1));
 }
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+@keyframes cam-bounce {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-8px); }
 }
+.cameleon-name  { font-size: var(--font-lg); font-weight: 700; color: var(--primary); }
+.cameleon-msg   { font-size: var(--font-sm); color: var(--muted); font-style: italic; max-width: 280px; line-height: 1.4; }
+.cameleon-bar   { width: 100%; max-width: 280px; height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
+.cameleon-fill  { height: 100%; background: linear-gradient(90deg, var(--coral), var(--gold)); border-radius: 5px; transition: width 600ms ease; }
+.cameleon-count { font-size: var(--font-xs); color: var(--subtle); }
 
-.cameleon-name {
-  font-size: var(--font-lg);
-  font-weight: 700;
-  color: var(--primary);
-}
-
-.cameleon-msg {
-  font-size: var(--font-sm);
-  color: var(--muted);
-  font-style: italic;
-  max-width: 280px;
-  line-height: 1.4;
-}
-
-.cameleon-bar {
-  width: 100%;
-  max-width: 300px;
-  height: 12px;
-  background: var(--border);
-  border-radius: 6px;
-  overflow: hidden;
-  margin-top: var(--space-xs);
-}
-
-.cameleon-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--coral), var(--gold));
-  border-radius: 6px;
-  transition: width 600ms ease;
-}
-
-.cameleon-count {
-  font-size: var(--font-xs);
-  color: var(--subtle);
-  margin-top: 2px;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   6. HISTORIQUE — Liste chronologique inversée, lignes séparées
-   ═══════════════════════════════════════════════════════════════════ */
-
-.history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.history-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
-  gap: var(--space-sm);
-  align-items: center;
+/* ── HISTORIQUE ── */
+.history-list { display: flex; flex-direction: column; gap: 2px; }
+.history-row  {
+  display: grid; grid-template-columns: 1fr auto auto auto;
+  gap: var(--space-sm); align-items: center;
   padding: var(--space-sm) var(--space-md);
-  border-radius: var(--r-sm);
-  font-size: var(--font-sm);
+  border-radius: var(--r-sm); font-size: var(--font-sm);
   transition: background var(--transition-fast);
 }
+.history-row:hover { background: var(--bg-card); }
+.history-row:nth-child(even) { background: rgba(241,245,249,.5); }
+.h-date  { color: var(--muted); font-size: var(--font-xs); }
+.h-level { font-weight: 600; color: var(--primary); font-size: var(--font-xs); background: var(--primary-light); padding: 2px 8px; border-radius: 8px; }
+.h-score { font-weight: 600; color: var(--text); }
+.h-pct   { font-weight: 700; color: var(--green); font-size: var(--font-xs); min-width: 36px; text-align: right; }
 
-.history-row:hover {
-  background: var(--bg-card);
+/* ── MON GÉNIE ── */
+.genius-panel  { display: flex; flex-direction: column; gap: var(--space-md); }
+.genius-list   { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+.genius-chip   {
+  display: inline-flex; align-items: center;
+  background: var(--primary-light); color: var(--primary);
+  padding: 6px 14px; border-radius: 20px;
+  font-size: var(--font-sm); font-weight: 600;
+  cursor: pointer; transition: all var(--transition-fast);
 }
+.genius-chip:hover  { background: var(--primary); color: var(--white); transform: translateY(-1px); }
+.genius-chip:active { transform: scale(0.95); }
 
-.history-row:nth-child(even) {
-  background: rgba(241, 245, 249, 0.5);
-}
-
-.h-date {
-  color: var(--muted);
-  font-size: var(--font-xs);
-}
-
-.h-level {
-  font-weight: 600;
-  color: var(--primary);
-  font-size: var(--font-xs);
-  background: var(--primary-light);
-  padding: 2px 8px;
-  border-radius: 8px;
-}
-
-.h-score {
-  font-weight: 600;
-  color: var(--text);
-}
-
-.h-pct {
-  font-weight: 700;
-  color: var(--green);
-  font-size: var(--font-xs);
-  min-width: 36px;
-  text-align: right;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   7. MON GÉNIE — Mots favoris en chips, bouton quiz
-   ═══════════════════════════════════════════════════════════════════ */
-
-.genius-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-}
-
-.genius-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
-}
-
-.genius-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--primary-light);
-  color: var(--primary);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: var(--font-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  border: 1px solid transparent;
-}
-
-.genius-chip:hover {
-  background: var(--primary);
-  color: var(--white);
-  transform: translateY(-1px);
-}
-
-.genius-chip:active {
-  transform: scale(0.95);
-}
-
-.genius-actions {
-  display: flex;
-  justify-content: center;
-  margin-top: var(--space-sm);
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   8. ÉTATS VIDES — Message quand aucune donnée
-   ═══════════════════════════════════════════════════════════════════ */
-
+/* ── EMPTY STATE ── */
 .empty-state {
-  text-align: center;
-  color: var(--subtle);
-  font-size: var(--font-sm);
-  padding: var(--space-xl) var(--space-md);
+  text-align: center; color: var(--subtle);
+  font-size: var(--font-sm); padding: var(--space-xl) var(--space-md);
   font-style: italic;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   9. RESPONSIVE DASHBOARD — Ajustements tablette et mobile
-   ═══════════════════════════════════════════════════════════════════ */
-
-@media (max-width: 480px) {
-  .journey-map {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-  }
-
-  .journey-tile {
-    font-size: var(--font-md);
-    min-height: 50px;
-  }
-
-  .badges-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .badge-icon {
-    font-size: 1.6rem;
-  }
-
-  .cameleon-avatar {
-    font-size: 3rem;
-  }
-
-  .history-row {
-    grid-template-columns: 1fr auto;
-    gap: 4px var(--space-sm);
-  }
-
-  .h-date {
-    grid-column: 1 / -1;
-  }
+/* ── RESPONSIVE ── */
+@media(max-width:480px) {
+  .journey-map { grid-template-columns: repeat(4,1fr); gap: 6px; }
+  .journey-tile { min-height: 48px; }
+  .badges-grid  { grid-template-columns: repeat(3,1fr); }
+  .history-row  { grid-template-columns: 1fr auto; }
+  .h-date { grid-column: 1/-1; }
 }
-
-@media (min-width: 768px) {
-  .dashboard-main {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-lg);
-  }
-
-  .dash-section {
-    margin: 0;
-  }
-
-  /* Les sections pleine largeur sur desktop */
-  #dash-levels,
-  #dash-history {
-    grid-column: 1 / -1;
-  }
-
-  .journey-map {
-    grid-template-columns: repeat(10, 1fr);
-  }
-
-  .badges-grid {
-    grid-template-columns: repeat(6, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .dashboard-main {
-    grid-template-columns: 2fr 1fr;
-  }
-
-  #dash-levels {
-    grid-column: 1;
-  }
-
-  #dash-badges,
-  #dash-cameleon,
-  #dash-genius {
-    grid-column: 2;
-  }
-
-  #dash-history {
-    grid-column: 1 / -1;
-  }
+@media(min-width:768px) {
+  .dashboard-main { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+  #dash-levels, #dash-history { grid-column: 1/-1; }
+  .journey-map { grid-template-columns: repeat(10,1fr); }
+  .badges-grid { grid-template-columns: repeat(6,1fr); }
 }
