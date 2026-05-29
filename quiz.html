@@ -1,169 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Daily French 🥖 — Quiz</title>
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/quiz.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily French 🥖</title>
+<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+<div class="quiz-container">
 
-  <!-- Toast -->
-  <div id="toast" class="toast"></div>
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="player-info">
+    <div class="player-avatar" id="playerAvatar">?</div>
+    <div>
+      <div class="player-name" id="playerNameDisplay">No player</div>
+      <div class="player-stats" id="playerStats">Create or select a player</div>
+    </div>
+  </div>
+  <div class="player-selector">
+    <select id="playerSelect" onchange="if(this.value)switchPlayer(this.value)">
+      <option value="">-- Player --</option>
+    </select>
+    <button class="btn btn-primary" onclick="showNewPlayerModal()">+ New</button>
+    <button class="btn btn-danger" onclick="deleteCurrentPlayer()">✕</button>
+  </div>
+  <div class="header-score" id="headerScore">0 pts</div>
+</div>
 
-  <!-- Modal joueur -->
-  <div id="modalWrap" class="modal-wrap">
-    <div class="modal">
-      <h3 id="modalTitle">New Player</h3>
-      <input type="text" id="mInput" maxlength="30" placeholder="Your name" autocapitalize="off" autocomplete="off">
-      <div class="modal-actions">
-        <button id="btnCancelModal" class="btn-ghost">Cancel</button>
-        <button id="btnCreatePlayer" class="btn-primary">Create</button>
-      </div>
+<!-- ══ NAV UNIFIÉE ══ -->
+<nav class="unified-nav">
+  <button class="nav-btn active" onclick="showSection('home')" id="navHome">🏠</button>
+  <button class="nav-btn" onclick="showSection('lecons')" id="navLecons">📚 Lessons</button>
+  <button class="nav-btn" onclick="showSection('levels')" id="navLevels">🎮 Levels</button>
+  <a href="vocabulary.html" class="nav-btn">📖 Vocab</a>
+  <a href="dashboard.html" class="nav-btn">📊 My Space</a>
+  <a href="games/listen.html" class="nav-btn nav-game">🎧 Listen</a>
+  <a href="games/phrase-builder.html" class="nav-btn nav-game">🧩 Phrases</a>
+</nav>
+
+<!-- ══ HOME ══ -->
+<div id="home" class="section active">
+  <div class="home-title">Daily French 🥖</div>
+  <div class="home-sub">Learn everyday French, one level at a time.</div>
+  <div class="home-stats">
+    <div class="home-stat"><div class="home-stat-num" id="homeLevel">1</div><div class="home-stat-label">Level</div></div>
+    <div class="home-stat"><div class="home-stat-num" id="homeScore">0</div><div class="home-stat-label">Points</div></div>
+    <div class="home-stat"><div class="home-stat-num" id="homeStreak">0</div><div class="home-stat-label">Streak 🔥</div></div>
+    <div class="home-stat"><div class="home-stat-num" id="homeRate">0%</div><div class="home-stat-label">Accuracy</div></div>
+  </div>
+  <div class="home-btns">
+    <button class="btn btn-primary" onclick="showSection('lecons')">📚 Lessons</button>
+    <button class="btn btn-success" onclick="showSection('levels')">🎮 Play now</button>
+  </div>
+  <!-- Mini-jeux -->
+  <div class="games-bar">
+    <p style="font-size:.85em;color:#718096;margin-bottom:10px">🎮 Extra games</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="games/listen.html" class="game-card">
+        <div style="font-size:2em">🎧</div>
+        <div style="font-weight:bold;font-size:.9em">Listen & Repeat</div>
+        <div style="font-size:.75em;color:#718096">Pronunciation</div>
+      </a>
+      <a href="games/phrase-builder.html" class="game-card">
+        <div style="font-size:2em">🧩</div>
+        <div style="font-weight:bold;font-size:.9em">Phrase Builder</div>
+        <div style="font-size:.75em;color:#718096">Grammar</div>
+      </a>
+    </div>
+  </div>
+  <!-- Export/Import -->
+  <div style="margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0">
+    <p style="font-size:.8em;color:#718096;margin-bottom:10px">💾 Save your progress</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="exportSave()" style="flex:1;background:#f0fff4;color:#276749;font-size:.9em">⬇️ Export</button>
+      <label class="btn" style="flex:1;background:#f0f4ff;color:var(--primary);font-size:.9em;cursor:pointer;text-align:center">
+        ⬆️ Import<input type="file" accept=".json" onchange="importSave(event)" style="display:none">
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LEÇONS ══ -->
+<div id="lecons" class="section">
+  <h2 style="margin-bottom:16px;color:var(--text)">📚 Lessons</h2>
+  <p style="color:#718096;margin-bottom:16px;font-size:.9em">Click a lesson to open it. Read first, then play!</p>
+  <div class="lessons-list" id="lessonsContainer"></div>
+  <button class="btn btn-primary" onclick="showSection('levels')" style="margin-top:18px;width:100%;padding:13px">🎮 Ready — let's play!</button>
+</div>
+
+<!-- ══ NIVEAUX ══ -->
+<div id="levels" class="section">
+  <h2 style="margin-bottom:8px;color:var(--text)">🎮 Choose a level</h2>
+  <div class="mode-selector">
+    <div class="mode-title">Mode:</div>
+    <div class="mode-btns">
+      <button class="mode-btn selected" id="btnMixte"  onclick="selectMode('mixte')">🎲 Mixed</button>
+      <button class="mode-btn"          id="btnQcm"    onclick="selectMode('qcm')">🎯 MCQ</button>
+      <button class="mode-btn"          id="btnLibre"  onclick="selectMode('libre')">✍️ Written</button>
+    </div>
+  </div>
+  <div class="levels-container" id="levelsContainer"></div>
+</div>
+
+<!-- ══ JEU ══ -->
+<div id="jeu" class="section">
+  <h2 id="gameTitle" style="margin-bottom:14px;color:var(--text)">Level 1</h2>
+  <div class="progress-wrap">
+    <div style="display:flex;justify-content:space-between;font-size:.85em;color:#718096;margin-bottom:4px">
+      <span id="questionCounter">Q1/10</span><span id="scoreDisplay">0 pts</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <!-- Intro leçon -->
+  <div id="lessonIntro" style="display:none;background:#f0f4ff;border-radius:14px;padding:24px 22px;margin-bottom:18px">
+    <div style="font-size:3em;margin-bottom:10px">📚</div>
+    <h3 id="lessonIntroTitle" style="color:var(--primary);margin-bottom:8px"></h3>
+    <p id="lessonIntroObj" style="color:#718096;margin-bottom:16px"></p>
+    <div id="lessonIntroContent" style="background:white;border-radius:12px;padding:18px;margin-bottom:16px;font-size:1rem;line-height:1.7;max-height:45vh;overflow-y:auto"></div>
+    <a id="lessonIntroVocabulary" href="#" target="_blank" style="display:inline-block;margin-bottom:12px;color:var(--primary);font-weight:bold;text-decoration:none;border-bottom:1px dashed var(--primary)">📖 Level vocabulary</a><br>
+    <button class="btn btn-primary" onclick="startQuestions()" style="padding:14px 32px;font-size:1.1em">🎮 Let's go!</button>
+  </div>
+
+  <!-- Question -->
+  <div class="question-box">
+    <div class="question-num" id="questionNum"></div>
+    <div class="question-text" id="questionText"></div>
+    <div id="voiceControls" style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <button class="btn-voice" onclick="playQuestionAudio()" title="Listen">🔊 Listen</button>
+      <button class="btn-voice" id="btnSpeak" onclick="startSpeechCheck()" title="Speak">🎤 Speak</button>
+      <span id="speechResult" style="font-size:.85em;color:#718096;align-self:center"></span>
+    </div>
+    <div id="hintBox" style="display:none;background:#fff5d6;border-left:4px solid var(--warning);padding:10px 14px;border-radius:0 8px 8px 0;margin-top:10px;font-size:.9em;color:#744210"></div>
+    <div class="options-grid" id="qcmOptions" style="display:none"></div>
+    <div id="libreInput" style="display:none">
+      <input type="text" class="answer-input" id="answerInput" placeholder="Type your answer in French…" autocapitalize="none" autocorrect="off">
+    </div>
+    <div class="feedback" id="feedback">
+      <div class="feedback-title" id="feedbackTitle"></div>
+      <div id="feedbackCorrect" style="font-size:.95em"></div>
+      <div class="feedback-explanation" id="feedbackExplanation"></div>
     </div>
   </div>
 
-  <!-- Popup vocabulaire -->
-  <div id="vocabulary-popup-modal" class="vocab-popup-modal">
-    <div class="vocab-popup-content">
-      <button class="vocab-popup-close" onclick="if(typeof closeVocabPopup==='function')closeVocabPopup()">×</button>
-      <div id="vocab-popup-body"></div>
+  <div class="game-actions">
+    <button class="btn" id="quitBtn" onclick="quitGame()" style="background:#f8fafc;color:#718096">⬅ Quit</button>
+    <button class="btn" onclick="showSection('lecons')" style="background:#fff5d6;color:#744210">📚 Lesson</button>
+    <button class="btn btn-primary" id="validateBtn" onclick="validateAnswer()">✓ Check</button>
+    <button class="btn btn-success" id="nextBtn" onclick="nextQuestion()" style="display:none">Next →</button>
+  </div>
+</div>
+
+<!-- ══ RÉSULTATS ══ -->
+<div id="resultats" class="section">
+  <div style="text-align:center;padding:20px">
+    <div class="result-score-circle">
+      <div class="result-score-num" id="resultPct">0%</div>
+      <div class="result-score-sub">correct</div>
+    </div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="result-btns">
+      <button class="btn" onclick="retryLevel()" style="background:#f8fafc">🔁 Retry</button>
+      <button class="btn btn-primary" id="nextLevelBtn" onclick="startNextLevel()" style="display:none">Next level →</button>
+      <button class="btn" onclick="showSection('levels')" style="background:#f0f4ff;color:var(--primary)">All levels</button>
     </div>
   </div>
+</div>
 
-  <!-- Nav bottom -->
-  <nav class="nav-bottom">
-    <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Home</span></a>
-    <a href="quiz.html?section=lecons" class="nav-item"><span class="nav-icon">📚</span><span>Lessons</span></a>
-    <a href="quiz.html?section=levels" class="nav-item"><span class="nav-icon">🎮</span><span>Play</span></a>
-    <a href="vocabulary.html" class="nav-item"><span class="nav-icon">📖</span><span>Vocab</span></a>
-    <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span><span>Space</span></a>
-  </nav>
-
-  <!-- Hero -->
-  <header class="hero">
-    <div class="hero-avatar" id="heroAv">?</div>
-    <div class="hero-info">
-      <div class="hero-name" id="heroName">Guest</div>
-      <div class="hero-tag" id="heroTag">Level 1 · 0 pts · 0/20 levels</div>
-    </div>
-    <div class="hero-xp">
-      <div class="xp-bar"><div class="xp-fill" id="xpBar"></div></div>
-      <div class="xp-text"><span id="xpNow">0</span> pts · Next: <span id="xpGoal">100</span> pts</div>
-    </div>
-    <div class="hero-switch">
-      <select id="selPlayer" onchange="if(this.value&&typeof loadPlayer==='function'){loadPlayer(this.value)}">
-        <option value="">Choose a player</option>
-      </select>
-    </div>
-  </header>
-
-  <!-- Bento -->
-  <div class="bento-grid">
-    <div class="bento-tile">
-      <div class="bento-num" id="b1">1</div>
-      <div class="bento-label">Level</div>
-    </div>
-    <div class="bento-tile">
-      <div class="bento-num" id="b2">0</div>
-      <div class="bento-label">Points</div>
-    </div>
-    <div class="bento-tile">
-      <div class="bento-num" id="b3">0/20</div>
-      <div class="bento-label">Done</div>
+<!-- ══ MODAL NEW PLAYER ══ -->
+<div id="newPlayerModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:15px">
+  <div style="background:white;padding:25px;border-radius:20px;max-width:320px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="font-size:2.5em;margin-bottom:10px">👤</div>
+    <h3 style="margin-bottom:15px;color:var(--text)">New player</h3>
+    <input type="text" id="newPlayerNameModal" placeholder="Your first name" autocapitalize="words"
+      style="width:100%;padding:14px;border:2px solid #e2e8f0;border-radius:12px;font-size:1.1em;margin-bottom:18px;outline:none"
+      onkeyup="if(event.key==='Enter')confirmNewPlayer()">
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" onclick="confirmNewPlayer()" style="flex:1;padding:12px">✓ Create</button>
+      <button class="btn" onclick="closeNewPlayerModal()" style="flex:1;padding:12px;background:#f8fafc;color:#718096">✕ Cancel</button>
     </div>
   </div>
+</div>
 
-  <!-- Section Home -->
-  <section id="home" class="section">
-    <h1 class="page-title">🥖 Daily French</h1>
-    <p class="page-subtitle">Learn French, one question at a time</p>
-    <div class="mode-selector">
-      <button class="mode-btn active" data-mode="mixte">Mixed</button>
-      <button class="mode-btn" data-mode="qcm">QCM</button>
-      <button class="mode-btn" data-mode="libre">Written</button>
+<!-- ══ MODAL VOCAB POPUP ══ -->
+<div id="vocabulary-popup-modal" onclick="closeVocabPopup(event)" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:3000;display:none;align-items:center;justify-content:center;padding:15px">
+  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5)"></div>
+  <div class="vocab-modal-content">
+    <div class="vocab-modal-header">
+      <div class="vocab-modal-fr" id="vocabPopupFr"></div>
+      <div class="vocab-modal-phon" id="vocabPopupPhon"></div>
     </div>
-    <div class="cta-group">
-      <a href="quiz.html?section=levels" class="btn btn-primary btn-large">🎮 Play Now</a>
-      <a href="quiz.html?section=lecons" class="btn btn-secondary btn-large">📚 Learn</a>
-      <a href="vocabulary.html" class="btn btn-secondary btn-large">📖 Vocabulary</a>
-    </div>
-  </section>
+    <div class="vocab-modal-en" id="vocabPopupEn"></div>
+    <div class="vocab-modal-def"><h4>📖 Definition</h4><p id="vocabPopupDef"></p></div>
+    <div class="vocab-modal-ex"><h4>💬 Example</h4><p id="vocabPopupEx" style="font-style:italic"></p></div>
+    <div class="vocab-modal-cat"><h4>📝 Category</h4><p id="vocabPopupCat"></p></div>
+    <button class="vocab-modal-close" onclick="closeVocabPopup()">Close ✕</button>
+  </div>
+</div>
 
-  <!-- Section Leçons -->
-  <section id="lecons" class="section" style="display:none;">
-    <h2 class="section-title">📚 Lessons</h2>
-    <div id="lessonsContainer" class="lessons-container"></div>
-  </section>
+</div><!-- /.quiz-container -->
+<div class="toast" id="toast"></div>
 
-  <!-- Section Levels -->
-  <section id="levels" class="section" style="display:none;">
-    <h2 class="section-title">🎮 Choose a Level</h2>
-    <div id="levelsContainer" class="levels-container"></div>
-  </section>
-
-  <!-- Section Jeu -->
-  <section id="jeu" class="section" style="display:none;">
-    <div id="lessonIntro" class="lesson-intro" style="display:none;">
-      <h3 id="lessonIntroTitle" class="intro-title"></h3>
-      <p id="lessonIntroObj" class="intro-objective"></p>
-      <div id="lessonIntroContent" class="intro-content"></div>
-      <div id="lessonIntroVocabulary" class="intro-vocab"></div>
-      <button id="startLevelBtn" class="btn btn-primary btn-large">Start Level</button>
-    </div>
-    <div id="gameArea" class="game-area">
-      <div class="game-header">
-        <div id="gameTitle" class="game-title">Level 1</div>
-        <div class="game-meta">
-          <span id="questionCounter" class="counter">1 / 10</span>
-          <span id="scoreDisplay" class="score">0 pts</span>
-        </div>
-        <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
-      </div>
-      <div id="questionText" class="question-text"></div>
-      <div id="qcmOptions" class="qcm-options"></div>
-      <div id="libreInput" class="libre-input" style="display:none;">
-        <input type="text" id="answerInput" class="answer-input" placeholder="Type your answer here…" autocapitalize="off" autocomplete="off" spellcheck="false">
-      </div>
-      <div id="hintBox" class="hint-box" style="display:none;"></div>
-      <div class="game-actions">
-        <button id="validateBtn" class="btn btn-primary btn-large">Validate</button>
-        <button id="nextBtn" class="btn btn-secondary btn-large" style="display:none;">Next</button>
-      </div>
-      <div id="feedbackArea" class="feedback-area" style="display:none;">
-        <div id="feedbackTitle" class="feedback-title"></div>
-        <div id="feedbackCorrect" class="feedback-correct"></div>
-        <div id="feedbackExplanation" class="feedback-explanation"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section Résultats -->
-  <section id="resultats" class="section" style="display:none;">
-    <h2 class="section-title">🎯 Results</h2>
-    <div class="result-circle">
-      <div id="resultPct" class="result-pct">0%</div>
-    </div>
-    <div id="resultMsg" class="result-message"></div>
-    <div class="result-actions">
-      <button id="retryBtn" class="btn btn-secondary btn-large">Retry</button>
-      <button id="nextLevelBtn" class="btn btn-primary btn-large">Next Level</button>
-      <button id="quitBtn" class="btn btn-ghost btn-large">Quit</button>
-    </div>
-  </section>
-
-  <!-- Scripts -->
-  <script src="js/config.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/vocabulary-data.js"></script>
-  <script src="js/vocabulary-engine.js"></script>
-  <script src="js/core.js"></script>
-  <script src="js/ui-utils.js"></script>
-  <script src="js/game-engine.js"></script>
-  <script src="js/quiz.js"></script>
-
+<!-- ══ SCRIPTS — ordre important ══ -->
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/vocabulary-data.js"></script>
+<script src="js/vocabulary-engine.js"></script>
+<script src="js/players.js"></script>
+<script src="js/ui-utils.js"></script>
+<script src="js/game-engine.js"></script>
 </body>
 </html>
