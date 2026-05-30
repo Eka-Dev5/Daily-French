@@ -46,11 +46,10 @@ function renderLevels() {
   for (let i = 1; i <= max; i++) {
     const tile = document.createElement('div');
     tile.className = 'level-tile';
-    tile.textContent = i;
-
-    const title = document.createElement('div');
-    title.className = 'level-title';
-    title.textContent = LEVEL_NAMES[i] || 'Level ' + i;
+    // Nom court sans emoji
+    const fullName = LEVEL_NAMES[i] || 'Level ' + i;
+    const shortName = fullName.replace(/\p{Emoji}/gu, '').trim();
+    tile.innerHTML = `<span class="tile-num">${i}</span><span class="tile-name">${shortName}</span>`;
 
     if (done.includes(i)) {
       tile.classList.add('completed');
@@ -62,7 +61,6 @@ function renderLevels() {
     }
 
     tile.addEventListener('click', () => startLevel(i));
-    tile.appendChild(title);
     container.appendChild(tile);
   }
 }
