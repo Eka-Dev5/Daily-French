@@ -330,9 +330,14 @@ const I18n = {
     return I18N[code] ? code : 'en';
   },
 
-  /** Initialise la langue */
+  /** Initialise la langue — respecte SUBJECT_CONFIG.interfaceLang */
   init() {
-    this.current = this.detect();
+    // La langue d'interface est définie dans config.js — priorité absolue
+    if (typeof SUBJECT_CONFIG !== 'undefined' && SUBJECT_CONFIG.interfaceLang) {
+      this.current = SUBJECT_CONFIG.interfaceLang;
+    } else {
+      this.current = this.detect();
+    }
   },
 
   /** Change la langue */
