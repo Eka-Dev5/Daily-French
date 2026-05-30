@@ -152,8 +152,9 @@
 
 .levels-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: var(--space-sm);
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 0 2px;
 }
 
 .level-tile {
@@ -161,58 +162,58 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
   background: var(--white);
   border: 2px solid var(--border);
   border-radius: var(--r);
-  padding: var(--space-md) var(--space-sm);
+  padding: 10px 4px;
   cursor: pointer;
   transition: all var(--transition-fast);
-  min-height: 100px;
+  min-height: 72px;
   position: relative;
-  font-size: var(--font-xxl);
+  overflow: hidden;
+  text-align: center;
+}
+
+.tile-num {
+  font-size: 1.3rem;
   font-weight: 800;
   color: var(--primary);
+  line-height: 1;
+}
+.tile-name {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 90%;
 }
 
-.level-tile:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
-}
-
-.level-tile:active {
-  transform: scale(0.96);
-}
+.level-tile:hover  { transform: translateY(-2px); box-shadow: var(--shadow); }
+.level-tile:active { transform: scale(0.96); }
 
 .level-tile.locked {
-  background: var(--bg-card);
-  border-color: var(--border);
-  color: var(--subtle);
-  cursor: not-allowed;
-  opacity: 0.6;
+  background: var(--bg-card); border-color: var(--border);
+  cursor: not-allowed; opacity: 0.5;
 }
+.level-tile.locked .tile-num  { color: var(--subtle); }
+.level-tile.locked .tile-name { color: var(--subtle); }
 
 .level-tile.active {
   border-color: var(--primary);
   background: var(--primary-light);
   box-shadow: 0 0 0 3px var(--primary-light);
 }
+.level-tile.active .tile-num { color: var(--primary); }
 
 .level-tile.completed {
   border-color: var(--green);
   background: var(--green-light);
-  color: var(--green);
 }
-
-.level-title {
-  font-size: var(--font-xs);
-  font-weight: 600;
-  color: var(--muted);
-  text-align: center;
-  line-height: 1.3;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.level-tile.completed .tile-num  { color: var(--green); }
+.level-tile.completed .tile-name { color: var(--green); }
   white-space: nowrap;
 }
 
