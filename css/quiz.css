@@ -589,12 +589,13 @@
   }
 
   .levels-container {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    padding: 0;
   }
-
   .level-tile {
-    min-height: 80px;
-    font-size: var(--font-xl);
+    min-height: 64px;
+    padding: 8px 4px;
   }
 }
 

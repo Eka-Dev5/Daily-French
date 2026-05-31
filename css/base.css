@@ -51,14 +51,14 @@
   --r:              16px;
   --r-lg:           24px;
 
-  /* Typographie — base 21px (+31% par rapport au 16px standard) */
-  --font-base:      21px;
-  --font-xs:        0.85rem;   /* ~18px */
-  --font-sm:        0.95rem;   /* ~20px */
-  --font-md:        1.15rem;   /* ~24px */
-  --font-lg:        1.4rem;    /* ~29px */
-  --font-xl:        1.8rem;    /* ~38px */
-  --font-xxl:       2.4rem;    /* ~50px */
+  /* Typographie — base 16px standard */
+  --font-base:      16px;
+  --font-xs:        0.75rem;   /* 12px */
+  --font-sm:        0.875rem;  /* 14px */
+  --font-md:        1rem;      /* 16px */
+  --font-lg:        1.125rem;  /* 18px */
+  --font-xl:        1.375rem;  /* 22px */
+  --font-xxl:       1.75rem;   /* 28px — chiffres bento */
 
   /* Espacement proportionnel */
   --space-unit:     1rem;
@@ -121,9 +121,11 @@ body {
   line-height: 1.6;
   color: var(--text);
   background: var(--bg);
-  /* Marge basse pour la nav fixe + safe-area iPhone notch/Dynamic Island */
   padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
   min-height: 100vh;
+  /* Empêche tout débordement horizontal */
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -535,9 +537,13 @@ textarea:focus {
    ═══════════════════════════════════════════════════════════════════ */
 
 .section {
-  display: none;               /* Masquée par défaut, affichée par JS */
+  display: none;
   padding: var(--space-md);
   animation: fadeIn 300ms ease;
+  /* Contenir tous les enfants dans la largeur */
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .section.active {

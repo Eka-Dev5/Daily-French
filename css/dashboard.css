@@ -5,6 +5,7 @@
 
 /* ── CONTENEUR PRINCIPAL ── */
 .dashboard-main {
+  overflow-x: hidden;
   padding: var(--space-md);
   display: flex;
   flex-direction: column;
@@ -153,7 +154,7 @@
 @media(max-width:480px) {
   .journey-map { grid-template-columns: repeat(4,1fr); gap: 6px; }
   .journey-tile { min-height: 48px; }
-  .badges-grid  { grid-template-columns: repeat(3,1fr); }
+  .badges-grid  { grid-template-columns: repeat(4,1fr); gap: 5px; }
   .history-row  { grid-template-columns: 1fr auto; }
   .h-date { grid-column: 1/-1; }
 }
